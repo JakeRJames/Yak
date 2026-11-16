@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK v2.13.1</title>
-<meta name="version" content="2.13.1">
+<title>YAK v2.14.0</title>
+<meta name="version" content="2.14.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -185,9 +185,10 @@ nav{display:none}
 <div class="lockscr" id="lock" hidden></div>
 <main id="app"><div class="card" style="margin:20px 0"><b>YAK needs a web browser to run.</b><p class="lbl">This preview cannot run the app. Open YAK in Safari, Chrome or Edge instead (or use the YAK link) and your saved data will load there.</p></div></main>
 <script>
-const VERSION='2.13.1';
+const VERSION='2.14.0';
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
-const CHANGELOG=[{v:'2.13.1',d:'16 Nov 2026',n:'Added the YAK logo as the app icon (white YAK with an orange full stop on charcoal) and named the app YAK, so it shows on the iPhone Home Screen when added from Safari. Saved data is unchanged.'},
+const CHANGELOG=[{v:'2.14.0',d:'16 Nov 2026',n:'Added a reminder at the top of every tab when the passcode lock is off on this device, saying that anyone who opens YAK here can see your figures. Set a passcode takes you to the Passcode lock card on Home, and the reminder disappears once a passcode is set. Don\'t remind me hides it, and that choice is saved in your data, so it is included in exports and carried to other devices when you import. The reminder waits until you have imported or chosen starting values on a new device. Older data files still import fine.'},
+{v:'2.13.1',d:'16 Nov 2026',n:'Added the YAK logo as the app icon (white YAK with an orange full stop on charcoal) and named the app YAK, so it shows on the iPhone Home Screen when added from Safari. Saved data is unchanged.'},
 {v:'2.13.0',d:'15 Nov 2026',n:'Removed the Extra adjustment this month box from the Personal tab, along with the Adjustment line in How it adds up and the Adjustments slice in the salary charts. One-off costs such as credit card payments now live only on the Forecast tab, where each month\'s deductions are entered. Monthly savings on Home and Personal no longer have an adjustment taken off, and the Forecast and Simulator start from that same figure. An adjustment saved in an older data file is dropped when it is opened or imported, so if you had one entered your monthly saving will rise by that amount; add it as a Forecast deduction instead if you still need it.'},
 {v:'2.12.0',d:'15 Nov 2026',n:'Exports are now recorded in the change log, as imports already were. Each export adds a line saying the data was exported to a file, with the file name and the device, and the line is included in the file itself. Imports now also record which device the file came from and when it was exported there. An export you cancel is not recorded. Saved data is unchanged.'},
 {v:'2.11.1',d:'15 Nov 2026',n:'Polished the − and + buttons. The symbols are now drawn precisely so they sit exactly in the centre of each round button, and on the Payments tab the Payment day buttons are slightly smaller and set in from the edges of the box so they line up neatly with the number. The People in household buttons use the same design. Saved data is unchanged.'},
@@ -297,6 +298,10 @@ function reviewDone(){S.reviewed=iso();save(true);render()}
 function reviewBox(){if(!needsReview())return '';
  const ref=Math.max(Date.parse(S.lastChange)||0,Date.parse(S.reviewed)||0);
  return `<div class="card review" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span><b>Time to re-review your bills and update your values.</b> Nothing has been changed or checked since ${dd(new Date(ref).toISOString())}.</span><button class="btn" onclick="reviewDone()">Checked, and everything is the same</button></div>`}
+function lockHintBox(){if(!lockOK()||lockInfo()||LOCKED||S.hideLockHint||LK.mode||M.fresh||PEND)return '';
+ return `<div class="card review" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Passcode lock is off.</b> Anyone who opens YAK on this device can see your figures.</span><span><button class="btn sm" ${BTN} onclick="lkHintSet()">Set a passcode</button><button class="btn sm out" onclick="lkHintOff()">Don't remind me</button></span></div>`}
+function lkHintSet(){S.tab='dash';MO=false;PLAY=true;save(true);lkMode('set');const c=document.getElementById('lkc');if(c)c.scrollIntoView({behavior:'smooth',block:'center'});const i=document.getElementById('lk-p1');if(i)setTimeout(()=>i.focus({preventScroll:true}),350)}
+function lkHintOff(){S.hideLockHint=true;save();render()}
 function stamp(iso){return new Date(iso).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}
 function dl(name,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 async function doExport(){
@@ -379,7 +384,7 @@ function lockCard(){if(!lockOK())return '';const on=!!lockInfo(),m=LK.mode,pf=(i
  if(m){return `<div class="card ask"><b>${m==='set'?'Set a passcode':m==='change'?'Change passcode':'Turn off passcode lock'}</b><p class="lbl">${m==='off'?'Enter your passcode to turn the lock off.':(NUMK?'Numbers only, at least 4 digits.':'At least 4 characters.')+' It is stored on this device only and is not included in exports. If you forget it, you can clear this device and import your latest export.'}</p><div class="flds" style="margin:10px 0 14px">${m!=='set'?pf('lk-cur','Current passcode','off',kpCur()):''}${m!=='off'?pf('lk-p1','New passcode','new-password',kpNew())+pf('lk-p2','Repeat new passcode','new-password',kpNew()):''}</div>${LK.err?`<p class="lbl" style="color:var(--bad);margin:0 0 10px" role="alert">${esc(LK.err)}</p>`:''}<button class="btn" ${BTN} onclick="lkSubmit()">${m==='off'?'Turn off':'Save passcode'}</button><button class="btn" ${OUT} onclick="lkMode(null)">Cancel</button></div>`}
  return `<div class="card" style="margin:0 0 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Passcode lock</b> <span class="lkpill ${on?'on':'off'}">${on?'On':'Off'}</span><br><small>${on?'YAK asks for your passcode when it opens and whenever you leave the app. It keeps casual access out but does not encrypt your data.':'Add a passcode so YAK asks for it each time it opens on this device.'}</small></span><span>${on?`<button class="btn sm out" ${BTN} onclick="lockNow()">Lock now</button><button class="btn sm out" ${BTN} onclick="lkMode('change')">Change</button><button class="btn sm out" onclick="lkMode('off')">Turn off</button>`:`<button class="btn sm" onclick="lkMode('set')">Set a passcode</button>`}</span></div>`}
 function banner(){
- return msgBox()+pendBox()+freshBox()+askBox()+rstBox()+reviewBox()+(M.dirty?`<div class="card pending tb"><span><b>Unexported changes</b></span><button class="btn sm" onclick="doExport()">Export</button></div>`
+ return msgBox()+pendBox()+freshBox()+askBox()+rstBox()+lockHintBox()+reviewBox()+(M.dirty?`<div class="card pending tb"><span><b>Unexported changes</b></span><button class="btn sm" onclick="doExport()">Export</button></div>`
  :`<div class="xbar tb"><span>${M.last?'Last exported <b>'+stamp(M.last)+'</b>':'Not exported yet'}</span><button class="btn sm out" onclick="doExport()">Export</button></div>`)}
 const gbp=n=>(n<0?'-':'')+'£'+Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
 const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
@@ -818,7 +823,7 @@ function dash(c){
  <h2>At a glance</h2>
  <div class="grid">${card(c.yes?'You will save each month once repaid':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn')}${card('Individual share each month',gbp(c.share))}${card('Personal deductions each month',gbp(c.mine))}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?card('Household bills paid from','Not set yet'):card('House bills paid separately','Yes'))}${payTile(c)}</div>
  <h2>Where your salary goes</h2>${donutCard(c)}
- <div style="margin-top:16px">${lockCard()}</div>`}
+ <div style="margin-top:16px" id="lkc">${lockCard()}</div>`}
 /* ---------- Mobile menu (narrow screens only; desktop keeps the tabs) ---------- */
 const TITLES={home:'House Finances',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log'};
 const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes']];
