@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK v2.15.2</title>
-<meta name="version" content="2.15.2">
+<title>YAK v2.16.0</title>
+<meta name="version" content="2.16.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -195,9 +195,9 @@ nav{display:none}
 <div class="lockscr" id="lock" hidden></div>
 <main id="app"><div class="card" style="margin:20px 0"><b>YAK needs a web browser to run.</b><p class="lbl">This preview cannot run the app. Open YAK in Safari, Chrome or Edge instead (or use the YAK link) and your saved data will load there.</p></div></main>
 <script>
-const VERSION='2.15.2';
+const VERSION='2.16.0';
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
-const CHANGELOG=[{v:'2.15.2',d:'16 Nov 2026',n:'Fixed the spacing of the buttons in the prompt boxes, such as Import latest data and Start with the starting values. The filled orange button no longer looks like it overlaps the outlined one: they now sit in a row with an even gap between them (and wrap neatly onto two lines on a phone), with matching heights. The same spacing is used in the replace-data, reset, passcode and household-bills prompts. Saved data is unchanged.'},{v:'2.15.1',d:'16 Nov 2026',n:'Added a Check for updates button at the bottom of every page. The YAK app on an iPhone Home Screen can keep showing an older copy of the page after an update. Check for updates fetches the latest copy and, if it is newer than the one you are using, reloads YAK with it. If you are already up to date it tells you so. Your saved data is not touched.'},
+const CHANGELOG=[{v:'2.16.0',d:'16 Nov 2026',n:'YAK now checks for updates by itself every time it opens, and again when you come back to it after it has been in the background. If a newer version is available, a bar saying Update available for YAK appears at the top of the page with an Update button, which does the same as Check for updates. If you are up to date, nothing appears. The Check for updates button at the bottom of every page still works as before. Saved data is unchanged.'},{v:'2.15.2',d:'16 Nov 2026',n:'Fixed the spacing of the buttons in the prompt boxes, such as Import latest data and Start with the starting values. The filled orange button no longer looks like it overlaps the outlined one: they now sit in a row with an even gap between them (and wrap neatly onto two lines on a phone), with matching heights. The same spacing is used in the replace-data, reset, passcode and household-bills prompts. Saved data is unchanged.'},{v:'2.15.1',d:'16 Nov 2026',n:'Added a Check for updates button at the bottom of every page. The YAK app on an iPhone Home Screen can keep showing an older copy of the page after an update. Check for updates fetches the latest copy and, if it is newer than the one you are using, reloads YAK with it. If you are already up to date it tells you so. Your saved data is not touched.'},
 {v:'2.15.0',d:'16 Nov 2026',n:'Added an Instructions tab for anyone new to YAK. It explains in plain language what each tab does, how the numbers are worked out, and how exporting and importing your data works, including how to move between devices safely and what to do if you forget your passcode. A How to use YAK button on Home takes you straight to it. Saved data is unchanged.'},{v:'2.14.0',d:'16 Nov 2026',n:'Added a reminder at the top of every tab when the passcode lock is off on this device, saying that anyone who opens YAK here can see your figures. Set a passcode takes you to the Passcode lock card on Home, and the reminder disappears once a passcode is set. Don\'t remind me hides it, and that choice is saved in your data, so it is included in exports and carried to other devices when you import. The reminder waits until you have imported or chosen starting values on a new device. Older data files still import fine.'},
 {v:'2.13.1',d:'16 Nov 2026',n:'Added the YAK logo as the app icon (white YAK with an orange full stop on charcoal) and named the app YAK, so it shows on the iPhone Home Screen when added from Safari. Saved data is unchanged.'},
 {v:'2.13.0',d:'15 Nov 2026',n:'Removed the Extra adjustment this month box from the Personal tab, along with the Adjustment line in How it adds up and the Adjustments slice in the salary charts. One-off costs such as credit card payments now live only on the Forecast tab, where each month\'s deductions are entered. Monthly savings on Home and Personal no longer have an adjustment taken off, and the Forecast and Simulator start from that same figure. An adjustment saved in an older data file is dropped when it is opened or imported, so if you had one entered your monthly saving will rise by that amount; add it as a Forecast deduction instead if you still need it.'},
@@ -395,7 +395,7 @@ function lockCard(){if(!lockOK())return '';const on=!!lockInfo(),m=LK.mode,pf=(i
  if(m){return `<div class="card ask"><b>${m==='set'?'Set a passcode':m==='change'?'Change passcode':'Turn off passcode lock'}</b><p class="lbl">${m==='off'?'Enter your passcode to turn the lock off.':(NUMK?'Numbers only, at least 4 digits.':'At least 4 characters.')+' It is stored on this device only and is not included in exports. If you forget it, you can clear this device and import your latest export.'}</p><div class="flds" style="margin:10px 0 14px">${m!=='set'?pf('lk-cur','Current passcode','off',kpCur()):''}${m!=='off'?pf('lk-p1','New passcode','new-password',kpNew())+pf('lk-p2','Repeat new passcode','new-password',kpNew()):''}</div>${LK.err?`<p class="lbl" style="color:var(--bad);margin:0 0 10px" role="alert">${esc(LK.err)}</p>`:''}<div class="bar"><button class="btn" ${BTN} onclick="lkSubmit()">${m==='off'?'Turn off':'Save passcode'}</button><button class="btn" ${OUT} onclick="lkMode(null)">Cancel</button></div></div>`}
  return `<div class="card" style="margin:0 0 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Passcode lock</b> <span class="lkpill ${on?'on':'off'}">${on?'On':'Off'}</span><br><small>${on?'YAK asks for your passcode when it opens and whenever you leave the app. It keeps casual access out but does not encrypt your data.':'Add a passcode so YAK asks for it each time it opens on this device.'}</small></span><span class="bar">${on?`<button class="btn sm out" ${BTN} onclick="lockNow()">Lock now</button><button class="btn sm out" ${BTN} onclick="lkMode('change')">Change</button><button class="btn sm out" onclick="lkMode('off')">Turn off</button>`:`<button class="btn sm" onclick="lkMode('set')">Set a passcode</button>`}</span></div>`}
 function banner(){
- return msgBox()+pendBox()+freshBox()+askBox()+rstBox()+lockHintBox()+reviewBox()+(M.dirty?`<div class="card pending tb"><span><b>Unexported changes</b></span><button class="btn sm" onclick="doExport()">Export</button></div>`
+ return updBox()+msgBox()+pendBox()+freshBox()+askBox()+rstBox()+lockHintBox()+reviewBox()+(M.dirty?`<div class="card pending tb"><span><b>Unexported changes</b></span><button class="btn sm" onclick="doExport()">Export</button></div>`
  :`<div class="xbar tb"><span>${M.last?'Last exported <b>'+stamp(M.last)+'</b>':'Not exported yet'}</span><button class="btn sm out" onclick="doExport()">Export</button></div>`)}
 const gbp=n=>(n<0?'-':'')+'£'+Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
 const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
@@ -903,18 +903,29 @@ function helpPage(){
  </div>`}
 
 /* ---------- Check for updates: fetch the live page fresh and reload if it is newer ---------- */
-let UPD='';
+let UPD='',NEWV='',UCHK=0;
+function newer(a,b){const x=a.split('.').map(Number),y=b.split('.').map(Number);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return d>0}return false}
+async function liveVersion(){
+ const r=await fetch(location.pathname,{cache:'reload'});
+ if(!r.ok)throw new Error('status '+r.status);
+ const m=(await r.text()).match(/<meta name="version" content="([^"]+)"/);
+ if(!m)throw new Error('no version');
+ return m[1];
+}
 async function checkUpdate(){
  UPD='Checking...';render();
  try{
-  const r=await fetch(location.pathname,{cache:'reload'});
-  if(!r.ok)throw new Error('status '+r.status);
-  const m=(await r.text()).match(/<meta name="version" content="([^"]+)"/);
-  if(!m)throw new Error('no version');
-  if(m[1]===VERSION){UPD='You have the latest version (v'+VERSION+').';render()}
-  else{UPD='Updating to v'+m[1]+'...';render();setTimeout(()=>location.reload(),600)}
+  const v=await liveVersion();
+  if(v===VERSION){NEWV='';UPD='You have the latest version (v'+VERSION+').';render()}
+  else{UPD='Updating to v'+v+'...';render();setTimeout(()=>location.reload(),600)}
  }catch(e){UPD='Could not check for updates. You may be offline.';render()}
 }
+/* Quiet check each time YAK opens (and when it comes back from the background), so nobody has to remember to press the button */
+async function autoCheckUpdate(){
+ if(Date.now()-UCHK<60000)return;UCHK=Date.now();
+ try{const v=await liveVersion();const nv=newer(v,VERSION)?v:'';if(nv!==NEWV){NEWV=nv;render()}}catch(e){}
+}
+function updBox(){return NEWV?`<div class="card pending tb"><span><b>Update available for YAK</b> <small>(v${NEWV})</small></span><button class="btn sm" onclick="checkUpdate()">Update</button></div>`:''}
 /* ---------- Mobile menu (narrow screens only; desktop keeps the tabs) ---------- */
 const TITLES={home:'House Finances',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log',help:'How to use YAK'};
 const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes'],['help','Instructions']];
@@ -939,4 +950,7 @@ let LW=document.documentElement.clientWidth;
 addEventListener('resize',()=>{const w=document.documentElement.clientWidth;if(w!==LW){LW=w;if(S.tab==='fc'||S.tab==='sim')render()}});
 if(migrate())save(true);
 render();
+autoCheckUpdate();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)autoCheckUpdate()});
+addEventListener('pageshow',e=>{if(e.persisted)autoCheckUpdate()});
 </script></body></html>
