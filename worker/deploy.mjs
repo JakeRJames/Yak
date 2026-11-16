@@ -4,7 +4,8 @@
 import { execSync } from 'node:child_process';
 import { writeFileSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
 const live = process.env.BRANCH === 'main', name = live ? 'yak-sync' : 'yak-sync-dev', kv = name + '-kv';
-const out = { branch: process.env.BRANCH, name, ok: false, url: '', sha: process.env.GITHUB_SHA || '', at: new Date().toISOString(), log: '' };
+const out = { branch: process.env.BRANCH, name, ok: false, url: '', sha: process.env.GITHUB_SHA || '', at: new Date().toISOString(), log: '',
+  secrets: { CLOUDFLARE_API_TOKEN: !!process.env.CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID: !!process.env.CLOUDFLARE_ACCOUNT_ID, asVariables: process.env.AS_VARS || '' } };
 const scrub = t => { const a = process.env.CLOUDFLARE_ACCOUNT_ID, k = process.env.CLOUDFLARE_API_TOKEN; return [a, k].filter(Boolean).reduce((s, x) => s.split(x).join('***'), String(t)) };
 const run = c => { try { return execSync(c, { cwd: 'worker', encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }) } catch (e) { throw new Error(c + '\n' + (e.stdout || '') + (e.stderr || '')) } };
 const W = 'npx -y wrangler@4';
