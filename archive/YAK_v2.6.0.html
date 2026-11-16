@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>YAK v2.6.0</title>
+<meta name="version" content="2.6.0">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--f:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--bg:#f0eee6;--card:#faf9f5;--ink:#1f1e1d;--mute:#6b6a65;--line:#ddd9ce;--acc:#c15f3c;--accbg:#f5e3da;--am:#c15f3c;--amon:#fff;--amink:#6b2e16;--ambg:#fbe9df;--bad:#b3261e;--badbg:#fbe4e1;--brand:#262624;--dot:#d97757;--okbg:#e6e4dc;--okink:#3d3d3a;--gbg:#e1efe4;--gink:#2c6a3d;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1e1d;--card:#2b2a28;--ink:#f0eee6;--mute:#a09e96;--line:#3d3c39;--acc:#e08a68;--accbg:#3a2a22;--am:#e08a68;--amon:#1f1e1d;--amink:#f5c4ae;--ambg:#3a2a22;--bad:#ff8a80;--badbg:#3a2220;--brand:#30302e;--dot:#e08a68;--okbg:#3a3935;--okink:#e8e6dc;--gbg:#26382c;--gink:#9bd4a8;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1f1e1d;--card:#2b2a28;--ink:#f0eee6;--mute:#a09e96;--line:#3d3c39;--acc:#e08a68;--accbg:#3a2a22;--am:#e08a68;--amon:#1f1e1d;--amink:#f5c4ae;--ambg:#3a2a22;--bad:#ff8a80;--badbg:#3a2220;--brand:#30302e;--dot:#e08a68;--okbg:#3a3935;--okink:#e8e6dc;--gbg:#26382c;--gink:#9bd4a8;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--brand);z-index:10}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f)}
+header{display:flex;align-items:baseline;gap:24px;padding:16px 24px 0;flex-wrap:wrap;background:var(--brand)}
+h1{cursor:pointer;margin:0;font:800 28px var(--f);letter-spacing:-1px;color:#fff}
+h1 span{color:var(--dot)}
+nav button{font:inherit;background:none;border:0;border-bottom:3px solid transparent;padding:8px 14px;color:#b8b5ad;cursor:pointer}
+nav button.on{color:#fff;border-color:var(--dot);font-weight:600}
+main{max-width:980px;margin:0 auto;padding:20px 24px 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.big{font:700 30px var(--f);letter-spacing:-.5px;margin:2px 0}
+.lbl{color:var(--mute);font-size:13px}
+.hero{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.hero .lbl{color:inherit;opacity:.85}
+h2{font:700 18px var(--f);margin:22px 0 8px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-weight:600;font-size:13px;color:var(--mute);padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:5px 10px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:100%}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.num{max-width:110px;text-align:right}
+.scroll{overflow-x:auto}.nm{min-width:170px}
+.btn{font:inherit;background:var(--acc);color:var(--bg);border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.sm{padding:4px 12px;font-size:13px}.btn.out{background:none;color:var(--acc);border:1.5px solid var(--acc)}.btn.out:hover{background:var(--accbg)}
+.xbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 8px 6px 14px;margin-bottom:16px;font-size:13px;color:var(--mute)}.xbar b{color:var(--ink);font-weight:600}.xbar i.xs{font-style:normal;margin:0 4px}
+.ghost{background:none;color:var(--bad);border:0;cursor:pointer;font:inherit;padding:4px 8px}
+.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+.row label{display:block}.row .lbl{display:block;margin-bottom:3px}
+.ok{background:var(--okbg);color:var(--okink)}.warn{background:var(--badbg);color:var(--bad)}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600}
+.ask{border:2px solid var(--acc);margin-bottom:16px}
+.ask .btn{margin-right:8px}
+.sum td{border-bottom:1px solid var(--line)}.sum td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.tot td{font-weight:700;font-size:17px}
+.hide{display:none}
+small{color:var(--mute)}
+.ut{display:block;font-size:12px;margin-top:2px}.review{background:var(--accbg);border:2px solid var(--acc)}
+.pending{background:var(--acc);border:2px solid var(--acc);color:var(--amon)}.pending .btn{background:var(--amon);color:var(--acc)}
+.logo{font:800 clamp(52px,12vw,96px)/1.25 var(--f);letter-spacing:-.05em;color:#fff}.logo span{color:var(--dot)}.brandbox{text-align:center;padding:26px 16px 24px;background:var(--brand);border-radius:14px}.brandbox p{color:#b8b5ad;font-size:16px;margin:12px 0 0}
+.cta{display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;border:2px solid var(--line)}.cta b{font-size:17px;color:var(--acc)}.cta:hover,.cta:focus-visible{border-color:var(--acc)}
+/* charts */
+@keyframes dseg{from{stroke-dasharray:0 100}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes fade{from{opacity:0}}
+.dwrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.dc{position:relative;width:220px;height:220px;flex:none;margin:0 auto}
+.dc svg{display:block;width:220px;height:220px}
+.dmid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 46px;line-height:1.3}
+.dmid b{font:700 21px var(--f);letter-spacing:-.5px}
+.dseg{fill:none;stroke-width:5.5;transition:stroke-width .15s,opacity .15s}.dseg.on{stroke-width:7}.dseg.dim{opacity:.3}
+.dseg.anim{animation:dseg .8s cubic-bezier(.3,.7,.2,1) backwards;animation-delay:calc(var(--i)*.14s)}
+.dtrack{fill:none;stroke:var(--line);stroke-width:5.5}
+.dleg{flex:1;min-width:230px;display:grid;gap:2px}
+.dl{display:flex;align-items:center;gap:10px;width:100%;font:inherit;color:var(--ink);background:none;border:0;border-radius:8px;padding:7px 8px;cursor:pointer;text-align:left}
+.dl:hover,.dl:focus-visible{background:var(--bg)}.dl i{width:12px;height:12px;border-radius:3px;flex:none}.dl span{flex:1}.dl b{font-variant-numeric:tabular-nums}.dl small{width:46px;text-align:right}
+.cw{position:relative}
+.cw svg{display:block;width:100%;height:auto;touch-action:pan-y;cursor:crosshair}
+.ln{fill:none;stroke:var(--acc);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.ln.anim{stroke-dasharray:1;animation:draw 1.2s ease-out}
+.ar{fill:var(--acc);opacity:.13}.ar.anim{animation:fade .8s ease-out .6s backwards}
+.pt{stroke:var(--card);stroke-width:2}.pt.anim{animation:fade .3s backwards;animation-delay:calc(.25s + var(--i)*.085s)}
+.gl{stroke:var(--line);stroke-width:1}.zl{stroke:var(--mute);stroke-width:1.2;stroke-dasharray:4 4}
+.ax{fill:var(--mute);font:11px var(--f)}
+.tip{position:absolute;top:4px;display:none;pointer-events:none;background:#262624;color:#fff;border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.28);z-index:2}
+.tip small{color:#b8b5ad}
+/* simulator */
+.simtop{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.simgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.sc{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.sch{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.sch b{font-size:14px;line-height:1.3}
+.scin{display:flex;align-items:center;gap:6px;margin-bottom:2px}.scin input.num{max-width:140px;background:var(--card)}
+.rng{padding:0;border:0;background:none;accent-color:var(--acc);height:30px;cursor:pointer}
+.chip{flex:none;display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+.chip.same{background:var(--okbg);color:var(--okink)}.chip.good{background:var(--gbg);color:var(--gink)}.chip.bad{background:var(--badbg);color:var(--bad)}
+.pos{color:var(--gink)}.neg{color:var(--bad)}
+.hero small,.warn small{color:inherit;opacity:.85}
+.lgd{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0 8px;font-size:13px}.lgd span{display:inline-flex;align-items:center;gap:6px}.lgd i{display:inline-block;width:18px;height:0;border-top:3px solid}
+.lgd i.sw{height:10px;width:12px;border:0;border-radius:3px}
+.seg{font:inherit;font-size:13px;background:none;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:3px 11px;cursor:pointer}.seg.on{background:var(--acc);border-color:var(--acc);color:var(--amon);font-weight:600}
+.charthead{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.charthead .segs{display:flex;gap:6px}
+.dl span small{width:auto;text-align:left}
+.sdseg{transition:stroke-dasharray .5s cubic-bezier(.3,.7,.2,1),stroke-dashoffset .5s cubic-bezier(.3,.7,.2,1),stroke-width .15s,opacity .15s}
+.lockscr{position:fixed;inset:0;z-index:100;background:var(--brand);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}.lockscr[hidden]{display:none}
+.lbox{width:100%;max-width:320px;text-align:center}.lbox .logo{margin-bottom:18px}
+.lbox input{font-size:18px;text-align:center;padding:12px 14px;border-radius:10px;background:#3a3a37;border-color:#55534f;color:#fff;letter-spacing:.12em;max-width:none}.lbox input:focus{outline:2px solid var(--dot)}
+.lbox .btn{width:100%;margin-top:10px;padding:11px 14px;font-size:16px;background:var(--dot);color:#1f1e1d}
+.lkerr{min-height:22px;margin:10px 0 0;font-size:14px;color:#ff9d94}.lbox p.lkt{color:#b8b5ad;font-size:14px;margin:0 0 12px}.lbox .ghost.lkf{color:#b8b5ad;margin-top:6px;font-size:14px}.lbox .btn.lko{background:none;color:#fff;border:1.5px solid #77746d}
+/* mobile menu: hidden on desktop, replaces the tabs on narrow screens */
+.mbtn,.mlist{display:none}
+@media(max-width:640px){
+header{align-items:center;gap:0 12px;padding:12px 16px}
+h1{font-size:26px}
+nav{display:none}
+.mbtn{display:inline-flex;align-items:center;gap:8px;margin-left:auto;font:600 15px var(--f);color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:8px 12px 8px 16px;cursor:pointer;transition:background .2s}
+.mbtn[aria-expanded="true"]{background:rgba(255,255,255,.16)}
+.mbtn svg{width:16px;height:16px;flex:none;transition:transform .28s cubic-bezier(.3,.7,.2,1)}
+.mbtn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.mlist{display:grid;flex:0 0 100%;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .28s cubic-bezier(.3,.7,.2,1),opacity .2s}
+.mlist.open{grid-template-rows:1fr;opacity:1}
+.mlist>div{overflow:hidden;min-height:0;visibility:hidden;transition:visibility 0s .28s}
+.mlist.open>div{visibility:visible;transition-delay:0s}
+.mlist button:first-child{margin-top:10px}
+.mlist button{display:block;width:100%;text-align:left;font:500 16px var(--f);color:#d6d3ca;background:none;border:0;border-top:1px solid rgba(255,255,255,.1);padding:13px 4px;cursor:pointer;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s}
+.mlist.open button{opacity:1;transform:none;transition:opacity .25s calc(var(--i)*.04s + .06s),transform .25s calc(var(--i)*.04s + .06s)}
+.mlist button:active{color:#fff}
+}
+@media(prefers-reduced-motion:reduce){.dseg,.ln,.ar,.pt{animation:none!important}.sdseg{transition:none}.mbtn,.mbtn svg,.mlist,.mlist>div,.mlist button{transition:none!important}}
+</style></head><body>
+<header><h1 onclick="tab('dash')">YAK<span>.</span></h1><nav><button id="t-dash" onclick="tab('dash')">Home</button><button id="t-home" onclick="tab('home')">House</button><button id="t-me" onclick="tab('me')">Personal</button><button id="t-fc" onclick="tab('fc')">Forecast</button><button id="t-sim" onclick="tab('sim')">Simulator</button></nav><button class="mbtn" id="mbtn" onclick="mToggle()" aria-expanded="false" aria-controls="mlist"><span id="mcur">Home</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg></button><div class="mlist" id="mlist"><div id="mitems"></div></div></header>
+<div class="lockscr" id="lock" hidden></div>
+<main id="app"><div class="card" style="margin:20px 0"><b>YAK needs a web browser to run.</b><p class="lbl">This preview cannot run the app. Open YAK in Safari, Chrome or Edge instead (or use the YAK link) and your saved data will load there.</p></div></main>
+<script>
+const VERSION='2.6.0';
+// Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
+const CHANGELOG=[
+{v:'2.6.0',d:'13 Nov 2026',n:'On phones and other narrow screens, the row of tabs is replaced by a collapsible menu. It shows the page you are on with an arrow; tap it and the other pages slide down, then tap one to go there. Tapping elsewhere or pressing Escape closes it. Desktop and wider screens keep the tabs as before. Saved data is unchanged.'},
+{v:'2.5.3',d:'13 Nov 2026',n:'On iPhone the passcode boxes now bring up the numeric keypad, and a new passcode set on an iPhone must be numbers only (at least 4). If a passcode was set with letters, a Use letters and numbers button appears on the login screen after a wrong try. Other devices are unchanged.'},
+{v:'2.5.2',d:'13 Nov 2026',n:'The passcode lock now locks YAK as soon as you leave the app or switch to another tab, instead of after a minute away. Choosing a file to import or exporting your data will not lock YAK for the next minute, so the file picker does not interrupt you.'},
+{v:'2.5.1',d:'13 Nov 2026',n:'Fixed the passcode lock not appearing on a phone after YAK had been left open in the background. YAK now compares the clock each time it wakes up, so it locks after a minute away even when the phone does not report that the page was hidden.'},
+{v:'2.5.0',d:'12 Nov 2026',n:'Added an optional passcode lock. Turn it on from the Home tab and YAK shows a login screen with just the YAK. logo and a passcode box each time it opens on that device, and again after a minute away. You can change or turn off the passcode, lock YAK straight away from Home, or clear the device if you forget it. The passcode is stored on the device only and is not included in exports. It keeps casual access out but does not encrypt your data. Saved data is unchanged.'},
+{v:'2.4.0',d:'12 Nov 2026',n:'The bar at the top of every tab now also shows when data was last imported on this device, which device the file came from and when it was exported there. This helps you spot when you may need to import a newer file. Saved data is unchanged.'},
+{v:'2.3.2',d:'12 Nov 2026',n:'Made the Data last exported bar thinner and cleaner, and changed Export data from a link to a button.'},
+{v:'2.3.1',d:'12 Nov 2026',n:'On the Simulator tab, the monthly savings line graph now sits above the cumulative savings line graph.'},
+{v:'2.3.0',d:'12 Nov 2026',n:'Added a second line graph to the Simulator showing your savings month by month, measured from each month\'s salary rather than as a running total. It uses the deductions you entered on the Forecast tab, so months with credit card payments or other deductions dip, and it compares your scenario with your current figures (hover or touch for each month, including the share of salary saved). Saved data is unchanged.'},
+{v:'2.2.0',d:'12 Nov 2026',n:'Added a Simulator tab for trying out what-if scenarios. Adjust your salary, house bills (excluding rent), personal bills and spend deductions with sliders or typed amounts. They start from your current figures and a reset button puts them back. A line graph shows how much more (or less) you could save over 6 months to 5 years, a donut chart shows how your salary would be apportioned, and a dashboard shows key figures such as potential monthly savings and potential monthly costs. Nothing in the Simulator changes your saved data.'},
+{v:'2.1.0',d:'12 Nov 2026',n:'Added animated charts. A donut chart on Home and Personal shows how your salary is split between house bills, personal bills, spending, adjustments and savings (hover or tap a slice for its amount). An interactive line graph on Forecast shows your savings balance rising or falling month by month (hover or touch the line for each month). Charts animate when a page opens. Saved data is unchanged.'},
+{v:'2.0.2',d:'12 Nov 2026',n:'Fixed bill names being squashed to nothing on the House tab on narrow screens such as iPhones. Names now keep a minimum width and the table scrolls sideways instead.'},
+{v:'2.0.1',d:'12 Nov 2026',n:'Starting values are now all zero (household of 1 person, as the minimum), so YAK opens clean on a new device. Saved data is unchanged.'},
+{v:'2.0.0',d:'11 Nov 2026',n:'Works when hosted as a web page and opened on a phone. Added an Import latest data button on Home, a prompt to import on a new device, a prompt after time away asking whether you have used YAK on another device, a warning before an older file can replace newer data, a fixed export file name (yak-data.json) and a message when the file is opened in a viewer that cannot run it. Pop-up boxes replaced with on-page prompts. Saved data is unchanged.'},
+{v:'1.4.0',d:'11 Nov 2026',n:'Rebranded from budg.it to YAK (Your Accounts Keeper): new white YAK logo with an orange full stop, and a grey, white and orange colour scheme. The font and all saved data are unchanged.'},
+{v:'1.3.1',d:'10 Nov 2026',n:'Accuracy check: household size is now a whole number, months counted is limited to 0-12, bill names can no longer break the page, the Home dashboard no longer shows a wrong answer before the bill question is answered, and a note explains penny rounding.'},
+{v:'1.3.0',d:'10 Nov 2026',n:'Added a total household rent field that adds an apportioned Rent line to the bills table automatically. Renamed Your share each month to Individual share each month.'},
+{v:'1.2.0',d:'10 Nov 2026',n:'Added last-updated dates against values and bills, and a prompt to re-review bills when nothing has changed for 3 months.'},
+{v:'1.1.3',d:'10 Nov 2026',n:'Reverted v1.1.2: the prompt is orange only when there are unexported changes, as in v1.1.1.'},
+{v:'1.1.2',d:'10 Nov 2026',n:'The export prompt is now also orange before any export has been made.'},
+{v:'1.1.1',d:'10 Nov 2026',n:'The unexported-changes prompt is now orange.'},
+{v:'1.1.0',d:'10 Nov 2026',n:'Added data export and import. A prompt appears when changes have not been exported, and shows when data was last exported.'},
+{v:'1.0.1',d:'10 Nov 2026',n:'Fixed the tagline overlapping the logo on the Home page.'},
+{v:'1.0.0',d:'10 Nov 2026',n:'First release: Home dashboard, House, Personal and Forecast tabs, with data saved in the browser.'}];
+const KEY='budgit.v1'; // storage key kept from budg.it so existing saved data carries over
+const seed={tab:'dash',fc:{},fcStart:0,
+home:{people:1,budget:0,months:0,rentTotal:0,rentDate:'15th',bills:[
+{n:'Gas & Electricity',a:0,d:'8th',t:'split'},{n:'Water',a:0,d:'23rd',t:'split'},
+{n:'WiFi Bundle',a:0,d:'28th',t:'split'},{n:'Council Tax',a:0,d:'28th',t:'split'},
+{n:'TV Licence',a:0,d:'N/A',t:'split'}]},
+me:{salary:0,spend:0,adj:0,fromAcct:null,bills:[
+{n:'Phone Bill (Combined)',a:0},{n:'Apple Music',a:0},{n:'Gym Membership',a:0},{n:'Ring Plan',a:0},
+{n:'Uber One',a:0},{n:'Car',a:0},{n:'Car Insurance',a:0},{n:'Gap Insurance',a:0},{n:'Road Tax',a:0},
+{n:'iCloud Storage',a:0},{n:'Fuel',a:0},{n:'Personal Trainer',a:0},{n:'Xbox Game Pass',a:0}]}};
+let S;
+let HAD=false;
+try{const raw=localStorage.getItem(KEY);HAD=!!raw;S=JSON.parse(raw)||structuredClone(seed)}catch(e){S=structuredClone(seed)}
+S.fc=S.fc||{};S.fcStart=S.fcStart||0;
+let M={dirty:false,last:null,lastOpen:null,fresh:false,src:null};
+try{M=Object.assign(M,JSON.parse(localStorage.getItem('budgit.meta')))}catch(e){}
+function saveMeta(){try{localStorage.setItem('budgit.meta',JSON.stringify(M))}catch(e){}}
+if(!HAD&&!M.fresh){M.fresh=true;saveMeta()}
+const GAP=1*864e5; // time away before YAK asks whether you have used it on another device (1 day)
+// ---- Optional passcode lock (device only: stored separately, never exported) ----
+const LKEY='yak.lock',AUTOLOCK=8000; // AUTOLOCK: a gap this long between clock checks means the page was paused without telling us
+function lockInfo(){try{return JSON.parse(localStorage.getItem(LKEY))}catch(e){return null}}
+const lockOK=()=>!!(window.crypto&&crypto.subtle);
+const b64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));
+const unb64=t=>Uint8Array.from(atob(t),c=>c.charCodeAt(0));
+async function lh(pw,salt,iter){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);return b64(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:iter},k,256))}
+async function lockSet(pw){const salt=crypto.getRandomValues(new Uint8Array(16)),iter=150000,h=await lh(pw,salt,iter);localStorage.setItem(LKEY,JSON.stringify({s:b64(salt),i:iter,h,n:/^\d+$/.test(pw)}));if(!lockInfo())throw new Error('save')}
+async function lockCheck(pw){const L=lockInfo();if(!L)return true;return (await lh(pw,unb64(L.s),L.i))===L.h}
+const NUMK=/iPhone/.test(navigator.userAgent); // iPhone: show the numeric keypad for passcodes
+const kpNew=()=>NUMK?' inputmode="numeric" pattern="[0-9]*"':'';
+const kpCur=()=>{const L=lockInfo();return NUMK&&!(L&&L.n===false)?' inputmode="numeric" pattern="[0-9]*"':''};
+let LOCKED=!!lockInfo()&&lockOK(),LK={mode:null,err:''},LKF=false,LSHOWN='',FAILS=0,WAITUNTIL=0,LAST=Date.now(),NOLOCK=0;
+let MSG=null,PEND=null,RST=false,ASK=false;
+let PLAY=true; // true only when a page has just opened, so charts animate on load and not on every edit
+function deviceName(){const u=navigator.userAgent||'';if(/iPhone/.test(u))return'iPhone';if(/iPad/.test(u))return'iPad';if(/Android/.test(u))return'Android';if(/Mac/.test(u))return navigator.maxTouchPoints>1?'iPad':'Mac';if(/Windows/.test(u))return'Windows';if(/Linux/.test(u))return'Linux';return'Unknown device'}
+function checkAway(){if(M.fresh)return;const lo=Date.parse(M.lastOpen)||0;if(lo&&Date.now()-lo>=GAP)ASK=true;else if(!ASK){M.lastOpen=new Date().toISOString();saveMeta()}}
+checkAway();
+document.addEventListener('visibilitychange',()=>{if(M.fresh)return;
+ if(document.hidden){if(!ASK){M.lastOpen=new Date().toISOString();saveMeta()}}
+ else{const lo=Date.parse(M.lastOpen)||0;if(!ASK&&lo&&Date.now()-lo>=GAP){ASK=true;render()}}});
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function iso(){return new Date().toISOString()}
+function dd(i){return i?new Date(i).toLocaleDateString('en-GB',{dateStyle:'medium'}):'-'}
+function ut(path){return `<small class="ut">Updated ${dd((S.upd||{})[path])}</small>`}
+const SCALARS=['home.people','home.rentTotal','home.budget','home.months','me.salary','me.spend','me.adj','fcStart'];
+function migrate(){let ch=false;const n=iso();
+ if(S.home.rentTotal===undefined){const i=S.home.bills.findIndex(b=>/^rent$/i.test(b.n));let t=0,d='15th';
+  if(i>=0){const b=S.home.bills[i];t=b.t==='each'?b.a*(+S.home.people||1):b.a;d=b.d||d;S.home.bills.splice(i,1)}
+  S.home.rentTotal=Math.round(t*100)/100;S.home.rentDate=d;ch=true}
+ if(!S.lastChange){S.lastChange=n;ch=true}
+ if(!S.upd){S.upd={};ch=true}
+ SCALARS.forEach(k=>{if(!S.upd[k]){S.upd[k]=n;ch=true}});
+ [...S.home.bills,...S.me.bills].forEach(b=>{if(!b.u){b.u=n;ch=true}});
+ return ch}
+function save(quiet){if(quiet!==true){S.lastChange=iso();M.dirty=true;saveMeta()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function needsReview(){const ref=Math.max(Date.parse(S.lastChange)||0,Date.parse(S.reviewed)||0),t=new Date(ref);t.setMonth(t.getMonth()+3);return Date.now()>=t.getTime()}
+function reviewDone(){S.reviewed=iso();save(true);render()}
+function reviewBox(){if(!needsReview())return '';
+ const ref=Math.max(Date.parse(S.lastChange)||0,Date.parse(S.reviewed)||0);
+ return `<div class="card review" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span><b>Time to re-review your bills and update your values.</b> Nothing has been changed or checked since ${dd(new Date(ref).toISOString())}.</span><button class="btn" onclick="reviewDone()">Checked, and everything is the same</button></div>`}
+function stamp(iso){return new Date(iso).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}
+function dl(name,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function doExport(){
+ NOLOCK=Date.now()+60000;
+ const now=new Date(),name='yak-data.json';
+ const txt=JSON.stringify({app:'YAK',version:VERSION,exported:now.toISOString(),device:deviceName(),data:S},null,2);
+ try{
+  let done=false;
+  const dn=(window.claude&&claude.use)?await claude.use('downloads'):null;
+  if(dn){try{await dn.save({filename:name,data:txt});done=true}catch(e){if(e&&e.code==='declined')return;throw e}}
+  else if(window.showSaveFilePicker){
+   try{const h=await showSaveFilePicker({suggestedName:name,types:[{description:'YAK data',accept:{'application/json':['.json']}}]});const w=await h.createWritable();await w.write(txt);await w.close();done=true}
+   catch(e){if(e.name==='AbortError')return}
+  }
+  if(!done)dl(name,txt);
+  M.dirty=false;M.last=now.toISOString();saveMeta();render();
+ }catch(e){say('Export failed: '+(e&&e.message||'unknown error'))}
+}
+function say(t){MSG=t;render()}
+function openImport(){NOLOCK=Date.now()+60000;const i=document.getElementById('imp');if(i)i.click()}
+function doImport(inp){
+ const f=inp.files[0];if(!f)return;const rd=new FileReader();
+ rd.onload=()=>{try{const j=JSON.parse(rd.result),d=j.data||j;
+  if(!d||!d.home||!d.me)throw new Error('This does not look like a YAK data file.');
+  const fl=Date.parse(d.lastChange)||Date.parse(j.exported)||0,ll=Date.parse(S.lastChange)||0;
+  PEND={d,name:f.name,device:j.device||'',exported:j.exported||'',fl,ll,older:!!(!M.fresh&&fl&&ll&&fl<ll)};
+  MSG=null;render()}catch(e){MSG='Import failed: '+e.message;render()}inp.value=''};
+ rd.onerror=()=>{MSG='That file could not be read.';render()};
+ rd.readAsText(f)}
+function applyImport(){const p=PEND;if(!p)return;S=p.d;S.fc=S.fc||{};S.fcStart=S.fcStart||0;S.tab=S.tab||'dash';migrate();save(true);
+ M.dirty=false;M.fresh=false;M.imported=iso();M.src={device:p.device,exported:p.exported};M.lastOpen=iso();ASK=false;PEND=null;saveMeta();render()}
+function freshDone(){M.fresh=false;M.lastOpen=iso();saveMeta();render()}
+function askNo(){ASK=false;M.lastOpen=iso();saveMeta();render()}
+const OUT='style="background:none;color:var(--acc);border:2px solid var(--acc);margin-right:8px"',BTN='style="margin-right:8px"';
+function msgBox(){return MSG?`<div class="card review" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span>${esc(MSG)}</span><button class="btn" onclick="MSG=null;render()">OK</button></div>`:''}
+function pendBox(){if(!PEND)return '';const p=PEND;
+ return `<div class="card review" style="margin-bottom:16px"><b>${p.older?'This file is older than the data on this device.':'Replace the data in YAK with this file?'}</b><p class="lbl">File: ${esc(p.name)}${p.device?' (from '+esc(p.device)+')':''}, last changed ${p.fl?stamp(new Date(p.fl).toISOString()):'at an unknown time'}.${M.fresh?'':' Data on this device was last changed '+(p.ll?stamp(S.lastChange):'at an unknown time')+'.'}${p.older?' Importing it would overwrite newer figures.':''}</p><button class="btn" ${BTN} onclick="applyImport()">${p.older?'Replace anyway':'Replace my data'}</button><button class="btn" ${OUT} onclick="PEND=null;render()">Cancel</button></div>`}
+function freshBox(){return M.fresh?`<div class="card ask"><b>New on this device?</b><p class="lbl">If you already use YAK somewhere else, import your latest data from Files. Otherwise, start with the starting values.</p><button class="btn" ${BTN} onclick="openImport()">Import latest data</button><button class="btn" ${OUT} onclick="freshDone()">Start with the starting values</button></div>`:''}
+function askBox(){return ASK&&!M.fresh?`<div class="card ask"><b>Have you used YAK on another device since?</b><p class="lbl">YAK was last open here on ${stamp(M.lastOpen)}. If you changed anything elsewhere, import your latest data from Files.</p><button class="btn" ${BTN} onclick="openImport()">Yes, import latest</button><button class="btn" ${OUT} onclick="askNo()">No, carry on</button></div>`:''}
+function rstBox(){return RST?`<div class="card review" style="margin-bottom:16px"><b>Reset everything to the starting values?</b><p class="lbl">This replaces all of the data in YAK on this device. Export first if you want a backup.</p><button class="btn" ${BTN} onclick="doReset()">Yes, reset</button><button class="btn" ${OUT} onclick="RST=false;render()">Cancel</button></div>`:''}
+function srcText(){return M.src?(M.src.exported?'Data on this device came from '+esc(M.src.device||'an earlier export')+', exported '+stamp(M.src.exported)+'.':'Data on this device came from an imported file.'):'Last changed on this device on '+dd(S.lastChange)+'.'}
+function importCard(){return `<div class="card" style="margin:16px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Switched device?</b><br><small>${srcText()}</small></span><button class="btn" onclick="openImport()">Import latest data</button></div>`}
+function impText(){if(!M.imported&&!M.src)return '';
+ return 'Last imported '+(M.imported?'<b>'+stamp(M.imported)+'</b>':'earlier')+(M.src&&M.src.device?' from '+esc(M.src.device):'')+(M.src&&M.src.exported?' <span>(exported '+stamp(M.src.exported)+')</span>':'')}
+function showLock(){const el=document.getElementById('lock'),k=LKF?'f':'p';
+ if(!el.hidden&&LSHOWN===k)return;el.hidden=false;LSHOWN=k;
+ el.innerHTML=LKF?`<div class="lbox"><div class="logo">YAK<span>.</span></div><p class="lkt"><b style="color:#fff">Clear this device?</b><br>This removes YAK's saved data and the passcode from this device only. You can then import your latest export to get your figures back.</p><button class="btn" onclick="lkWipe()">Clear this device</button><button class="btn lko" onclick="LKF=false;render()">Cancel</button></div>`
+ :`<div class="lbox"><div class="logo">YAK<span>.</span></div><form onsubmit="return lkUnlock(event)"><input id="lkin" type="password" placeholder="Passcode" autocomplete="off" aria-label="Passcode"${kpCur()}><button class="btn" type="submit" id="lkgo">Unlock</button></form><p class="lkerr" id="lkerr" role="alert"></p><button class="ghost lkf" onclick="LKF=true;render()">Forgot passcode?</button></div>`;
+ const i=document.getElementById('lkin');if(i)setTimeout(()=>i.focus(),50)}
+async function lkUnlock(e){e.preventDefault();const i=document.getElementById('lkin'),er=document.getElementById('lkerr'),pw=i.value;if(!pw)return false;
+ if(Date.now()<WAITUNTIL){er.textContent='Too many attempts. Try again in '+Math.ceil((WAITUNTIL-Date.now())/1000)+' seconds.';return false}
+ let ok=false;try{ok=await lockCheck(pw)}catch(x){}
+ if(ok){FAILS=0;LOCKED=false;PLAY=true;render()}
+ else{FAILS++;i.value='';if(FAILS%5===0){WAITUNTIL=Date.now()+30000;er.textContent='Too many attempts. Try again in 30 seconds.'}else er.textContent='That passcode is not right.';if(i.getAttribute('inputmode')&&!document.getElementById('lkalt'))er.insertAdjacentHTML('afterend','<button class="ghost lkf" id="lkalt" onclick="lkAlt()">Use letters and numbers</button>');i.focus()}
+ return false}
+function lkAlt(){const i=document.getElementById('lkin');if(!i)return;i.removeAttribute('inputmode');i.removeAttribute('pattern');const b=document.getElementById('lkalt');if(b)b.remove();i.blur();i.focus()}
+function lkWipe(){try{[KEY,'budgit.meta',LKEY].forEach(k=>localStorage.removeItem(k))}catch(e){}
+ S=structuredClone(seed);migrate();M={dirty:false,last:null,lastOpen:null,fresh:true,src:null};saveMeta();save(true);LOCKED=false;LKF=false;ASK=false;PEND=null;LK={mode:null,err:''};PLAY=true;render()}
+function lockNow(){if(!lockInfo())return;LOCKED=true;LKF=false;render()}
+// Locks as soon as you leave the app. The clock check is a backup for phones that pause a page without saying it was hidden.
+function lockUp(){if(lockInfo()&&lockOK()&&!LOCKED&&Date.now()>=NOLOCK){LOCKED=true;LKF=false;render()}}
+function autoLock(){const n=Date.now(),gap=n-LAST;LAST=n;if(gap>=AUTOLOCK)lockUp()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden){lockUp();LAST=Date.now()}else autoLock()});
+addEventListener('pagehide',lockUp);
+['pageshow','focus','resume'].forEach(ev=>addEventListener(ev,autoLock));
+setInterval(autoLock,3000);
+function lkMode(m){LK={mode:m,err:''};render()}
+function lkErr(t){LK.err=t;render()}
+async function lkSubmit(){const v=id=>{const e=document.getElementById(id);return e?e.value:''},m=LK.mode;
+ try{
+  if(m!=='set'&&!(await lockCheck(v('lk-cur'))))return lkErr('That is not your current passcode.');
+  if(m==='off'){localStorage.removeItem(LKEY);LK={mode:null,err:''};MSG='Passcode lock is off.';render();return}
+  const a=v('lk-p1'),b=v('lk-p2');
+  if(NUMK&&!/^\d+$/.test(a))return lkErr('Use numbers only.');
+  if(a.length<4)return lkErr(NUMK?'Use at least 4 digits.':'Use at least 4 characters.');
+  if(a!==b)return lkErr('The two passcodes do not match.');
+  await lockSet(a);LK={mode:null,err:''};MSG=m==='set'?'Passcode lock is on. YAK will ask for it when it opens on this device.':'Passcode changed.';render();
+ }catch(e){lkErr('The passcode could not be saved in this browser.')}}
+function lockCard(){if(!lockOK())return '';const on=!!lockInfo(),m=LK.mode,fld=(id,l,ac,k)=>`<label><span class="lbl">${l}</span><input id="${id}" type="password" autocomplete="${ac}"${k} style="max-width:210px" onkeydown="if(event.key==='Enter')lkSubmit()"></label>`;
+ if(m){return `<div class="card ask"><b>${m==='set'?'Set a passcode':m==='change'?'Change passcode':'Turn off passcode lock'}</b><p class="lbl">${m==='off'?'Enter your passcode to turn the lock off.':(NUMK?'Numbers only, at least 4 digits.':'At least 4 characters.')+' It is stored on this device only and is not included in exports. If you forget it, you can clear this device and import your latest export.'}</p><div class="row">${m!=='set'?fld('lk-cur','Current passcode','off',kpCur()):''}${m!=='off'?fld('lk-p1','New passcode','new-password',kpNew())+fld('lk-p2','Repeat new passcode','new-password',kpNew()):''}</div>${LK.err?`<p class="lbl" style="color:var(--bad);margin:0 0 10px" role="alert">${esc(LK.err)}</p>`:''}<button class="btn" ${BTN} onclick="lkSubmit()">${m==='off'?'Turn off':'Save passcode'}</button><button class="btn" ${OUT} onclick="lkMode(null)">Cancel</button></div>`}
+ return `<div class="card" style="margin:0 0 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Passcode lock</b><br><small>${on?'On. YAK asks for your passcode when it opens and whenever you leave the app. It keeps casual access out but does not encrypt your data.':'Off. Add a passcode so YAK asks for it each time it opens on this device.'}</small></span><span>${on?`<button class="btn sm out" ${BTN} onclick="lockNow()">Lock now</button><button class="btn sm out" ${BTN} onclick="lkMode('change')">Change</button><button class="btn sm out" onclick="lkMode('off')">Turn off</button>`:`<button class="btn sm" onclick="lkMode('set')">Set a passcode</button>`}</span></div>`}
+function banner(){
+ return msgBox()+pendBox()+freshBox()+askBox()+rstBox()+reviewBox()+(M.dirty?`<div class="card pending" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span><b>You have changes that have not been exported.</b> Export your data and save the file to keep a backup.${impText()?'<br><small style="color:inherit;opacity:.85">'+impText()+'</small>':''}</span><button class="btn" onclick="doExport()">Export data</button></div>`
+ :`<div class="xbar"><span>${M.last?'Last exported <b>'+stamp(M.last)+'</b>':'Not exported yet'}${impText()?' <i class="xs">·</i> '+impText():''}</span><button class="btn sm out" onclick="doExport()">Export data</button></div>`)}
+const gbp=n=>(n<0?'-':'')+'£'+Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+function fyMonths(){const m=new Date().getMonth();return (m-3+12)%12+1}
+function calc(){
+ const h=S.home,p=Math.max(1,+h.people||1);
+ const rent=+h.rentTotal||0;
+ const total=rent+sum(h.bills,b=>b.t==='each'?b.a*p:b.a);
+ const share=rent/p+sum(h.bills,b=>b.t==='each'?b.a:b.a/p);
+ const months=+h.months||fyMonths();
+ const m=S.me,mine=sum(m.bills,b=>+b.a||0);
+ const yes=m.fromAcct==='yes';
+ const out=mine+(yes?total:share);
+ const back=yes?total-share:0;
+ const net=out-back;
+ const save=m.salary-out+back-m.spend-m.adj;
+ return{p,total,share,months,mine,yes,out,back,net,left:m.salary-out,save};
+}
+function tab(t){S.tab=t;MO=false;PLAY=true;save(true);render()}
+function set(path,v,num){
+ const k=path.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];
+ let val=num?(parseFloat(v)||0):v;if(path==='home.people')val=Math.max(1,Math.round(val));if(path==='home.months')val=Math.min(12,Math.max(0,Math.round(val)));o[k.at(-1)]=val;if(k.includes('bills')||k[0]==='fc')o.u=iso();else{S.upd=S.upd||{};S.upd[path]=iso()}save();render()}
+function add(w){S[w].bills.push(w==='home'?{n:'New bill',a:0,d:'',t:'split',u:iso()}:{n:'New expense',a:0,u:iso()});save();render()}
+function del(w,i){S[w].bills.splice(i,1);save();render()}
+function ask(v){S.me.fromAcct=v;save();render()}
+function reset(){RST=true;render()}
+function doReset(){RST=false;S=structuredClone(seed);migrate();save();render()}
+function card(l,v,c){return `<div class="card ${c||''}"><div class="lbl">${l}</div><div class="big">${v}</div></div>`}
+function billRows(w){return S[w].bills.map((b,i)=>`<tr>
+<td><input class="nm" value="${esc(b.n)}" onchange="set('${w}.bills.${i}.n',this.value)" aria-label="Bill name"></td>
+<td><input class="num" type="number" step="0.01" value="${b.a}" onchange="set('${w}.bills.${i}.a',this.value,1)" aria-label="Amount"></td>
+${w==='home'?`<td><select onchange="set('home.bills.${i}.t',this.value)" aria-label="Split type"><option value="split" ${b.t==='split'?'selected':''}>Split between everyone</option><option value="each" ${b.t==='each'?'selected':''}>Each person pays this</option></select></td>
+<td><input style="max-width:80px" value="${b.d||''}" onchange="set('home.bills.${i}.d',this.value)" aria-label="Date taken"></td>`:''}
+<td><small>${dd(b.u)}</small></td><td><button class="ghost" onclick="del('${w}',${i})" aria-label="Delete">Remove</button></td></tr>`).join('')}
+function driftNote(c){const h=S.home,r2=x=>Math.round(x*100)/100;
+ const lines=h.bills.reduce((t,b)=>t+r2(b.t==='each'?b.a:b.a/c.p),0)+r2((+h.rentTotal||0)/c.p);
+ return Math.abs(r2(lines)-r2(c.share))>0.001?`<p><small>Each line is rounded to the nearest penny, so the lines add up to ${gbp(lines)} while the exact total is ${gbp(c.share)}.</small></p>`:''}
+function rentRow(){const h=S.home,p=Math.max(1,+h.people||1);
+ return `<tr><td><input class="nm" value="Rent" disabled aria-label="Rent"></td><td><input class="num" disabled value="${((+h.rentTotal||0)/p).toFixed(2)}" aria-label="Rent individual share"></td><td><small>Individual share of ${gbp(+h.rentTotal||0)} total rent${p>1?' (split '+p+' ways)':''}</small></td><td><input style="max-width:80px" value="${h.rentDate||''}" onchange="set('home.rentDate',this.value)" aria-label="Rent date taken"></td><td><small>${dd(S.upd['home.rentTotal'])}</small></td><td></td></tr>`}
+/* ---------- Donut chart: how the salary is apportioned ---------- */
+let DD=null;
+function splitData(c){const m=S.me;
+ return [{n:'House bills (your share)',v:c.share,c:'#c15f3c'},{n:'Personal bills',v:c.mine,c:'#d9a23f'},{n:'Spending allocated',v:+m.spend||0,c:'#5f86a3'},{n:'Adjustments',v:+m.adj||0,c:'#8f8a7e'},{n:'Savings',v:Math.max(0,c.save),c:'#5b9a6a'}].filter(x=>x.v>0.004)}
+function donutCard(c){
+ const it=splitData(c),tot=sum(it,x=>x.v),over=c.save<0;
+ if(!it.length){DD=null;return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your salary goes</b><small>Add your salary and bills and this chart will show how your money is split between house bills, personal bills, spending and savings.</small></div></div></div>`}
+ const mid=over?`<small>Overspent by</small><b style="color:var(--bad)">${gbp(-c.save)}</b>`:`<small>Monthly salary</small><b>${gbp(+S.me.salary||0)}</b>`;
+ DD={it,tot,mid};
+ let acc=0;
+ const segs=it.map((x,i)=>{const len=x.v/tot*100,g=it.length>1?Math.min(.8,len*.5):0,l=Math.max(len-g,.01),o=-(acc+g/2);acc+=len;
+  return `<circle class="dseg${PLAY?' anim':''}" id="ds${i}" cx="21" cy="21" r="15.9155" stroke="${x.c}" stroke-dasharray="${l.toFixed(3)} ${(100-l).toFixed(3)}" stroke-dashoffset="${o.toFixed(3)}" style="--i:${i}" onmouseenter="dHi(${i})" onmouseleave="dLo()" onclick="dHi(${i})"/>`}).join('');
+ const leg=it.map((x,i)=>`<button class="dl" onmouseenter="dHi(${i})" onmouseleave="dLo()" onfocus="dHi(${i})" onblur="dLo()" onclick="dHi(${i})"><i style="background:${x.c}"></i><span>${esc(x.n)}</span><b>${gbp(x.v)}</b><small>${(x.v/tot*100).toFixed(1)}%</small></button>`).join('');
+ return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Donut chart of how your monthly salary is split: ${esc(it.map(x=>x.n+' '+gbp(x.v)).join(', '))}"><circle class="dtrack" cx="21" cy="21" r="15.9155"/><g transform="rotate(-90 21 21)">${segs}</g></svg><div class="dmid" id="dmid">${mid}</div></div><div class="dleg">${leg}${over?'<small style="padding:6px 8px">Outgoings are more than your salary, so there is nothing left to save. Percentages are of total outgoings.</small>':''}</div></div></div>`}
+function dHi(i){const d=DD;if(!d)return;
+ d.it.forEach((x,j)=>{const e=document.getElementById('ds'+j);if(e)e.setAttribute('class','dseg '+(j===i?'on':'dim'))});
+ const x=d.it[i],m=document.getElementById('dmid');if(m)m.innerHTML=`<small>${esc(x.n)}</small><b>${gbp(x.v)}</b><small>${(x.v/d.tot*100).toFixed(1)}% of ${d.mid.includes('Overspent')?'outgoings':'salary'}</small>`}
+function dLo(){const d=DD;if(!d)return;
+ d.it.forEach((x,j)=>{const e=document.getElementById('ds'+j);if(e)e.setAttribute('class','dseg')});
+ const m=document.getElementById('dmid');if(m)m.innerHTML=d.mid}
+function home(c){
+ const h=S.home,budgetOk=c.share<=h.budget;
+ return `<div class="row"><label><span class="lbl">People in household</span><input class="num" type="number" min="1" value="${h.people}" onchange="set('home.people',this.value,1)">${ut('home.people')}</label>
+<label><span class="lbl">${c.p>1?'Total household rent ('+c.p+' people)':'Monthly rent'}</span><input class="num" type="number" step="0.01" value="${h.rentTotal}" onchange="set('home.rentTotal',this.value,1)">${ut('home.rentTotal')}</label>
+<label><span class="lbl">Monthly budget per person</span><input class="num" type="number" value="${h.budget}" onchange="set('home.budget',this.value,1)">${ut('home.budget')}</label>
+<label><span class="lbl">Months counted this year (0 = auto, now ${fyMonths()})</span><input class="num" type="number" min="0" max="12" value="${h.months}" onchange="set('home.months',this.value,1)">${ut('home.months')}</label></div>
+<div class="grid">${card('Individual share each month',gbp(c.share),'hero')}${card('Household total each month',gbp(c.total))}
+${card('Cumulative, individual share ('+c.months+' months)',gbp(c.share*c.months))}${card('Cumulative, whole household',gbp(c.total*c.months))}</div>
+<div class="card"><span class="pill ${budgetOk?'ok':'warn'}">${budgetOk?'Within budget':'Over budget'}</span> <small>Individual share is ${gbp(c.share)} against a ${gbp(h.budget)} budget (${gbp(h.budget-c.share)} ${budgetOk?'spare':'over'}).</small></div>
+<h2>Bills</h2><div class="scroll"><table><tr><th>Bill</th><th>Monthly amount</th><th>How it is divided</th><th>Date taken</th><th>Last updated</th><th></th></tr>${billRows('home')}${rentRow()}</table></div>
+<p><button class="btn" onclick="add('home')">Add bill</button></p>
+<h2>Per person, every month</h2><div class="scroll"><table><tr><th>Bill</th><th>Each person pays</th><th>Cumulative per person</th></tr>
+${h.bills.map(b=>{const s=b.t==='each'?b.a:b.a/c.p;return `<tr><td>${esc(b.n)}</td><td>${gbp(s)}</td><td>${gbp(s*c.months)}</td></tr>`}).join('')}
+<tr><td>Rent</td><td>${gbp((+h.rentTotal||0)/c.p)}</td><td>${gbp((+h.rentTotal||0)/c.p*c.months)}</td></tr>
+<tr class="tot"><td>Total</td><td>${gbp(c.share)}</td><td>${gbp(c.share*c.months)}</td></tr></table></div>${driftNote(c)}`}
+function me(c){
+ const m=S.me,others=c.p-1;
+ const q=m.fromAcct===null?`<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Say yes if you pay them and the others pay you back. Say no if they are collected separately.</p><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div>`:
+ `<div class="card" style="margin-bottom:16px"><small>Household bills: <b>${c.yes?'paid from your account':'collected separately'}</b></small> <button class="ghost" style="color:var(--acc)" onclick="ask(null)">Change</button></div>`;
+ const owed=c.yes?`<h2>What comes back</h2><div class="grid">${card('Owed back in total',gbp(c.back),'hero')}${card('Owed by each of '+others+' '+(others===1?'person':'people'),others?gbp(c.back/others):'£0.00')}${card('Net cost of home bills to you',gbp(c.share))}</div>`:'';
+ return q+`<div class="row"><label><span class="lbl">Monthly salary (net)</span><input class="num" type="number" step="0.01" value="${m.salary}" onchange="set('me.salary',this.value,1)">${ut('me.salary')}</label>
+<label><span class="lbl">Monthly spend allocated</span><input class="num" type="number" value="${m.spend}" onchange="set('me.spend',this.value,1)">${ut('me.spend')}</label>
+<label><span class="lbl">Extra adjustment this month (e.g. credit card)</span><input class="num" type="number" step="0.01" value="${m.adj}" onchange="set('me.adj',this.value,1)">${ut('me.adj')}</label></div>
+<div class="grid">${card(c.yes?'You will save each month once others repay you':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn')}${card('Total deductions (lump sum out)',gbp(c.out))}</div>
+<h2>Where your salary goes</h2>${donutCard(c)}
+<h2>How it adds up</h2><table class="sum">
+<tr><td>Salary (net)</td><td>${gbp(m.salary)}</td></tr>
+<tr><td>Personal bills</td><td>- ${gbp(c.mine)}</td></tr>
+<tr><td>Household bills ${c.yes?'(full amount from your account)':'(individual share)'}</td><td>- ${gbp(c.yes?c.total:c.share)}</td></tr>
+<tr><td>Salary minus bills</td><td>${gbp(c.left)}</td></tr>
+${c.yes?`<tr><td>Repaid by others</td><td>+ ${gbp(c.back)}</td></tr>`:''}
+<tr><td>Monthly spend allocated</td><td>- ${gbp(m.spend)}</td></tr>
+${m.adj?`<tr><td>Adjustment</td><td>- ${gbp(m.adj)}</td></tr>`:''}
+<tr class="tot"><td>${c.yes?'Savings once others have repaid you':'Savings after deductions'}</td><td>${gbp(c.save)}</td></tr></table>${owed}
+<h2>Personal bills</h2><div class="scroll"><table><tr><th>Bill</th><th>Monthly amount</th><th>Last updated</th><th></th></tr>${billRows('me')}
+<tr class="tot"><td>Personal deductions</td><td style="text-align:right;padding-right:20px">${gbp(c.mine)}</td><td></td><td></td></tr></table></div>
+<p><button class="btn" onclick="add('me')">Add expense</button></p>`}
+function months(){const d=new Date(),o=[];for(let i=0;i<12;i++){const x=new Date(d.getFullYear(),d.getMonth()+i,1);o.push({k:x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0'),l:x.toLocaleString('en-GB',{month:'long',year:'numeric'})})}return o}
+function fadd(k){(S.fc[k]=S.fc[k]||[]).push({n:'Credit card',a:0,u:iso()});save();render()}
+function fdel(k,i){S.fc[k].splice(i,1);save();render()}
+function frep(k,i){const d=S.fc[k][i],ms=months().map(m=>m.k);ms.slice(ms.indexOf(k)+1).forEach(m=>{(S.fc[m]=S.fc[m]||[]).push({n:d.n,a:d.a})});save();render()}
+/* ---------- Line graph: savings balance month by month ---------- */
+let FCG=null;
+function shortM(k){return new Date(+k.slice(0,4),+k.slice(5)-1,1).toLocaleString('en-GB',{month:'short'})+' '+k.slice(2,4)}
+function niceTicks(lo,hi){const raw=(hi-lo)/4,mag=Math.pow(10,Math.floor(Math.log10(raw))),n=raw/mag,st=(n<=1?1:n<=2?2:n<=5?5:10)*mag,t=[];
+ for(let v=Math.floor(lo/st+1e-9)*st;;v+=st){t.push(Math.round(v*100)/100);if(v>=hi-1e-9)break}return t}
+const axl=v=>{const a=Math.abs(v);return(v<0?'-':'')+'£'+(a>=1000?(a/1000).toFixed(a>=10000||a%1000===0?0:1)+'k':String(Math.round(a*100)/100))};
+function fcChart(ser){
+ const pts=[{l:'Now',s:'Now',bal:+S.fcStart||0,chg:null,ded:0},...ser.map(x=>({l:x.l,s:shortM(x.k),bal:x.bal,chg:x.chg,ded:x.ded}))];
+ const W=Math.max(280,Math.min(900,document.documentElement.clientWidth-82)),H=W<480?240:300,P={l:W<480?50:58,r:18,t:14,b:30},N=pts.length-1;
+ let lo=Math.min(0,...pts.map(p=>p.bal)),hi=Math.max(0,...pts.map(p=>p.bal));if(hi-lo<1)hi=lo+100;
+ const tk=niceTicks(lo,hi),y0=tk[0],y1=tk[tk.length-1],iw=W-P.l-P.r,ih=H-P.t-P.b;
+ const X=i=>P.l+i*iw/N,Y=v=>P.t+ih*(1-(v-y0)/(y1-y0));
+ FCG={W,P,N,pts,X,Y};
+ const line=pts.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(p.bal).toFixed(1)).join('');
+ const area=line+`L${X(N).toFixed(1)},${Y(0).toFixed(1)}L${X(0).toFixed(1)},${Y(0).toFixed(1)}Z`;
+ const grid=tk.map(v=>`<line class="gl" x1="${P.l}" x2="${W-P.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="ax" x="${P.l-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${axl(v)}</text>`).join('');
+ const nth=W<420?3:W<700?2:1;
+ const xl=pts.map((p,i)=>i%nth===0?`<text class="ax" x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${p.s}</text>`:'').join('');
+ const dots=pts.map((p,i)=>`<circle class="pt${PLAY?' anim':''}" style="--i:${i}" cx="${X(i).toFixed(1)}" cy="${Y(p.bal).toFixed(1)}" r="${W<480?3.5:4.5}" fill="${i===0?'var(--mute)':p.chg<0?'var(--bad)':'var(--acc)'}"/>`).join('');
+ const last=pts[N],first=pts[0],diff=last.bal-first.bal;
+ return `<div class="card" style="margin-bottom:16px"><b>Savings balance by month</b><div class="lbl" style="margin-bottom:8px">Hover or touch the line to see each month. Dots in red are months where savings drop.</div>
+ <div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line graph of projected savings balance. It goes from ${gbp(first.bal)} now to ${gbp(last.bal)} after 12 months, a change of ${gbp(diff)}." onpointermove="fcHov(event)" onpointerdown="fcHov(event)" onpointerleave="fcOut()">
+ ${grid}<line class="zl" x1="${P.l}" x2="${W-P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}"/>${xl}
+ <path class="ar${PLAY?' anim':''}" d="${area}"/><path class="ln${PLAY?' anim':''}" pathLength="1" d="${line}"/>${dots}
+ <line id="fcx" class="zl" style="display:none" y1="${P.t}" y2="${H-P.b}"/><circle id="fcd" r="7" fill="none" stroke="var(--ink)" stroke-width="2" style="display:none"/></svg>
+ <div id="fct" class="tip"></div></div></div>`}
+function fcHov(e){const g=FCG;if(!g)return;
+ const r=e.currentTarget.getBoundingClientRect(),sx=g.W/r.width,px=(e.clientX-r.left)*sx,
+ i=Math.max(0,Math.min(g.N,Math.round((px-g.P.l)/(g.X(1)-g.X(0))))),p=g.pts[i],x=g.X(i);
+ const ln=document.getElementById('fcx'),dt=document.getElementById('fcd'),tp=document.getElementById('fct');if(!ln||!dt||!tp)return;
+ ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.style.display='';
+ dt.setAttribute('cx',x);dt.setAttribute('cy',g.Y(p.bal));dt.style.display='';
+ tp.innerHTML=`<b>${esc(p.l)}</b><br>Balance <b>${gbp(p.bal)}</b>`+(p.chg===null?'<br><small>Savings you already have</small>':`<br><span style="color:${p.chg<0?'#ff9d94':'#8fd19e'}">${p.chg<0?'▼ down':'▲ up'} ${gbp(Math.abs(p.chg))} this month</span>`+(p.ded?`<br><small>after ${gbp(p.ded)} of deductions</small>`:''));
+ tp.style.display='block';const w=tp.offsetWidth;tp.style.left=Math.max(4,Math.min(r.width-w-4,x/sx-w/2))+'px'}
+function fcOut(){['fcx','fcd','fct'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
+function fc(c){
+ const base=c.save+(+S.me.adj||0);let cum=+S.fcStart||0,td=0,ts=0;const ser=[];
+ const cards=months().map(m=>{const l=S.fc[m.k]||[],ded=sum(l,x=>+x.a||0),f=base-ded;cum+=f;td+=ded;ts+=f;ser.push({k:m.k,l:m.l,bal:cum,chg:f,ded});
+ return `<div class="card"><b>${m.l}</b><div class="big ${f<0?'':''}" style="color:${f<0?'var(--bad)':'inherit'}">${gbp(f)}</div><div class="lbl">forecast savings</div>
+ ${l.map((x,i)=>`<div class="row" style="margin:8px 0 0;gap:6px;align-items:center"><input style="flex:2;min-width:90px" value="${esc(x.n)}" onchange="set('fc.${m.k}.${i}.n',this.value)" aria-label="Deduction name"><input class="num" style="flex:1;min-width:70px" type="number" step="0.01" value="${x.a}" onchange="set('fc.${m.k}.${i}.a',this.value,1)" aria-label="Amount"><button class="ghost" title="Copy to every later month" onclick="frep('${m.k}',${i})">Repeat</button><button class="ghost" onclick="fdel('${m.k}',${i})" aria-label="Remove">Remove</button></div>`).join('')}
+ <p style="margin:10px 0 6px"><button class="ghost" style="color:var(--acc);padding-left:0" onclick="fadd('${m.k}')">Add deduction</button></p>
+ <small>Deductions ${gbp(ded)}. Running total ${gbp(cum)}</small></div>`}).join('');
+ return `<p class="lbl" style="max-width:640px">Each month starts from your monthly saving ${c.yes?'(after others repay you)':''} of <b>${gbp(base)}</b> from the Personal tab. Add anything not in your personal outgoings, such as credit card payments, to see the forecast.</p>
+ <div class="row"><label><span class="lbl">Savings you already have (optional)</span><input class="num" type="number" step="0.01" value="${S.fcStart}" onchange="set('fcStart',this.value,1)">${ut('fcStart')}</label></div>
+ <div class="grid">${card('Forecast saved over 12 months',gbp(ts),ts>=0?'hero':'warn')}${card('Extra deductions entered',gbp(td))}${card('Projected balance after 12 months',gbp((+S.fcStart||0)+ts))}</div>
+ ${fcChart(ser)}
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(290px,1fr))">${cards}</div>`}
+/* ---------- Simulator: what-if scenarios (never saved, never changes your data) ---------- */
+let SIM=null,SLG=null,SDN=null;
+const rd2=x=>Math.round((+x||0)*100)/100;
+const sgn=d=>Math.abs(d)<.005?gbp(0):(d>0?'+':'-')+gbp(Math.abs(d));
+const SIMF=[
+ {k:'salary',l:'Salary',sub:'Net, per month',good:1,max:5000,rd:500,st:10},
+ {k:'house',l:'House bills (excluding rent)',sub:'Your individual share, per month',max:500,rd:100,st:5},
+ {k:'personal',l:'Personal bills',sub:'Per month',max:500,rd:100,st:5},
+ {k:'spend',l:'Spend deductions',sub:'Monthly spend allocated',max:1000,rd:100,st:5}];
+const SDC=[{n:'Rent (your share)',c:'#8f8a7e'},{n:'House bills (excl. rent)',c:'#c15f3c'},{n:'Personal bills',c:'#d9a23f'},{n:'Spend deductions',c:'#5f86a3'},{n:'Savings',c:'#5b9a6a'}];
+const HZ=[[6,'6M','6 months'],[12,'1Y','12 months'],[24,'2Y','2 years'],[36,'3Y','3 years'],[60,'5Y','5 years']];
+function simBase(c){const h=S.home,m=S.me,rentSh=(+h.rentTotal||0)/c.p;
+ return{salary:rd2(m.salary),rent:rd2(rentSh),house:rd2(c.share-rentSh),personal:rd2(c.mine),spend:rd2(m.spend),adj:rd2(m.adj)}}
+function simCalc(v,b){const costs=b.rent+v.house+v.personal+v.spend,save=v.salary-costs;
+ return{salary:v.salary,rent:b.rent,house:v.house,personal:v.personal,spend:v.spend,costs,save,rate:v.salary>0?save/v.salary*100:null}}
+function ensureSim(c){const b=simBase(c),sig=JSON.stringify(b);
+ if(!SIM||SIM.sig!==sig)SIM={salary:b.salary,house:b.house,personal:b.personal,spend:b.spend,hz:SIM?SIM.hz:12,b,sig}}
+function simPage(c){ensureSim(c);const b=SIM.b;
+ const ctl=SIMF.map(f=>{const mx=Math.max(f.max,Math.ceil(b[f.k]*2/f.rd)*f.rd,Math.ceil(SIM[f.k]/f.rd)*f.rd);
+  return `<div class="sc"><div class="sch"><b>${f.l}</b><span class="chip same" id="d-${f.k}">Unchanged</span></div>
+  <div class="scin"><span>£</span><input class="num" id="n-${f.k}" type="number" min="0" step="0.01" value="${SIM[f.k]}" oninput="simSet('${f.k}',this.value,'n')" aria-label="${f.l}"></div>
+  <input class="rng" id="s-${f.k}" type="range" min="0" max="${mx}" step="${f.st}" value="${SIM[f.k]}" oninput="simSet('${f.k}',this.value,'r')" aria-label="${f.l} slider">
+  <small class="ut">${f.sub}. Currently ${gbp(b[f.k])}</small></div>`}).join('');
+ return `<p class="lbl" style="max-width:680px">Try out what-if scenarios. Change an amount and the dashboard and charts below update straight away. The figures start from what you have entered on the other tabs. Nothing here is saved or changes your data.</p>
+ <div class="card" style="margin-bottom:16px"><div class="simtop"><div><b>Your scenario</b><div class="lbl" id="simState"></div></div><button class="btn" id="simReset" onclick="simReset()">Reset to current values</button></div>
+ <div class="simgrid">${ctl}</div>
+ <p class="lbl" style="margin:12px 0 0">Rent (your share ${gbp(b.rent)} a month) stays the same in every scenario.${b.adj?' Your one-off adjustment of '+gbp(b.adj)+' is left out, as on the Forecast tab, so figures show your regular monthly saving.':''}</p></div>
+ <div class="grid" id="simKpi"></div>
+ <div class="card" style="margin-bottom:16px" id="simMonth"></div>
+ <div class="card" style="margin-bottom:16px" id="simLine"></div>
+ <h2>How your money would be apportioned</h2><div class="card" id="simDonut"></div>`}
+function simSet(k,val,src){const v=Math.max(0,parseFloat(val)||0);SIM[k]=v;
+ if(src==='r'){const n=document.getElementById('n-'+k);if(n)n.value=v}else{const s=document.getElementById('s-'+k);if(s)s.value=v}
+ simDraw(false)}
+function simReset(){if(!SIM)return;SIMF.forEach(f=>{SIM[f.k]=SIM.b[f.k];const n=document.getElementById('n-'+f.k),s=document.getElementById('s-'+f.k);if(n)n.value=SIM.b[f.k];if(s)s.value=SIM.b[f.k]});simDraw(false)}
+function simHz(h){SIM.hz=h;simDraw(false)}
+function simDraw(anim){
+ if(!SIM||S.tab!=='sim'||!document.getElementById('simKpi'))return;
+ const b=SIM.b,s=simCalc(SIM,b),o=simCalc(b,b),ch=SIMF.some(f=>Math.abs(SIM[f.k]-b[f.k])>=.005);
+ SIMF.forEach(f=>{const e=document.getElementById('d-'+f.k);if(!e)return;const d=SIM[f.k]-b[f.k];
+  if(Math.abs(d)<.005){e.className='chip same';e.textContent='Unchanged'}
+  else{e.className='chip '+((f.good?d>0:d<0)?'good':'bad');e.textContent=sgn(d)+' a month'}});
+ document.getElementById('simState').textContent=ch?'This scenario differs from your current figures.':'Matches your current figures. Move a slider or type an amount to explore.';
+ document.getElementById('simReset').disabled=!ch;
+ const hz=SIM.hz,hl=HZ.find(x=>x[0]===hz)[2],dm=s.save-o.save;
+ const kc=(l,v,sub,cls,vc)=>`<div class="card ${cls||''}"><div class="lbl">${l}</div><div class="big ${vc||''}">${v}</div><small class="ut">${sub}</small></div>`;
+ document.getElementById('simKpi').innerHTML=
+  kc('Potential monthly savings',gbp(s.save),'Now '+gbp(o.save),s.save>=0?'hero':'warn')+
+  kc('Change in monthly savings',sgn(dm),Math.abs(dm)<.005?'Same as now':dm>0?'More than now':'Less than now','',Math.abs(dm)<.005?'':dm>0?'pos':'neg')+
+  kc('Potential monthly costs',gbp(s.costs),'Now '+gbp(o.costs)+' ('+sgn(s.costs-o.costs)+')')+
+  kc('Extra saved over '+hl,sgn(dm*hz),'Compared with your current figures','',Math.abs(dm)<.005?'':dm>0?'pos':'neg')+
+  kc('Savings rate',s.rate===null?'-':s.rate.toFixed(1)+'%','Now '+(o.rate===null?'-':o.rate.toFixed(1)+'%')+' of salary')+
+  kc('Total saved over '+hl,gbp(s.save*hz),'Now '+gbp(o.save*hz),s.save*hz<0?'warn':'');
+ simLineDraw(s,o,anim);simMonthDraw(s,o,anim);simDonutDraw(s,o,anim)}
+function simLineDraw(s,o,anim){
+ const hz=SIM.hz,W=Math.max(280,Math.min(900,document.documentElement.clientWidth-82)),H=W<480?250:310,P={l:W<480?54:62,r:20,t:14,b:30};
+ const ea=s.save*hz,ec=o.save*hz;
+ let lo=Math.min(0,ea,ec),hi=Math.max(0,ea,ec);if(hi-lo<1)hi=lo+100;
+ const tk=niceTicks(lo,hi),y0=tk[0],y1=tk[tk.length-1],iw=W-P.l-P.r,ih=H-P.t-P.b;
+ const X=i=>P.l+i*iw/hz,Y=v=>P.t+ih*(1-(v-y0)/(y1-y0));
+ const now=new Date(),lab=i=>i===0?'Now':new Date(now.getFullYear(),now.getMonth()+i,1).toLocaleString('en-GB',{month:'short'})+' '+String(new Date(now.getFullYear(),now.getMonth()+i,1).getFullYear()).slice(2);
+ SLG={W,P,hz,X,Y,s,o,lab};
+ const mx=W<480?5:8,need=Math.ceil(hz/mx),step=[1,2,3,6,12].find(x=>x>=need)||12;
+ let xl='';for(let i=0;i<=hz;i+=step)xl+=`<text class="ax" x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${lab(i)}</text>`;
+ const grid=tk.map(v=>`<line class="gl" x1="${P.l}" x2="${W-P.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="ax" x="${P.l-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${axl(v)}</text>`).join('');
+ const gain=ea>=ec,gap=`M${X(0).toFixed(1)},${Y(0).toFixed(1)}L${X(hz).toFixed(1)},${Y(ea).toFixed(1)}L${X(hz).toFixed(1)},${Y(ec).toFixed(1)}Z`;
+ const seg=HZ.map(h=>`<button class="seg${h[0]===hz?' on':''}" onclick="simHz(${h[0]})" aria-pressed="${h[0]===hz}">${h[1]}</button>`).join('');
+ const dm=ea-ec;
+ document.getElementById('simLine').innerHTML=`<div class="charthead"><div><b>Savings you could build</b><div class="lbl">Cumulative savings over ${HZ.find(x=>x[0]===hz)[2]}, scenario against your current figures</div></div><div class="segs" role="group" aria-label="Time period">${seg}</div></div>
+ <div class="lgd"><span><i style="border-color:var(--acc)"></i>Scenario</span><span><i style="border-color:var(--mute);border-top-style:dashed"></i>Current figures</span><span><i class="sw" style="background:${gain?'#5b9a6a':'var(--bad)'};opacity:.45"></i>${gain?'Extra saved':'Savings lost'}</span></div>
+ <div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line graph of cumulative savings over ${HZ.find(x=>x[0]===hz)[2]}. The scenario reaches ${gbp(ea)} and your current figures reach ${gbp(ec)}, a difference of ${gbp(dm)}." onpointermove="simHov(event)" onpointerdown="simHov(event)" onpointerleave="simOut()">
+ ${grid}<line class="zl" x1="${P.l}" x2="${W-P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}"/>${xl}
+ <path d="${gap}" fill="${gain?'#5b9a6a':'var(--bad)'}" opacity=".2"${anim?' style="animation:fade .8s ease-out .6s backwards"':''}/>
+ <path d="M${X(0).toFixed(1)},${Y(0).toFixed(1)}L${X(hz).toFixed(1)},${Y(ec).toFixed(1)}" fill="none" stroke="var(--mute)" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round"/>
+ <path class="ln${anim?' anim':''}" pathLength="1" d="M${X(0).toFixed(1)},${Y(0).toFixed(1)}L${X(hz).toFixed(1)},${Y(ea).toFixed(1)}"/>
+ <circle cx="${X(hz).toFixed(1)}" cy="${Y(ec).toFixed(1)}" r="4.5" fill="var(--mute)" class="pt"/><circle cx="${X(hz).toFixed(1)}" cy="${Y(ea).toFixed(1)}" r="5.5" fill="var(--acc)" class="pt"/>
+ <line id="sx" class="zl" style="display:none" y1="${P.t}" y2="${H-P.b}"/><circle id="sd1" r="6" fill="var(--acc)" stroke="var(--card)" stroke-width="2" style="display:none"/><circle id="sd2" r="5" fill="var(--mute)" stroke="var(--card)" stroke-width="2" style="display:none"/></svg>
+ <div id="st" class="tip"></div></div>`}
+function simHov(e){const g=SLG;if(!g)return;
+ const r=e.currentTarget.getBoundingClientRect(),sx=g.W/r.width,px=(e.clientX-r.left)*sx,
+ i=Math.max(0,Math.min(g.hz,Math.round((px-g.P.l)/(g.X(1)-g.X(0))))),a=g.s.save*i,c=g.o.save*i,x=g.X(i);
+ const ln=document.getElementById('sx'),d1=document.getElementById('sd1'),d2=document.getElementById('sd2'),tp=document.getElementById('st');if(!ln||!tp)return;
+ ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.style.display='';
+ d1.setAttribute('cx',x);d1.setAttribute('cy',g.Y(a));d1.style.display='';d2.setAttribute('cx',x);d2.setAttribute('cy',g.Y(c));d2.style.display='';
+ const df=a-c;
+ tp.innerHTML=`<b>${esc(g.lab(i))}</b><br>Scenario <b>${gbp(a)}</b><br>Current figures <b>${gbp(c)}</b><br><span style="color:${Math.abs(df)<.005?'#b8b5ad':df>0?'#8fd19e':'#ff9d94'}">${Math.abs(df)<.005?'No difference':(df>0?'▲ ':'▼ ')+gbp(Math.abs(df))+(df>0?' more':' less')}</span>`;
+ tp.style.display='block';const w=tp.offsetWidth;tp.style.left=Math.max(4,Math.min(r.width-w-4,x/sx-w/2))+'px'}
+function simOut(){['sx','sd1','sd2','st'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
+/* Monthly line graph: savings left from each month's salary, using the Forecast deductions */
+let SMG=null;
+function simMonthDraw(s,o,anim){
+ const ms=months(),n=ms.length-1,ded=ms.map(m=>sum(S.fc[m.k]||[],x=>+x.a||0)),td=sum(ded,x=>x);
+ const A=ded.map(d=>s.save-d),C=ded.map(d=>o.save-d),dm=s.save-o.save;
+ const W=Math.max(280,Math.min(900,document.documentElement.clientWidth-82)),H=W<480?250:310,P={l:W<480?54:62,r:20,t:14,b:30};
+ let lo=Math.min(0,...A,...C),hi=Math.max(0,...A,...C);if(hi-lo<1)hi=lo+100;
+ const tk=niceTicks(lo,hi),y0=tk[0],y1=tk[tk.length-1],iw=W-P.l-P.r,ih=H-P.t-P.b;
+ const X=i=>P.l+i*iw/n,Y=v=>P.t+ih*(1-(v-y0)/(y1-y0));
+ SMG={W,P,n,X,Y,ms,A,C,ded,sal:s.salary};
+ const path=a=>a.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join('');
+ const gain=dm>=0,gap=A.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join('')+C.map((v,i)=>'L'+X(n-i).toFixed(1)+','+Y(C[n-i]).toFixed(1)).join('')+'Z';
+ const grid=tk.map(v=>`<line class="gl" x1="${P.l}" x2="${W-P.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="ax" x="${P.l-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${axl(v)}</text>`).join('');
+ const nth=W<420?3:W<700?2:1,xl=ms.map((m,i)=>i%nth===0?`<text class="ax" x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${shortM(m.k)}</text>`:'').join('');
+ const dots=A.map((v,i)=>`<circle class="pt${anim?' anim':''}" style="--i:${i}" cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${W<480?3.5:4.5}" fill="${v<0?'var(--bad)':'var(--acc)'}"/>`).join('');
+ const dots2=C.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3" fill="var(--mute)" class="pt"/>`).join('');
+ document.getElementById('simMonth').innerHTML=`<div><b>Monthly savings from your salary</b><div class="lbl">What is left of each month's salary after your costs and the deductions entered on the Forecast tab. This is per month, not a running total.</div></div>
+ <div class="lgd"><span><i style="border-color:var(--acc)"></i>Scenario</span><span><i style="border-color:var(--mute);border-top-style:dashed"></i>Current figures</span><span><i class="sw" style="background:${gain?'#5b9a6a':'var(--bad)'};opacity:.45"></i>${gain?'Extra saved each month':'Saved less each month'}</span></div>
+ <div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line graph of savings each month from salary. Over the next 12 months the scenario saves between ${gbp(Math.min(...A))} and ${gbp(Math.max(...A))} a month, against ${gbp(Math.min(...C))} to ${gbp(Math.max(...C))} with your current figures." onpointermove="simMHov(event)" onpointerdown="simMHov(event)" onpointerleave="simMOut()">
+ ${grid}<line class="zl" x1="${P.l}" x2="${W-P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}"/>${xl}
+ <path d="${gap}" fill="${gain?'#5b9a6a':'var(--bad)'}" opacity=".2"${anim?' style="animation:fade .8s ease-out .6s backwards"':''}/>
+ <path d="${path(C)}" fill="none" stroke="var(--mute)" stroke-width="2" stroke-dasharray="6 5" stroke-linejoin="round" stroke-linecap="round"/>${dots2}
+ <path class="ln${anim?' anim':''}" pathLength="1" d="${path(A)}"/>${dots}
+ <line id="mx" class="zl" style="display:none" y1="${P.t}" y2="${H-P.b}"/><circle id="md1" r="7" fill="none" stroke="var(--ink)" stroke-width="2" style="display:none"/></svg>
+ <div id="mt" class="tip"></div></div>
+ <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between;margin-top:8px"><small>${td>0?'Forecast deductions of '+gbp(td)+' over the next 12 months are included, so those months dip.':'No deductions are entered on the Forecast tab yet, so every month is the same. Add credit card payments or other deductions there to see months dip.'}</small><button class="ghost" style="color:var(--acc)" onclick="tab('fc')">Edit Forecast deductions</button></div>`}
+function simMHov(e){const g=SMG;if(!g)return;
+ const r=e.currentTarget.getBoundingClientRect(),sx=g.W/r.width,px=(e.clientX-r.left)*sx,
+ i=Math.max(0,Math.min(g.n,Math.round((px-g.P.l)/(g.X(1)-g.X(0))))),a=g.A[i],c=g.C[i],x=g.X(i);
+ const ln=document.getElementById('mx'),d1=document.getElementById('md1'),tp=document.getElementById('mt');if(!ln||!tp)return;
+ ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.style.display='';d1.setAttribute('cx',x);d1.setAttribute('cy',g.Y(a));d1.style.display='';
+ const df=a-c;
+ tp.innerHTML=`<b>${esc(g.ms[i].l)}</b><br>Scenario <b>${gbp(a)}</b>${g.sal>0?' <small>('+(a/g.sal*100).toFixed(1)+'% of salary)</small>':''}<br>Current figures <b>${gbp(c)}</b>`+(g.ded[i]?`<br><small>after ${gbp(g.ded[i])} of Forecast deductions</small>`:'')+`<br><span style="color:${Math.abs(df)<.005?'#b8b5ad':df>0?'#8fd19e':'#ff9d94'}">${Math.abs(df)<.005?'No difference':(df>0?'▲ ':'▼ ')+gbp(Math.abs(df))+(df>0?' more':' less')}</span>`;
+ tp.style.display='block';const w=tp.offsetWidth;tp.style.left=Math.max(4,Math.min(r.width-w-4,x/sx-w/2))+'px'}
+function simMOut(){['mx','md1','mt'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
+function simDonutDraw(s,o,anim){
+ const vals=x=>[x.rent,x.house,x.personal,x.spend,Math.max(0,x.save)],v=vals(s),w=vals(o),tot=sum(v,x=>x),over=s.save<0,host=document.getElementById('simDonut');
+ if(tot<.005){SDN=null;host.innerHTML=`<div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your salary goes</b><small>Enter a salary and some bills on the other tabs, or type amounts above, and this chart will show how your money is apportioned.</small></div></div>`;return}
+ if(!document.getElementById('ss0')){
+  host.innerHTML=`<div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" id="ssvg"><circle class="dtrack" cx="21" cy="21" r="15.9155"/><g transform="rotate(-90 21 21)">${SDC.map((x,i)=>`<circle class="dseg sdseg${anim?' anim':''}" id="ss${i}" cx="21" cy="21" r="15.9155" stroke="${x.c}" style="--i:${i};stroke-dasharray:0 100;stroke-dashoffset:0" onmouseenter="sHi(${i})" onmouseleave="sLo()" onclick="sHi(${i})"/>`).join('')}</g></svg><div class="dmid" id="smid"></div></div><div class="dleg" id="sleg"></div></div>`}
+ const mid=over?`<small>Overspent by</small><b style="color:var(--bad)">${gbp(-s.save)}</b>`:`<small>Monthly salary</small><b>${gbp(s.salary)}</b>`;
+ SDN={v,tot,mid,over};
+ let acc=0;const nz=v.filter(x=>x>.004).length;
+ v.forEach((x,i)=>{const len=x/tot*100,on=len>.004,g=nz>1&&on?Math.min(.8,len*.5):0,l=on?Math.max(len-g,.01):0,e=document.getElementById('ss'+i);
+  if(e){e.style.strokeDasharray=l.toFixed(3)+' '+(100-l).toFixed(3);e.style.strokeDashoffset=(-(acc+g/2)).toFixed(3)}acc+=len});
+ document.getElementById('smid').innerHTML=mid;
+ document.getElementById('ssvg').setAttribute('aria-label','Donut chart of how your monthly salary would be apportioned: '+SDC.map((x,i)=>x.n+' '+gbp(v[i])).join(', '));
+ document.getElementById('sleg').innerHTML=SDC.map((x,i)=>{const d=v[i]-w[i],good=i===4?d>0:d<0,t=Math.abs(d)<.005?'No change':sgn(d)+' vs now';
+  return `<button class="dl" onmouseenter="sHi(${i})" onmouseleave="sLo()" onfocus="sHi(${i})" onblur="sLo()" onclick="sHi(${i})"><i style="background:${x.c}"></i><span>${x.n}<small class="ut ${Math.abs(d)<.005?'':good?'pos':'neg'}">${t}</small></span><b>${gbp(v[i])}</b><small>${(v[i]/tot*100).toFixed(1)}%</small></button>`}).join('')+(over?'<small style="padding:6px 8px">Costs are more than the salary, so there is nothing left to save. Percentages are of total costs.</small>':'')}
+function sHi(i){const d=SDN;if(!d)return;
+ SDC.forEach((x,j)=>{const e=document.getElementById('ss'+j);if(e){e.classList.toggle('on',j===i);e.classList.toggle('dim',j!==i)}});
+ const m=document.getElementById('smid');if(m)m.innerHTML=`<small>${SDC[i].n}</small><b>${gbp(d.v[i])}</b><small>${(d.v[i]/d.tot*100).toFixed(1)}% of ${d.over?'costs':'salary'}</small>`}
+function sLo(){const d=SDN;if(!d)return;
+ SDC.forEach((x,j)=>{const e=document.getElementById('ss'+j);if(e){e.classList.remove('on','dim')}});
+ const m=document.getElementById('smid');if(m)m.innerHTML=d.mid}
+function dash(c){
+ const base=c.save+(+S.me.adj||0);
+ const f=months().reduce((t,m)=>t+base-sum(S.fc[m.k]||[],x=>+x.a||0),0);
+ const spare=S.home.budget-c.share;
+ const go=(t,h,d)=>`<button class="card cta" onclick="tab('${t}')"><b>${h}</b><span class="lbl">${d}</span></button>`;
+ return `<section class="brandbox"><div class="logo">YAK<span>.</span></div><p>Your Accounts Keeper: your house and personal finances in one place</p></section>
+ ${importCard()}${lockCard()}
+ <h2>At a glance</h2>
+ <div class="grid">${card(c.yes?'You will save each month once repaid':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn')}${card('Individual share each month',gbp(c.share))}${card('House budget '+(spare>=0?'spare':'overspend'),gbp(Math.abs(spare)),spare>=0?'':'warn')}
+ ${card('Household total each month',gbp(c.total))}${card('Personal deductions each month',gbp(c.mine))}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?card('Household bills paid from','Not set yet'):card('House bills paid separately','Yes'))}
+ ${card('Forecast saved over 12 months',gbp(f))}${card('House bills so far this year ('+c.months+' months)',gbp(c.share*c.months))}</div>
+ <h2>Where your salary goes</h2>${donutCard(c)}
+ <h2>What do you want to do?</h2>
+ <div class="grid">${go('home','Manage house bills','Add bills, set who lives there and see each person’s share')}${go('me','Track personal finances','Check deductions, repayments and what you can save')}${go('fc','Forecast your savings','Plan the next 12 months with credit card payments and more')}${go('sim','Simulate a scenario','Try a new salary or lower bills and see how your savings could change')}</div>`}
+/* ---------- Mobile menu (narrow screens only; desktop keeps the tabs) ---------- */
+const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['fc','Forecast'],['sim','Simulator']];
+let MO=false;
+function mSync(){const b=document.getElementById('mbtn'),l=document.getElementById('mlist');if(!b||!l)return;b.setAttribute('aria-expanded',String(MO));l.classList.toggle('open',MO)}
+function mToggle(){MO=!MO;if(MO){document.getElementById('mitems').innerHTML=PAGES.filter(p=>p[0]!==S.tab).map((p,i)=>`<button style="--i:${i}" onclick="tab('${p[0]}')">${p[1]}</button>`).join('')}mSync()}
+document.addEventListener('click',e=>{if(MO&&!e.target.closest('#mbtn,#mlist')){MO=false;mSync()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&MO){MO=false;mSync();const b=document.getElementById('mbtn');if(b)b.focus()}});
+function render(){
+ if(LOCKED){MO=false;mSync();document.getElementById('app').innerHTML='';showLock();return}
+ document.getElementById('lock').hidden=true;LSHOWN='';
+ const c=calc();
+ ['dash','home','me','fc','sim'].forEach(t=>{document.getElementById('t-'+t).className=S.tab===t?'on':''});
+ document.getElementById('mcur').textContent=(PAGES.find(p=>p[0]===S.tab)||PAGES[0])[1];mSync();
+ document.getElementById('app').innerHTML=banner()+(S.tab==='dash'?dash(c):S.tab==='home'?home(c):S.tab==='fc'?fc(c):S.tab==='sim'?simPage(c):me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)"><button class="ghost" onclick="reset()">Reset to starting values</button></p>
+ <details><summary><small>YAK v${VERSION}: version history</small></summary><table class="sum" style="margin-top:8px">${CHANGELOG.map(x=>`<tr><td><b>v${x.v}</b> <small>${x.d}</small></td><td style="text-align:left">${x.n}</td></tr>`).join('')}</table></details>`;
+ if(S.tab==='sim')simDraw(PLAY);
+ PLAY=false;
+}
+let LW=document.documentElement.clientWidth;
+addEventListener('resize',()=>{const w=document.documentElement.clientWidth;if(w!==LW){LW=w;if(S.tab==='fc'||S.tab==='sim')render()}});
+if(migrate())save(true);
+render();
+</script></body></html>
