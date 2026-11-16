@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>YAK v2.13.1</title>
+<meta name="version" content="2.13.1">
+<meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--f:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--bg:#f0eee6;--card:#faf9f5;--ink:#1f1e1d;--mute:#6b6a65;--line:#ddd9ce;--acc:#c15f3c;--accbg:#f5e3da;--am:#c15f3c;--amon:#fff;--amink:#6b2e16;--ambg:#fbe9df;--bad:#b3261e;--badbg:#fbe4e1;--brand:#262624;--dot:#d97757;--okbg:#e6e4dc;--okink:#3d3d3a;--gbg:#e1efe4;--gink:#2c6a3d;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1e1d;--card:#2b2a28;--ink:#f0eee6;--mute:#a09e96;--line:#3d3c39;--acc:#e08a68;--accbg:#3a2a22;--am:#e08a68;--amon:#1f1e1d;--amink:#f5c4ae;--ambg:#3a2a22;--bad:#ff8a80;--badbg:#3a2220;--brand:#30302e;--dot:#e08a68;--okbg:#3a3935;--okink:#e8e6dc;--gbg:#26382c;--gink:#9bd4a8;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1f1e1d;--card:#2b2a28;--ink:#f0eee6;--mute:#a09e96;--line:#3d3c39;--acc:#e08a68;--accbg:#3a2a22;--am:#e08a68;--amon:#1f1e1d;--amink:#f5c4ae;--ambg:#3a2a22;--bad:#ff8a80;--badbg:#3a2220;--brand:#30302e;--dot:#e08a68;--okbg:#3a3935;--okink:#e8e6dc;--gbg:#26382c;--gink:#9bd4a8;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--brand);z-index:10}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f)}
+header{display:flex;align-items:baseline;gap:24px;padding:16px 24px 0;flex-wrap:wrap;background:var(--brand)}
+h1{cursor:pointer;margin:0;font:800 28px var(--f);letter-spacing:-1px;color:#fff}
+h1 span{color:var(--dot)}
+nav button{font:inherit;background:none;border:0;border-bottom:3px solid transparent;padding:8px 14px;color:#b8b5ad;cursor:pointer}
+nav button.on{color:#fff;border-color:var(--dot);font-weight:600}
+main{max-width:980px;margin:0 auto;padding:20px 24px 60px}
+.grid{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}.grid>*{flex:1 1 210px;min-width:0}.grid.gg{display:grid}.grid.gg>*{flex:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.big{font:700 30px var(--f);letter-spacing:-.5px;margin:2px 0}
+.lbl{color:var(--mute);font-size:13px}
+.hero{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.hero .lbl{color:inherit;opacity:.85}
+h2{font:700 18px var(--f);margin:22px 0 8px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-weight:600;font-size:13px;color:var(--mute);padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:5px 10px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+/* text and number boxes: centred text, soft orange glow when active */
+:where(input:not([type=range]),select){font:inherit;font-size:16px;font-weight:600;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:0 12px;height:42px;width:100%;text-align:center;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none;transition:border-color .15s,box-shadow .15s,background .15s}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input:not([type=range]):not(:disabled):not(:focus):hover,select:not(:focus):hover{border-color:var(--mute);border-color:color-mix(in srgb,var(--mute) 55%,var(--line))}
+input:not([type=range]):focus,select:focus{outline:0;border-color:var(--acc);box-shadow:0 0 0 3px var(--accbg);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent)}
+button:focus-visible,input[type=range]:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input:disabled{background:transparent;border-color:transparent;color:var(--mute);-webkit-text-fill-color:var(--mute);opacity:1}
+select{padding-right:32px;text-align-last:center;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%238f8a7e' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:12px}
+.mny{position:relative;display:block}
+.mny .cur{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--mute);pointer-events:none;line-height:1}
+.mny .cur+input{padding-left:26px;padding-right:26px}
+.sb{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:0;background-color:var(--card);color:var(--acc);font-size:0;line-height:0;display:block;cursor:pointer;box-shadow:0 0 0 1px var(--line);padding:0;background-repeat:no-repeat;background-position:center;background-image:linear-gradient(currentColor,currentColor);background-size:12px 2px;transition:background-color .15s}
+.sb.r{background-image:linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor);background-size:12px 2px,2px 12px}
+.sb.l{left:0}.sb.r{right:0}
+.sb:hover:not(:disabled){background-color:var(--accbg)}.sb:active:not(:disabled){transform:translateY(-50%) scale(.94)}.sb:disabled{opacity:.35;cursor:default}
+.pd .sb{width:28px;height:28px}.pd .sb.l{left:5px}.pd .sb.r{right:5px}
+.inp{margin-bottom:16px;padding:14px}
+.flds{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}.flds.one .fld{flex:0 1 260px;max-width:100%}
+.fld{flex:1 1 145px;min-width:0;max-width:calc(50% - 6px);display:flex;flex-direction:column;justify-content:space-between;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:12px 10px 10px;text-align:center;cursor:text;transition:border-color .15s,box-shadow .15s}
+.fld:hover{border-color:var(--mute);border-color:color-mix(in srgb,var(--mute) 55%,var(--line))}
+.fld:focus-within{border-color:var(--acc);box-shadow:0 0 0 3px var(--accbg);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent)}
+.fl{display:block;flex:1;font-size:13px;font-weight:700;line-height:1.3;color:var(--ink)}
+.fl small{display:block;font-weight:500;font-size:11.5px;margin-top:1px}
+.fld .mny input,.fld .mny input:focus{background:transparent;border:0;box-shadow:none;height:46px;font-size:24px;font-weight:700;letter-spacing:-.3px;padding-left:0;padding-right:0;border-radius:8px}
+.fld .mny .cur+input{padding-left:22px;padding-right:22px}
+.fld .mny.st input{padding:0 40px}
+.fld .cur{font-size:18px;left:4px}
+.fld .ut{margin:0;text-align:center}
+.fld input[type=password]{letter-spacing:.18em;font-size:22px}
+.bt th,.bt td{text-align:center}
+.bt td{padding:6px 8px}
+.bt input,.bt select{height:38px}
+.bt .nm{min-width:170px}.bt .mny{min-width:124px;max-width:136px;margin:0 auto}.bt .dt{width:100px;min-width:100px;max-width:100px;margin:0 auto}.bt select{min-width:210px}
+.dr{margin-top:10px}.dr .dg{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:6px}.dr input{height:38px}
+.dr .da{display:flex;justify-content:flex-end;gap:2px;margin-top:2px}.dr .da .ghost{font-size:12.5px;padding:2px 6px}
+.scroll{overflow-x:auto}.nm{min-width:170px}
+.btn{font:inherit;background:var(--acc);color:var(--bg);border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.sm{padding:4px 12px;font-size:13px}.btn.out{background:none;color:var(--acc);border:1.5px solid var(--acc)}.btn.out:hover{background:var(--accbg)}
+.xbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 8px 6px 14px;margin-bottom:16px;font-size:13px;color:var(--mute)}.xbar b{color:var(--ink);font-weight:700}.lkpill{display:inline-block;margin-left:6px;padding:1px 10px;border-radius:99px;font-size:12px;font-weight:700;vertical-align:1px}.lkpill.on{background:var(--acc);color:var(--amon)}.lkpill.off{background:var(--okbg);color:var(--okink)}
+.lgctl{display:flex;gap:10px 16px;flex-wrap:wrap;justify-content:space-between;margin:0 0 14px}.lgctl .segs{display:flex;gap:6px;flex-wrap:wrap}
+.lgrow{display:flex;gap:6px 16px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:11px 2px;border-bottom:1px solid var(--line)}.lgrow:last-child{border-bottom:0}
+.lgm{min-width:0;flex:1 1 220px}.lgm .ut{margin-top:0}
+.lgv{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}.lgo{color:var(--mute);text-decoration:line-through}.lga{color:var(--mute)}.lgd{font-weight:700;color:var(--mute)}
+.lgday{font:700 12.5px var(--f);color:var(--mute);padding:14px 2px 4px;text-transform:uppercase;letter-spacing:.04em}.lgday:first-child{padding-top:2px}
+.ptitle{font:800 26px var(--f);letter-spacing:-.5px;margin:6px 0 14px}
+.tb{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;padding:3px 4px 3px 12px;margin-bottom:12px;font-size:12.5px;border-radius:8px}.tb>span{min-width:0;padding-top:2px}.tb .btn{padding:2px 12px;font-size:12px;line-height:1.5;flex:none}.pending.tb{border-width:1px}
+.xl{display:inline-flex;flex-wrap:wrap;gap:2px 18px;line-height:1.5}.xl .src{font-size:12px}
+.ghost{background:none;color:var(--bad);border:0;cursor:pointer;font:inherit;padding:4px 8px}
+.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+.row label{display:block}.row .lbl{display:block;margin-bottom:3px}
+.ok{background:var(--okbg);color:var(--okink)}.warn{background:var(--badbg);color:var(--bad)}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600}
+/* payments */
+.card.good{background:var(--gbg);color:var(--gink);border-color:var(--gink)}.card.good small,.card.good .lbl{color:inherit;opacity:.85}
+.pill.paid{background:var(--gbg);color:var(--gink)}.pill.over{background:var(--bad);color:var(--card)}.pill.part{background:var(--ambg);color:var(--amink)}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:8px}.ph .pill{flex:none;white-space:nowrap}.ph .hn{flex:1;min-width:0;height:38px;text-align:left;font-weight:700}
+.pr{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.prg{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;margin:6px 0 2px}.prg input{height:38px}
+.tk{font:600 13px var(--f);height:38px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.tk i{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--mute);display:grid;place-items:center;font-style:normal;font-size:11px;line-height:1;color:transparent}
+.tk.on{background:var(--gbg);border-color:var(--gink);color:var(--gink)}.tk.on i{background:var(--gink);border-color:var(--gink);color:var(--gbg)}
+.tk:disabled{opacity:.4;cursor:default}
+.pf{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.hmr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 8px;padding-top:10px;border-top:1px solid var(--line)}
+.pd{width:128px;flex:none}.pd input{padding:0 36px;height:38px}
+.ask{border:2px solid var(--acc);margin-bottom:16px}
+.ask .btn{margin-right:8px}
+.sum td{border-bottom:1px solid var(--line)}.sum td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.tot td{font-weight:700;font-size:17px}
+.hide{display:none}
+small{color:var(--mute)}
+.ut{display:block;font-size:12px;margin-top:2px}.review{background:var(--accbg);border:2px solid var(--acc)}
+.pending{background:var(--acc);border:2px solid var(--acc);color:var(--amon)}.pending .btn{background:var(--amon);color:var(--acc)}
+.logo{font:800 clamp(52px,12vw,96px)/1.25 var(--f);letter-spacing:-.05em;color:#fff}.logo span{color:var(--dot)}.brandbox{text-align:center;padding:26px 16px 24px;background:var(--brand);border-radius:14px}.brandbox p{color:#b8b5ad;font-size:16px;margin:12px 0 0}
+.ctas{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}.ctas .btn{padding:6px 14px;font-size:13px}
+.cta{display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;border:2px solid var(--line)}.cta b{font-size:17px;color:var(--acc)}.cta:hover,.cta:focus-visible{border-color:var(--acc)}
+/* charts */
+@keyframes dseg{from{stroke-dasharray:0 100}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes fade{from{opacity:0}}
+.dwrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.dc{position:relative;width:220px;height:220px;flex:none;margin:0 auto}
+.dc svg{display:block;width:220px;height:220px}
+.dmid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 46px;line-height:1.3}
+.dmid b{font:700 21px var(--f);letter-spacing:-.5px}
+.dseg{fill:none;stroke-width:5.5;transition:stroke-width .15s,opacity .15s}.dseg.on{stroke-width:7}.dseg.dim{opacity:.3}
+.dseg.anim{animation:dseg .8s cubic-bezier(.3,.7,.2,1) backwards;animation-delay:calc(var(--i)*.14s)}
+.dtrack{fill:none;stroke:var(--line);stroke-width:5.5}
+.dleg{flex:1;min-width:230px;display:grid;gap:2px}
+.dl{display:flex;align-items:center;gap:10px;width:100%;font:inherit;color:var(--ink);background:none;border:0;border-radius:8px;padding:7px 8px;cursor:pointer;text-align:left}
+.dl:hover,.dl:focus-visible{background:var(--bg)}.dl i{width:12px;height:12px;border-radius:3px;flex:none}.dl span{flex:1}.dl b{font-variant-numeric:tabular-nums}.dl small{width:46px;text-align:right}
+.cw{position:relative}
+.cw svg{display:block;width:100%;height:auto;touch-action:pan-y;cursor:crosshair}
+.ln{fill:none;stroke:var(--acc);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.ln.anim{stroke-dasharray:1;animation:draw 1.2s ease-out}
+.ar{fill:var(--acc);opacity:.13}.ar.anim{animation:fade .8s ease-out .6s backwards}
+.pt{stroke:var(--card);stroke-width:2}.pt.anim{animation:fade .3s backwards;animation-delay:calc(.25s + var(--i)*.085s)}
+.gl{stroke:var(--line);stroke-width:1}.zl{stroke:var(--mute);stroke-width:1.2;stroke-dasharray:4 4}
+.ax{fill:var(--mute);font:11px var(--f)}
+.tip{position:absolute;top:4px;display:none;pointer-events:none;background:#262624;color:#fff;border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.28);z-index:2}
+.tip small{color:#b8b5ad}
+/* simulator */
+.simtop{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.simgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.sc{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.sch{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.sch b{font-size:14px;line-height:1.3}
+.scin{margin-bottom:4px}.scin .mny input{height:48px;font-size:22px;font-weight:700;background:var(--card)}
+.rng{padding:0;border:0;background:none;accent-color:var(--acc);height:30px;cursor:pointer}
+.chip{flex:none;display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+.chip.same{background:var(--okbg);color:var(--okink)}.chip.good{background:var(--gbg);color:var(--gink)}.chip.bad{background:var(--badbg);color:var(--bad)}
+.pos{color:var(--gink)}.neg{color:var(--bad)}
+.hero small,.warn small{color:inherit;opacity:.85}
+.lgd{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0 8px;font-size:13px}.lgd span{display:inline-flex;align-items:center;gap:6px}.lgd i{display:inline-block;width:18px;height:0;border-top:3px solid}
+.lgd i.sw{height:10px;width:12px;border:0;border-radius:3px}
+.seg{font:inherit;font-size:13px;background:none;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:3px 11px;cursor:pointer}.seg.on{background:var(--acc);border-color:var(--acc);color:var(--amon);font-weight:600}
+.charthead{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.charthead .segs{display:flex;gap:6px}
+.dl span small{width:auto;text-align:left}
+.sdseg{transition:stroke-dasharray .5s cubic-bezier(.3,.7,.2,1),stroke-dashoffset .5s cubic-bezier(.3,.7,.2,1),stroke-width .15s,opacity .15s}
+.lockscr{position:fixed;inset:0;z-index:100;background:var(--brand);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}.lockscr[hidden]{display:none}
+.lbox{width:100%;max-width:320px;text-align:center}.lbox .logo{margin-bottom:18px}
+.lbox input{font-size:18px;height:54px;text-align:center;padding:12px 14px;border-radius:12px;background:#3a3a37;border-color:#55534f;color:#fff;letter-spacing:.12em;max-width:none}.lbox input:focus{outline:2px solid var(--dot)}
+.lbox .btn{width:100%;margin-top:10px;padding:11px 14px;font-size:16px;background:var(--dot);color:#1f1e1d}
+.lkerr{min-height:22px;margin:10px 0 0;font-size:14px;color:#ff9d94}.lbox p.lkt{color:#b8b5ad;font-size:14px;margin:0 0 12px}.lbox .ghost.lkf{color:#b8b5ad;margin-top:6px;font-size:14px}.lbox .btn.lko{background:none;color:#fff;border:1.5px solid #77746d}
+/* mobile menu: hidden on desktop, replaces the tabs on narrow screens */
+.mbtn,.mlist{display:none}
+@media(max-width:480px){
+.inp{padding:12px}.flds{gap:10px}.fld{flex-basis:130px;max-width:calc(50% - 5px)}
+.fld{padding:10px 8px 9px}.fld .mny input{font-size:21px}.fld .mny .cur+input{padding-left:20px;padding-right:20px}
+}
+@media(max-width:360px){.fld{max-width:none}}
+@media(max-width:640px){
+header{align-items:center;gap:0 12px;padding:12px 16px}
+h1{font-size:26px}
+nav{display:none}
+.mbtn{display:inline-flex;align-items:center;gap:8px;margin-left:auto;font:600 15px var(--f);color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:8px 12px 8px 16px;cursor:pointer;transition:background .2s}
+.mbtn[aria-expanded="true"]{background:rgba(255,255,255,.16)}
+.mbtn svg{width:16px;height:16px;flex:none;transition:transform .28s cubic-bezier(.3,.7,.2,1)}
+.mbtn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.mlist{display:grid;flex:0 0 100%;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .28s cubic-bezier(.3,.7,.2,1),opacity .2s}
+.mlist.open{grid-template-rows:1fr;opacity:1}
+.mlist>div{overflow:hidden;min-height:0;visibility:hidden;transition:visibility 0s .28s}
+.mlist.open>div{visibility:visible;transition-delay:0s}
+.mlist button:first-child{margin-top:10px}
+.mlist button{display:block;width:100%;text-align:left;font:500 16px var(--f);color:#d6d3ca;background:none;border:0;border-top:1px solid rgba(255,255,255,.1);padding:13px 4px;cursor:pointer;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s}
+.mlist.open button{opacity:1;transform:none;transition:opacity .25s calc(var(--i)*.04s + .06s),transform .25s calc(var(--i)*.04s + .06s)}
+.mlist button:active{color:#fff}
+}
+@media(prefers-reduced-motion:reduce){.dseg,.ln,.ar,.pt{animation:none!important}.sdseg{transition:none}.mbtn,.mbtn svg,.mlist,.mlist>div,.mlist button{transition:none!important}}
+</style></head><body>
+<header><h1 onclick="tab('dash')">YAK<span>.</span></h1><nav><button id="t-dash" onclick="tab('dash')">Home</button><button id="t-home" onclick="tab('home')">House</button><button id="t-me" onclick="tab('me')">Personal</button><button id="t-pay" onclick="tab('pay')">Payments</button><button id="t-fc" onclick="tab('fc')">Forecast</button><button id="t-sim" onclick="tab('sim')">Simulator</button><button id="t-log" onclick="tab('log')">Changes</button></nav><button class="mbtn" id="mbtn" onclick="mToggle()" aria-expanded="false" aria-controls="mlist"><span id="mcur">Home</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg></button><div class="mlist" id="mlist"><div id="mitems"></div></div></header>
+<div class="lockscr" id="lock" hidden></div>
+<main id="app"><div class="card" style="margin:20px 0"><b>YAK needs a web browser to run.</b><p class="lbl">This preview cannot run the app. Open YAK in Safari, Chrome or Edge instead (or use the YAK link) and your saved data will load there.</p></div></main>
+<script>
+const VERSION='2.13.1';
+// Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
+const CHANGELOG=[{v:'2.13.1',d:'16 Nov 2026',n:'Added the YAK logo as the app icon (white YAK with an orange full stop on charcoal) and named the app YAK, so it shows on the iPhone Home Screen when added from Safari. Saved data is unchanged.'},
+{v:'2.13.0',d:'15 Nov 2026',n:'Removed the Extra adjustment this month box from the Personal tab, along with the Adjustment line in How it adds up and the Adjustments slice in the salary charts. One-off costs such as credit card payments now live only on the Forecast tab, where each month\'s deductions are entered. Monthly savings on Home and Personal no longer have an adjustment taken off, and the Forecast and Simulator start from that same figure. An adjustment saved in an older data file is dropped when it is opened or imported, so if you had one entered your monthly saving will rise by that amount; add it as a Forecast deduction instead if you still need it.'},
+{v:'2.12.0',d:'15 Nov 2026',n:'Exports are now recorded in the change log, as imports already were. Each export adds a line saying the data was exported to a file, with the file name and the device, and the line is included in the file itself. Imports now also record which device the file came from and when it was exported there. An export you cancel is not recorded. Saved data is unchanged.'},
+{v:'2.11.1',d:'15 Nov 2026',n:'Polished the − and + buttons. The symbols are now drawn precisely so they sit exactly in the centre of each round button, and on the Payments tab the Payment day buttons are slightly smaller and set in from the edges of the box so they line up neatly with the number. The People in household buttons use the same design. Saved data is unchanged.'},
+{v:'2.11.0',d:'15 Nov 2026',n:'Added a Payments tile to At a glance on Home. It shows the total overdue amount from the Payments tab in red, or a green Payments up to date when everyone has paid in full. If nothing is overdue yet but some payments are still to come, it says Nothing overdue and shows how much is still to come. It only appears once you have housemates. Saved data is unchanged.'},
+{v:'2.10.0',d:'15 Nov 2026',n:'Added a Payments tab for tracking what your housemates pay you. Each month has a record showing the total owed (each housemate owes the individual share from the House tab), with a Paid in full tick or an amount received for each housemate, and an All paid in full tick for the month. The top of the page shows what is outstanding and received this month, the total owed to you and how much is overdue, and each housemate has a card showing what they owe across all months. You can name each housemate and set the day of the month they pay by: a red Overdue pill shows when that day has passed without full payment, and a green Paid pill shows when they are paid up. Past months keep the share that applied at the time, earlier months can be added, and payments are recorded in the change log and included in exports. Older data files still import fine.'},
+{v:'2.9.2',d:'14 Nov 2026',n:'Tidied the layout of the value boxes at the top of the House, Personal and Forecast tabs. When they wrap onto more than one row (for example on a phone), the last row is now centred under the row above with the same box size, instead of sitting to the left with a gap beside it. A single box is centred too. The rows of summary cards fill their row with no gaps. Saved data is unchanged.'},
+{v:'2.9.1',d:'14 Nov 2026',n:'Removed the cumulative figures from the House tab: the Cumulative, individual share and Cumulative, whole household boxes, the Cumulative per person column, and the Months counted this year box that only fed them. Saved data is unchanged.'},
+{v:'2.9.0',d:'14 Nov 2026',n:'Added a change log. YAK now records every change you make to a value, bill or date (what changed, from what to what, and when), and keeps the record inside your data file so it is exported and imported with your data. A new Changes tab shows a Summary view (each item with its first and latest value over 24 hours, 7 days, 30 days or all time) and an Every change view (a timeline). Added, removed and repeated bills and deductions, imports and resets are recorded too. Quick repeat edits to the same box are merged into one line, and the log keeps the latest 1,000 entries. Changes made before this version are not in the log. Older data files still import fine.'},
+{v:'2.8.1',d:'14 Nov 2026',n:'Fixed the Date taken boxes on the House tab being squashed on phones so the dates could not be read. They now keep a fixed, wider size and the table scrolls sideways if needed. Saved data is unchanged.'},
+{v:'2.8.0',d:'14 Nov 2026',n:'Redesigned the text and number boxes. Boxes are now taller with rounded corners and centred text, and glow orange when you tap into them. The boxes at the top of the House, Personal and Forecast tabs are tiles with the title above a large centred amount, a £ sign for money and − and + buttons for people and months. The bill tables, Forecast deductions, Simulator and passcode boxes use the same style. Tapping a number box selects it so you can type straight over it, Enter or Tab moves to the next box, and you stay in the box you tap into instead of losing your place. New bills and deductions are ready to type into straight away. Saved data is unchanged.'},
+{v:'2.7.0',d:'13 Nov 2026',n:'Added a clear title at the top of each page so it is obvious what you are looking at: House Finances, Personal Finances, Savings Forecast and Scenario Simulator. Home keeps the YAK. logo as its heading. Saved data is unchanged.'},
+{v:'2.6.11',d:'13 Nov 2026',n:'The titles above the data entry boxes (people in household, monthly rent, monthly salary and so on) are now bold and darker so they stand out. The Updated dates underneath are unchanged. Saved data is unchanged.'},
+{v:'2.6.10',d:'13 Nov 2026',n:'The data entry boxes on the House, Personal and Forecast tabs (people in household, rent, budget, salary, spend, savings and so on) now sit inside their own grey panel, matching the other sections of the app, instead of floating on the page background. Saved data is unchanged.'},
+{v:'2.6.9',d:'13 Nov 2026',n:'On Home, the Passcode lock box now sits at the very bottom of the page, below the Where your salary goes chart. Saved data is unchanged.'},
+{v:'2.6.8',d:'13 Nov 2026',n:'The Last exported bar at the top of every page is now a single thin line with a small Export button, so it takes up very little room and works as a notice. When there are unexported changes it turns orange and reads Unexported changes. The last imported details were removed from the bar; the Switched device box on Home is unchanged. Saved data is unchanged.'},
+{v:'2.6.7',d:'13 Nov 2026',n:'On Home, the What do you want to do section now sits directly under Switched device, and its large boxes are replaced by four small buttons (Manage house bills, Track personal finances, Forecast your savings, Simulate a scenario) that take up much less room. Saved data is unchanged.'},
+{v:'2.6.6',d:'13 Nov 2026',n:'The At a glance section on Home now shows four boxes instead of eight: how much you can save each month, your individual share each month, personal deductions each month, and the owed back or house bills paid separately box. The house budget, household total, forecast and house bills so far boxes were removed. Saved data is unchanged.'},
+{v:'2.6.5',d:'13 Nov 2026',n:'In the export banner at the top of each page, every date and time is now bold, including the one in the From line that shows when the file was exported on the other device. Saved data is unchanged.'},
+{v:'2.6.4',d:'13 Nov 2026',n:'Added an On / Off indicator next to the Passcode lock title on the Home tab. It is a small orange pill when the lock is on and a grey one when it is off. Saved data is unchanged.'},
+{v:'2.6.3',d:'13 Nov 2026',n:'Fixed the spacing of the Last exported and Last imported box on phones. It now has even padding all round, evenly spaced lines, and the Export data button sits underneath with a clear gap. Saved data is unchanged.'},
+{v:'2.6.2',d:'13 Nov 2026',n:'Tidied the Last exported and Last imported text at the top of each page. On phones each part now sits on its own line (last exported, last imported, then which device the file came from and when it was exported there) instead of running together. On wider screens it stays on one line with more spacing. Saved data is unchanged.'},
+{v:'2.6.1',d:'13 Nov 2026',n:'On the Home tab, Your Accounts Keeper in the line under the YAK. logo is now bold and white. Saved data is unchanged.'},
+{v:'2.6.0',d:'13 Nov 2026',n:'On phones and other narrow screens, the row of tabs is replaced by a collapsible menu. It shows the page you are on with an arrow; tap it and the other pages slide down, then tap one to go there. Tapping elsewhere or pressing Escape closes it. Desktop and wider screens keep the tabs as before. Saved data is unchanged.'},
+{v:'2.5.3',d:'13 Nov 2026',n:'On iPhone the passcode boxes now bring up the numeric keypad, and a new passcode set on an iPhone must be numbers only (at least 4). If a passcode was set with letters, a Use letters and numbers button appears on the login screen after a wrong try. Other devices are unchanged.'},
+{v:'2.5.2',d:'13 Nov 2026',n:'The passcode lock now locks YAK as soon as you leave the app or switch to another tab, instead of after a minute away. Choosing a file to import or exporting your data will not lock YAK for the next minute, so the file picker does not interrupt you.'},
+{v:'2.5.1',d:'13 Nov 2026',n:'Fixed the passcode lock not appearing on a phone after YAK had been left open in the background. YAK now compares the clock each time it wakes up, so it locks after a minute away even when the phone does not report that the page was hidden.'},
+{v:'2.5.0',d:'12 Nov 2026',n:'Added an optional passcode lock. Turn it on from the Home tab and YAK shows a login screen with just the YAK. logo and a passcode box each time it opens on that device, and again after a minute away. You can change or turn off the passcode, lock YAK straight away from Home, or clear the device if you forget it. The passcode is stored on the device only and is not included in exports. It keeps casual access out but does not encrypt your data. Saved data is unchanged.'},
+{v:'2.4.0',d:'12 Nov 2026',n:'The bar at the top of every tab now also shows when data was last imported on this device, which device the file came from and when it was exported there. This helps you spot when you may need to import a newer file. Saved data is unchanged.'},
+{v:'2.3.2',d:'12 Nov 2026',n:'Made the Data last exported bar thinner and cleaner, and changed Export data from a link to a button.'},
+{v:'2.3.1',d:'12 Nov 2026',n:'On the Simulator tab, the monthly savings line graph now sits above the cumulative savings line graph.'},
+{v:'2.3.0',d:'12 Nov 2026',n:'Added a second line graph to the Simulator showing your savings month by month, measured from each month\'s salary rather than as a running total. It uses the deductions you entered on the Forecast tab, so months with credit card payments or other deductions dip, and it compares your scenario with your current figures (hover or touch for each month, including the share of salary saved). Saved data is unchanged.'},
+{v:'2.2.0',d:'12 Nov 2026',n:'Added a Simulator tab for trying out what-if scenarios. Adjust your salary, house bills (excluding rent), personal bills and spend deductions with sliders or typed amounts. They start from your current figures and a reset button puts them back. A line graph shows how much more (or less) you could save over 6 months to 5 years, a donut chart shows how your salary would be apportioned, and a dashboard shows key figures such as potential monthly savings and potential monthly costs. Nothing in the Simulator changes your saved data.'},
+{v:'2.1.0',d:'12 Nov 2026',n:'Added animated charts. A donut chart on Home and Personal shows how your salary is split between house bills, personal bills, spending, adjustments and savings (hover or tap a slice for its amount). An interactive line graph on Forecast shows your savings balance rising or falling month by month (hover or touch the line for each month). Charts animate when a page opens. Saved data is unchanged.'},
+{v:'2.0.2',d:'12 Nov 2026',n:'Fixed bill names being squashed to nothing on the House tab on narrow screens such as iPhones. Names now keep a minimum width and the table scrolls sideways instead.'},
+{v:'2.0.1',d:'12 Nov 2026',n:'Starting values are now all zero (household of 1 person, as the minimum), so YAK opens clean on a new device. Saved data is unchanged.'},
+{v:'2.0.0',d:'11 Nov 2026',n:'Works when hosted as a web page and opened on a phone. Added an Import latest data button on Home, a prompt to import on a new device, a prompt after time away asking whether you have used YAK on another device, a warning before an older file can replace newer data, a fixed export file name (yak-data.json) and a message when the file is opened in a viewer that cannot run it. Pop-up boxes replaced with on-page prompts. Saved data is unchanged.'},
+{v:'1.4.0',d:'11 Nov 2026',n:'Rebranded from budg.it to YAK (Your Accounts Keeper): new white YAK logo with an orange full stop, and a grey, white and orange colour scheme. The font and all saved data are unchanged.'},
+{v:'1.3.1',d:'10 Nov 2026',n:'Accuracy check: household size is now a whole number, months counted is limited to 0-12, bill names can no longer break the page, the Home dashboard no longer shows a wrong answer before the bill question is answered, and a note explains penny rounding.'},
+{v:'1.3.0',d:'10 Nov 2026',n:'Added a total household rent field that adds an apportioned Rent line to the bills table automatically. Renamed Your share each month to Individual share each month.'},
+{v:'1.2.0',d:'10 Nov 2026',n:'Added last-updated dates against values and bills, and a prompt to re-review bills when nothing has changed for 3 months.'},
+{v:'1.1.3',d:'10 Nov 2026',n:'Reverted v1.1.2: the prompt is orange only when there are unexported changes, as in v1.1.1.'},
+{v:'1.1.2',d:'10 Nov 2026',n:'The export prompt is now also orange before any export has been made.'},
+{v:'1.1.1',d:'10 Nov 2026',n:'The unexported-changes prompt is now orange.'},
+{v:'1.1.0',d:'10 Nov 2026',n:'Added data export and import. A prompt appears when changes have not been exported, and shows when data was last exported.'},
+{v:'1.0.1',d:'10 Nov 2026',n:'Fixed the tagline overlapping the logo on the Home page.'},
+{v:'1.0.0',d:'10 Nov 2026',n:'First release: Home dashboard, House, Personal and Forecast tabs, with data saved in the browser.'}];
+const KEY='budgit.v1'; // storage key kept from budg.it so existing saved data carries over
+const seed={tab:'dash',fc:{},fcStart:0,
+home:{people:1,budget:0,months:0,rentTotal:0,rentDate:'15th',bills:[
+{n:'Gas & Electricity',a:0,d:'8th',t:'split'},{n:'Water',a:0,d:'23rd',t:'split'},
+{n:'WiFi Bundle',a:0,d:'28th',t:'split'},{n:'Council Tax',a:0,d:'28th',t:'split'},
+{n:'TV Licence',a:0,d:'N/A',t:'split'}]},
+me:{salary:0,spend:0,fromAcct:null,bills:[
+{n:'Phone Bill (Combined)',a:0},{n:'Apple Music',a:0},{n:'Gym Membership',a:0},{n:'Ring Plan',a:0},
+{n:'Uber One',a:0},{n:'Car',a:0},{n:'Car Insurance',a:0},{n:'Gap Insurance',a:0},{n:'Road Tax',a:0},
+{n:'iCloud Storage',a:0},{n:'Fuel',a:0},{n:'Personal Trainer',a:0},{n:'Xbox Game Pass',a:0}]}};
+let S;
+let HAD=false;
+try{const raw=localStorage.getItem(KEY);HAD=!!raw;S=JSON.parse(raw)||structuredClone(seed)}catch(e){S=structuredClone(seed)}
+S.fc=S.fc||{};S.fcStart=S.fcStart||0;
+let M={dirty:false,last:null,lastOpen:null,fresh:false,src:null};
+try{M=Object.assign(M,JSON.parse(localStorage.getItem('budgit.meta')))}catch(e){}
+function saveMeta(){try{localStorage.setItem('budgit.meta',JSON.stringify(M))}catch(e){}}
+if(!HAD&&!M.fresh){M.fresh=true;saveMeta()}
+const GAP=1*864e5; // time away before YAK asks whether you have used it on another device (1 day)
+// ---- Optional passcode lock (device only: stored separately, never exported) ----
+const LKEY='yak.lock',AUTOLOCK=8000; // AUTOLOCK: a gap this long between clock checks means the page was paused without telling us
+function lockInfo(){try{return JSON.parse(localStorage.getItem(LKEY))}catch(e){return null}}
+const lockOK=()=>!!(window.crypto&&crypto.subtle);
+const b64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));
+const unb64=t=>Uint8Array.from(atob(t),c=>c.charCodeAt(0));
+async function lh(pw,salt,iter){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);return b64(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:iter},k,256))}
+async function lockSet(pw){const salt=crypto.getRandomValues(new Uint8Array(16)),iter=150000,h=await lh(pw,salt,iter);localStorage.setItem(LKEY,JSON.stringify({s:b64(salt),i:iter,h,n:/^\d+$/.test(pw)}));if(!lockInfo())throw new Error('save')}
+async function lockCheck(pw){const L=lockInfo();if(!L)return true;return (await lh(pw,unb64(L.s),L.i))===L.h}
+const NUMK=/iPhone/.test(navigator.userAgent); // iPhone: show the numeric keypad for passcodes
+const kpNew=()=>NUMK?' inputmode="numeric" pattern="[0-9]*"':'';
+const kpCur=()=>{const L=lockInfo();return NUMK&&!(L&&L.n===false)?' inputmode="numeric" pattern="[0-9]*"':''};
+let LOCKED=!!lockInfo()&&lockOK(),LK={mode:null,err:''},LKF=false,LSHOWN='',FAILS=0,WAITUNTIL=0,LAST=Date.now(),NOLOCK=0;
+let MSG=null,PEND=null,RST=false,ASK=false;
+let PLAY=true; // true only when a page has just opened, so charts animate on load and not on every edit
+function deviceName(){const u=navigator.userAgent||'';if(/iPhone/.test(u))return'iPhone';if(/iPad/.test(u))return'iPad';if(/Android/.test(u))return'Android';if(/Mac/.test(u))return navigator.maxTouchPoints>1?'iPad':'Mac';if(/Windows/.test(u))return'Windows';if(/Linux/.test(u))return'Linux';return'Unknown device'}
+function checkAway(){if(M.fresh)return;const lo=Date.parse(M.lastOpen)||0;if(lo&&Date.now()-lo>=GAP)ASK=true;else if(!ASK){M.lastOpen=new Date().toISOString();saveMeta()}}
+checkAway();
+document.addEventListener('visibilitychange',()=>{if(M.fresh)return;
+ if(document.hidden){if(!ASK){M.lastOpen=new Date().toISOString();saveMeta()}}
+ else{const lo=Date.parse(M.lastOpen)||0;if(!ASK&&lo&&Date.now()-lo>=GAP){ASK=true;render()}}});
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function iso(){return new Date().toISOString()}
+function dd(i){return i?new Date(i).toLocaleDateString('en-GB',{dateStyle:'medium'}):'-'}
+function ut(path){return `<small class="ut">Updated ${dd((S.upd||{})[path])}</small>`}
+const SCALARS=['home.people','home.rentTotal','home.budget','home.months','me.salary','me.spend','fcStart'];
+function migrate(){let ch=false;const n=iso();
+ if(S.home.rentTotal===undefined){const i=S.home.bills.findIndex(b=>/^rent$/i.test(b.n));let t=0,d='15th';
+  if(i>=0){const b=S.home.bills[i];t=b.t==='each'?b.a*(+S.home.people||1):b.a;d=b.d||d;S.home.bills.splice(i,1)}
+  S.home.rentTotal=Math.round(t*100)/100;S.home.rentDate=d;ch=true}
+ if(!S.lastChange){S.lastChange=n;ch=true}
+ if(!S.upd){S.upd={};ch=true}
+ if(!Array.isArray(S.log)){S.log=[];ch=true}
+ if(!S.pay||typeof S.pay.m!=='object'||!S.pay.m||!Array.isArray(S.pay.mates)){S.pay={start:null,mates:[],m:{}};ch=true}
+ if(S.me&&'adj' in S.me){delete S.me.adj;delete S.upd['me.adj'];ch=true}
+ SCALARS.forEach(k=>{if(!S.upd[k]){S.upd[k]=n;ch=true}});
+ [...S.home.bills,...S.me.bills].forEach(b=>{if(!b.u){b.u=n;ch=true}});
+ return ch}
+function save(quiet){if(quiet!==true){S.lastChange=iso();M.dirty=true;saveMeta()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function needsReview(){const ref=Math.max(Date.parse(S.lastChange)||0,Date.parse(S.reviewed)||0),t=new Date(ref);t.setMonth(t.getMonth()+3);return Date.now()>=t.getTime()}
+function reviewDone(){S.reviewed=iso();save(true);render()}
+function reviewBox(){if(!needsReview())return '';
+ const ref=Math.max(Date.parse(S.lastChange)||0,Date.parse(S.reviewed)||0);
+ return `<div class="card review" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span><b>Time to re-review your bills and update your values.</b> Nothing has been changed or checked since ${dd(new Date(ref).toISOString())}.</span><button class="btn" onclick="reviewDone()">Checked, and everything is the same</button></div>`}
+function stamp(iso){return new Date(iso).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}
+function dl(name,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function doExport(){
+ NOLOCK=Date.now()+60000;
+ const now=new Date(),name='yak-data.json';
+ const ent={k:'sys',l:'Exported data to a file',x:name+' (from '+deviceName()+')'};logc(ent);let kept=false;
+ const txt=JSON.stringify({app:'YAK',version:VERSION,exported:now.toISOString(),device:deviceName(),data:S},null,2);
+ try{
+  let done=false;
+  const dn=(window.claude&&claude.use)?await claude.use('downloads'):null;
+  if(dn){try{await dn.save({filename:name,data:txt});done=true}catch(e){if(e&&e.code==='declined')return;throw e}}
+  else if(window.showSaveFilePicker){
+   try{const h=await showSaveFilePicker({suggestedName:name,types:[{description:'YAK data',accept:{'application/json':['.json']}}]});const w=await h.createWritable();await w.write(txt);await w.close();done=true}
+   catch(e){if(e.name==='AbortError')return}
+  }
+  if(!done)dl(name,txt);
+  kept=true;save(true);M.dirty=false;M.last=now.toISOString();saveMeta();render();
+ }catch(e){say('Export failed: '+(e&&e.message||'unknown error'))}
+ finally{if(!kept){const i=S.log.lastIndexOf(ent);if(i>=0)S.log.splice(i,1)}}
+}
+function say(t){MSG=t;render()}
+function openImport(){NOLOCK=Date.now()+60000;const i=document.getElementById('imp');if(i)i.click()}
+function doImport(inp){
+ const f=inp.files[0];if(!f)return;const rd=new FileReader();
+ rd.onload=()=>{try{const j=JSON.parse(rd.result),d=j.data||j;
+  if(!d||!d.home||!d.me)throw new Error('This does not look like a YAK data file.');
+  const fl=Date.parse(d.lastChange)||Date.parse(j.exported)||0,ll=Date.parse(S.lastChange)||0;
+  PEND={d,name:f.name,device:j.device||'',exported:j.exported||'',fl,ll,older:!!(!M.fresh&&fl&&ll&&fl<ll)};
+  MSG=null;render()}catch(e){MSG='Import failed: '+e.message;render()}inp.value=''};
+ rd.onerror=()=>{MSG='That file could not be read.';render()};
+ rd.readAsText(f)}
+function applyImport(){const p=PEND;if(!p)return;S=p.d;S.fc=S.fc||{};S.fcStart=S.fcStart||0;S.tab=S.tab||'dash';migrate();logc({k:'sys',l:'Imported data from a file',x:p.name+(p.device?' (from '+p.device+(p.exported?', exported '+stamp(p.exported):'')+')':(p.exported?' (exported '+stamp(p.exported)+')':''))});save(true);
+ M.dirty=false;M.fresh=false;M.imported=iso();M.src={device:p.device,exported:p.exported};M.lastOpen=iso();ASK=false;PEND=null;saveMeta();render()}
+function freshDone(){M.fresh=false;M.lastOpen=iso();saveMeta();render()}
+function askNo(){ASK=false;M.lastOpen=iso();saveMeta();render()}
+const OUT='style="background:none;color:var(--acc);border:2px solid var(--acc);margin-right:8px"',BTN='style="margin-right:8px"';
+function msgBox(){return MSG?`<div class="card review" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span>${esc(MSG)}</span><button class="btn" onclick="MSG=null;render()">OK</button></div>`:''}
+function pendBox(){if(!PEND)return '';const p=PEND;
+ return `<div class="card review" style="margin-bottom:16px"><b>${p.older?'This file is older than the data on this device.':'Replace the data in YAK with this file?'}</b><p class="lbl">File: ${esc(p.name)}${p.device?' (from '+esc(p.device)+')':''}, last changed ${p.fl?stamp(new Date(p.fl).toISOString()):'at an unknown time'}.${M.fresh?'':' Data on this device was last changed '+(p.ll?stamp(S.lastChange):'at an unknown time')+'.'}${p.older?' Importing it would overwrite newer figures.':''}</p><button class="btn" ${BTN} onclick="applyImport()">${p.older?'Replace anyway':'Replace my data'}</button><button class="btn" ${OUT} onclick="PEND=null;render()">Cancel</button></div>`}
+function freshBox(){return M.fresh?`<div class="card ask"><b>New on this device?</b><p class="lbl">If you already use YAK somewhere else, import your latest data from Files. Otherwise, start with the starting values.</p><button class="btn" ${BTN} onclick="openImport()">Import latest data</button><button class="btn" ${OUT} onclick="freshDone()">Start with the starting values</button></div>`:''}
+function askBox(){return ASK&&!M.fresh?`<div class="card ask"><b>Have you used YAK on another device since?</b><p class="lbl">YAK was last open here on ${stamp(M.lastOpen)}. If you changed anything elsewhere, import your latest data from Files.</p><button class="btn" ${BTN} onclick="openImport()">Yes, import latest</button><button class="btn" ${OUT} onclick="askNo()">No, carry on</button></div>`:''}
+function rstBox(){return RST?`<div class="card review" style="margin-bottom:16px"><b>Reset everything to the starting values?</b><p class="lbl">This replaces all of the data in YAK on this device. Export first if you want a backup.</p><button class="btn" ${BTN} onclick="doReset()">Yes, reset</button><button class="btn" ${OUT} onclick="RST=false;render()">Cancel</button></div>`:''}
+function srcText(){return M.src?(M.src.exported?'Data on this device came from '+esc(M.src.device||'an earlier export')+', exported '+stamp(M.src.exported)+'.':'Data on this device came from an imported file.'):'Last changed on this device on '+dd(S.lastChange)+'.'}
+function importCard(){return `<div class="card" style="margin:16px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Switched device?</b><br><small>${srcText()}</small></span><button class="btn" onclick="openImport()">Import latest data</button></div>`}
+function showLock(){const el=document.getElementById('lock'),k=LKF?'f':'p';
+ if(!el.hidden&&LSHOWN===k)return;el.hidden=false;LSHOWN=k;
+ el.innerHTML=LKF?`<div class="lbox"><div class="logo">YAK<span>.</span></div><p class="lkt"><b style="color:#fff">Clear this device?</b><br>This removes YAK's saved data and the passcode from this device only. You can then import your latest export to get your figures back.</p><button class="btn" onclick="lkWipe()">Clear this device</button><button class="btn lko" onclick="LKF=false;render()">Cancel</button></div>`
+ :`<div class="lbox"><div class="logo">YAK<span>.</span></div><form onsubmit="return lkUnlock(event)"><input id="lkin" type="password" placeholder="Passcode" autocomplete="off" aria-label="Passcode"${kpCur()}><button class="btn" type="submit" id="lkgo">Unlock</button></form><p class="lkerr" id="lkerr" role="alert"></p><button class="ghost lkf" onclick="LKF=true;render()">Forgot passcode?</button></div>`;
+ const i=document.getElementById('lkin');if(i)setTimeout(()=>i.focus(),50)}
+async function lkUnlock(e){e.preventDefault();const i=document.getElementById('lkin'),er=document.getElementById('lkerr'),pw=i.value;if(!pw)return false;
+ if(Date.now()<WAITUNTIL){er.textContent='Too many attempts. Try again in '+Math.ceil((WAITUNTIL-Date.now())/1000)+' seconds.';return false}
+ let ok=false;try{ok=await lockCheck(pw)}catch(x){}
+ if(ok){FAILS=0;LOCKED=false;PLAY=true;render()}
+ else{FAILS++;i.value='';if(FAILS%5===0){WAITUNTIL=Date.now()+30000;er.textContent='Too many attempts. Try again in 30 seconds.'}else er.textContent='That passcode is not right.';if(i.getAttribute('inputmode')&&!document.getElementById('lkalt'))er.insertAdjacentHTML('afterend','<button class="ghost lkf" id="lkalt" onclick="lkAlt()">Use letters and numbers</button>');i.focus()}
+ return false}
+function lkAlt(){const i=document.getElementById('lkin');if(!i)return;i.removeAttribute('inputmode');i.removeAttribute('pattern');const b=document.getElementById('lkalt');if(b)b.remove();i.blur();i.focus()}
+function lkWipe(){try{[KEY,'budgit.meta',LKEY].forEach(k=>localStorage.removeItem(k))}catch(e){}
+ S=structuredClone(seed);migrate();M={dirty:false,last:null,lastOpen:null,fresh:true,src:null};saveMeta();save(true);LOCKED=false;LKF=false;ASK=false;PEND=null;LK={mode:null,err:''};PLAY=true;render()}
+function lockNow(){if(!lockInfo())return;LOCKED=true;LKF=false;render()}
+// Locks as soon as you leave the app. The clock check is a backup for phones that pause a page without saying it was hidden.
+function lockUp(){if(lockInfo()&&lockOK()&&!LOCKED&&Date.now()>=NOLOCK){LOCKED=true;LKF=false;render()}}
+function autoLock(){const n=Date.now(),gap=n-LAST;LAST=n;if(gap>=AUTOLOCK)lockUp()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden){lockUp();LAST=Date.now()}else autoLock()});
+addEventListener('pagehide',lockUp);
+['pageshow','focus','resume'].forEach(ev=>addEventListener(ev,autoLock));
+setInterval(autoLock,3000);
+function lkMode(m){LK={mode:m,err:''};render()}
+function lkErr(t){LK.err=t;render()}
+async function lkSubmit(){const v=id=>{const e=document.getElementById(id);return e?e.value:''},m=LK.mode;
+ try{
+  if(m!=='set'&&!(await lockCheck(v('lk-cur'))))return lkErr('That is not your current passcode.');
+  if(m==='off'){localStorage.removeItem(LKEY);LK={mode:null,err:''};MSG='Passcode lock is off.';render();return}
+  const a=v('lk-p1'),b=v('lk-p2');
+  if(NUMK&&!/^\d+$/.test(a))return lkErr('Use numbers only.');
+  if(a.length<4)return lkErr(NUMK?'Use at least 4 digits.':'Use at least 4 characters.');
+  if(a!==b)return lkErr('The two passcodes do not match.');
+  await lockSet(a);LK={mode:null,err:''};MSG=m==='set'?'Passcode lock is on. YAK will ask for it when it opens on this device.':'Passcode changed.';render();
+ }catch(e){lkErr('The passcode could not be saved in this browser.')}}
+function lockCard(){if(!lockOK())return '';const on=!!lockInfo(),m=LK.mode,pf=(id,l,ac,k)=>`<label class="fld"><span class="fl">${l}</span><span class="mny"><input id="${id}" type="password" autocomplete="${ac}"${k} onkeydown="if(event.key==='Enter')lkSubmit()"></span></label>`;
+ if(m){return `<div class="card ask"><b>${m==='set'?'Set a passcode':m==='change'?'Change passcode':'Turn off passcode lock'}</b><p class="lbl">${m==='off'?'Enter your passcode to turn the lock off.':(NUMK?'Numbers only, at least 4 digits.':'At least 4 characters.')+' It is stored on this device only and is not included in exports. If you forget it, you can clear this device and import your latest export.'}</p><div class="flds" style="margin:10px 0 14px">${m!=='set'?pf('lk-cur','Current passcode','off',kpCur()):''}${m!=='off'?pf('lk-p1','New passcode','new-password',kpNew())+pf('lk-p2','Repeat new passcode','new-password',kpNew()):''}</div>${LK.err?`<p class="lbl" style="color:var(--bad);margin:0 0 10px" role="alert">${esc(LK.err)}</p>`:''}<button class="btn" ${BTN} onclick="lkSubmit()">${m==='off'?'Turn off':'Save passcode'}</button><button class="btn" ${OUT} onclick="lkMode(null)">Cancel</button></div>`}
+ return `<div class="card" style="margin:0 0 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Passcode lock</b> <span class="lkpill ${on?'on':'off'}">${on?'On':'Off'}</span><br><small>${on?'YAK asks for your passcode when it opens and whenever you leave the app. It keeps casual access out but does not encrypt your data.':'Add a passcode so YAK asks for it each time it opens on this device.'}</small></span><span>${on?`<button class="btn sm out" ${BTN} onclick="lockNow()">Lock now</button><button class="btn sm out" ${BTN} onclick="lkMode('change')">Change</button><button class="btn sm out" onclick="lkMode('off')">Turn off</button>`:`<button class="btn sm" onclick="lkMode('set')">Set a passcode</button>`}</span></div>`}
+function banner(){
+ return msgBox()+pendBox()+freshBox()+askBox()+rstBox()+reviewBox()+(M.dirty?`<div class="card pending tb"><span><b>Unexported changes</b></span><button class="btn sm" onclick="doExport()">Export</button></div>`
+ :`<div class="xbar tb"><span>${M.last?'Last exported <b>'+stamp(M.last)+'</b>':'Not exported yet'}</span><button class="btn sm out" onclick="doExport()">Export</button></div>`)}
+const gbp=n=>(n<0?'-':'')+'£'+Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+function fyMonths(){const m=new Date().getMonth();return (m-3+12)%12+1}
+function calc(){
+ const h=S.home,p=Math.max(1,+h.people||1);
+ const rent=+h.rentTotal||0;
+ const total=rent+sum(h.bills,b=>b.t==='each'?b.a*p:b.a);
+ const share=rent/p+sum(h.bills,b=>b.t==='each'?b.a:b.a/p);
+ const months=+h.months||fyMonths();
+ const m=S.me,mine=sum(m.bills,b=>+b.a||0);
+ const yes=m.fromAcct==='yes';
+ const out=mine+(yes?total:share);
+ const back=yes?total-share:0;
+ const net=out-back;
+ const save=m.salary-out+back-m.spend;
+ return{p,total,share,months,mine,yes,out,back,net,left:m.salary-out,save};
+}
+/* ---------- Change log: kept inside the data file so it is exported and imported with it ---------- */
+const LOGMAX=1000;
+const SLAB={'home.people':'People in household','home.rentTotal':'Total household rent','home.rentDate':'Rent date taken','home.budget':'Monthly budget per person','home.months':'Months counted this year','me.salary':'Monthly salary','me.spend':'Monthly spend allocated','fcStart':'Savings you already have'};
+const SFMT={'home.people':'num','home.months':'num','home.rentDate':'text'};
+const FN={n:'name',a:'amount',d:'date taken',t:'split'};
+function lgInfo(path){
+ if(SLAB[path])return{l:SLAB[path],f:SFMT[path]||'money'};
+ let m=path.match(/^(home|me)\.bills\.(\d+)\.([nadt])$/);
+ if(m){const b=S[m[1]].bills[+m[2]];return{l:(b?b.n:'Bill')+' ('+(m[1]==='home'?'house':'personal')+' bill): '+FN[m[3]],f:m[3]==='a'?'money':m[3]==='t'?'split':'text'}}
+ m=path.match(/^fc\.(\d{4}-\d{2})\.(\d+)\.([na])$/);
+ if(m){const it=(S.fc[m[1]]||[])[+m[2]],mo=months().find(x=>x.k===m[1]);return{l:(it?it.n:'Deduction')+' (Forecast, '+(mo?mo.l:m[1])+'): '+FN[m[3]],f:m[3]==='a'?'money':'text'}}
+ m=path.match(/^pay\.mates\.(\d+)\.([nd])$/);
+ if(m)return m[2]==='n'?{l:'Housemate '+(+m[1]+1)+': name',f:'text'}:{l:mn(+m[1])+': payment day of the month',f:'num'};
+ return{l:path,f:'text'}}
+function logc(e){if(!Array.isArray(S.log))S.log=[];e.t=iso();const L=S.log,last=L[L.length-1];
+ if(e.k==='chg'&&last&&last.k==='chg'&&last.p===e.p&&last.l===e.l&&Date.parse(e.t)-Date.parse(last.t)<12e4){last.n=e.n;last.t=e.t;if(String(last.o)===String(last.n))L.pop();return}
+ L.push(e);if(L.length>LOGMAX)L.splice(0,L.length-LOGMAX)}
+const mlab=k=>{const m=months().find(x=>x.k===k);return m?m.l:k};
+function fmtv(v,f){if(f==='money')return gbp(+v||0);if(f==='num')return String(v);if(f==='split')return v==='each'?'Each person pays this':'Split between everyone';if(f==='acct')return v==='yes'?'My account':v==='no'?'Collected separately':'Not set';return v===''||v==null?'(blank)':'"'+v+'"'}
+function ago(i){const s=(Date.now()-Date.parse(i))/1000;if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400){const h=Math.floor(s/3600);return h+(h===1?' hour':' hours')+' ago'}return stamp(i)}
+const hm=i=>new Date(i).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+let LGR=7,LGV='sum';
+const LGRS=[[1,'24 hours'],[7,'7 days'],[30,'30 days'],[0,'All time']];
+function lgRow(e,sub){let right='';
+ if(e.k==='chg'){right=String(e.o)===String(e.n)?`<span class="lgv"><small>Changed back to ${esc(fmtv(e.n,e.f))}</small></span>`:`<span class="lgv"><span class="lgo">${esc(fmtv(e.o,e.f))}</span><span class="lga">→</span><b>${esc(fmtv(e.n,e.f))}</b>${e.f==='money'?`<small class="lgd">${sgn((+e.n||0)-(+e.o||0))}</small>`:''}</span>`}
+ else if(e.x)right=`<span class="lgv"><small>${esc(e.x)}</small></span>`;
+ return `<div class="lgrow"><div class="lgm"><b>${esc(e.l)}</b><small class="ut">${sub}</small></div>${right}</div>`}
+function logPage(){const all=S.log||[],cut=LGR?Date.now()-LGR*864e5:0,L=all.filter(e=>Date.parse(e.t)>=cut);
+ const seg=(arr,cur,fn)=>arr.map(r=>`<button class="seg${r[0]===cur?' on':''}" onclick="${fn}(${typeof r[0]==='number'?r[0]:"'"+r[0]+"'"})" aria-pressed="${r[0]===cur}">${r[1]}</button>`).join('');
+ const items=new Set(L.filter(e=>e.k==='chg').map(e=>e.p)).size,lastT=all.length?ago(all[all.length-1].t):'-';
+ let rows='';
+ if(LGV==='sum'){const g=new Map(),out=[];
+  L.forEach(e=>{if(e.k==='chg'){const key=e.p+'|'+e.l,x=g.get(key);if(x){x.n=e.n;x.t=e.t;x.c++}else{const r={...e,c:1};g.set(key,r);out.push(r)}}else out.push({...e,c:1})});
+  rows=out.sort((a,b)=>Date.parse(b.t)-Date.parse(a.t)).map(r=>lgRow(r,(r.c>1?r.c+' edits, last ':'')+ago(r.t))).join('')}
+ else{let day='';rows=L.slice().reverse().map(e=>{const d=dd(e.t),h=d!==day?(day=d,`<div class="lgday">${d}</div>`):'';return h+lgRow(e,hm(e.t))}).join('')}
+ const empty=!all.length?'Nothing recorded yet. From now on, every change to a value, bill or date will appear here.':'No changes in this period. Try a longer one.';
+ return `<p class="lbl" style="max-width:680px">A record of every change to your values, bills and dates, kept inside your data file so it comes with each export. Use it to spot where a mistake crept in. ${LGV==='sum'?'Summary shows each item once, from its first value in the period to its latest.':'Every change shows each edit in order, newest first.'}</p>
+ <div class="lgctl"><div class="segs" role="group" aria-label="View">${seg([['sum','Summary'],['all','Every change']],LGV,'lgView')}</div><div class="segs" role="group" aria-label="Time period">${seg(LGRS,LGR,'lgRange')}</div></div>
+ <div class="grid">${card('Changes in this period',L.length)}${card('Values changed',items)}${card('Latest change',`<span style="font-size:${lastT.length>12?20:30}px">${lastT}</span>`)}</div>
+ <div class="card">${rows||'<small>'+empty+'</small>'}</div>
+ <p><small>The log keeps your latest ${LOGMAX} entries. Quick repeat edits to the same box are merged into one line. Changes made before v2.9.0 are not recorded.</small></p>`}
+function lgView(v){LGV=v;render()}
+function lgRange(r){LGR=r;render()}
+function tab(t){S.tab=t;MO=false;PLAY=true;save(true);render()}
+/* ---------- Data entry flow: keeps your place in the boxes while the page redraws ---------- */
+let PT=null,PTT=0,QR=false;
+addEventListener('pointerdown',e=>{PT=e.target;PTT=Date.now()},true);
+addEventListener('click',()=>{if(QR)setTimeout(()=>{if(QR)render()},0)},true);
+const sig=el=>el.dataset.k||((el.getAttribute('onclick')||'')+'|'+(el.getAttribute('aria-label')||el.textContent));
+function ctls(){return [...document.querySelectorAll('#app input:not([disabled]):not([type=file]),#app select,#app button:not([disabled]),#app summary')].filter(e=>e.offsetParent!==null)}
+function focusK(k){const e=document.querySelector('[data-k="'+k+'"]');if(e){e.focus();if(e.tagName==='INPUT'&&e.type==='number')try{e.select()}catch(x){}}}
+function focusSig(s){const e=ctls().find(x=>sig(x)===s);if(e)e.focus()}
+function pctl(){if(!PT||Date.now()-PTT>800||!PT.closest)return null;const l=PT.closest('label');return PT.closest('input,select,button,summary,a')||(l&&l.control)||null}
+function rr(){const c=pctl();
+ if(c&&c.tagName==='BUTTON'&&!c.dataset.k){QR=true;setTimeout(()=>{if(QR)render()},700);return}
+ const ae=document.activeElement,keep=!c&&ae&&ae.closest&&ae.closest('#app')&&(ae.tagName==='SELECT'||ae.tagName==='BUTTON')?sig(ae):null,k=c&&c.dataset?c.dataset.k:null;
+ const go=()=>{render();if(k)focusK(k);else if(keep)focusSig(keep)};
+ c?setTimeout(go,0):go()}
+function hop(t,dir,inputsOnly){
+ const L=ctls(),i=L.indexOf(t);if(i<0)return false;
+ let j=i+dir;if(inputsOnly)while(L[j]&&!/^(INPUT|SELECT)$/.test(L[j].tagName))j+=dir;
+ const nx=L[j];if(!nx)return false;
+ const s=sig(nx);PT=null;t.blur();
+ const n=ctls().find(x=>sig(x)===s);
+ if(n){n.focus();if(n.tagName==='INPUT'&&n.type==='number')try{n.select()}catch(x){}}
+ return true}
+document.addEventListener('keydown',e=>{const t=e.target;
+ if(e.isComposing||e.ctrlKey||e.metaKey||e.altKey||!t||t.tagName!=='INPUT'||!t.dataset||!t.dataset.k)return;
+ if(e.key==='Enter'){e.preventDefault();if(!hop(t,1,true))t.blur()}
+ else if(e.key==='Tab'){if(hop(t,e.shiftKey?-1:1,false))e.preventDefault()}});
+let SELQ=false;
+document.addEventListener('focusin',e=>{const t=e.target;if(t.tagName==='INPUT'&&t.type==='number'&&!t.disabled&&t.closest('#app')){SELQ=true;setTimeout(()=>{SELQ=false},700);try{t.select()}catch(x){}}});
+document.addEventListener('mouseup',e=>{if(SELQ&&e.target.tagName==='INPUT'){SELQ=false;e.preventDefault()}},true);
+const PDAY=/^pay\.mates\.\d+\.d$/;
+function set(path,v,num){
+ const k=path.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];
+ const key=k.at(-1),old=o[key],inf=lgInfo(path);let val=num?(parseFloat(v)||0):v;if(path==='home.people')val=Math.max(1,Math.round(val));if(path==='home.months')val=Math.min(12,Math.max(0,Math.round(val)));if(PDAY.test(path))val=Math.min(31,Math.max(1,Math.round(val)||1));o[key]=val;{const same=typeof val==='number'&&typeof old==='number'?Math.abs(old-val)<1e-9:String(old)===String(val);if(!same)logc({k:'chg',p:path,l:inf.l,f:inf.f,o:old,n:val})}if(k.includes('bills')||k[0]==='fc')o.u=iso();else{S.upd=S.upd||{};S.upd[path]=iso()}save();rr()}
+const gv=p=>p.split('.').reduce((o,k)=>o[k],S);
+const LIM={'home.people':[1,99],'home.months':[0,12]};
+function stp(path,d){const lim=LIM[path]||(PDAY.test(path)?[1,31]:[-1e9,1e9]),cur=+gv(path)||0,n=Math.min(lim[1],Math.max(lim[0],Math.round(cur+d)));if(n===cur)return;set(path,n,1)}
+function fld(path,label,o){o=o||{};const v=gv(path),lim=LIM[path],plain=label.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(),
+ sb=(d,t)=>`<button type="button" class="sb ${d<0?'l':'r'}" onclick="stp('${path}',${d})" aria-label="${d<0?'Decrease':'Increase'} ${esc(plain)}"${lim&&(d<0?v<=lim[0]:v>=lim[1])?' disabled':''}>${t}</button>`;
+ return `<label class="fld"><span class="fl">${label}</span><span class="mny${o.st?' st':''}">${o.cur?'<span class="cur">£</span>':''}<input class="num" type="number" data-k="${path}" inputmode="${o.st?'numeric':'decimal'}" step="any" value="${v}" onchange="set('${path}',this.value,1)" aria-label="${esc(plain)}">${o.st?sb(-1,'−')+sb(1,'+'):''}</span>${ut(path)}</label>`}
+function add(w){const a=S[w].bills;const nb=w==='home'?{n:'New bill',a:0,d:'',t:'split',u:iso()}:{n:'New expense',a:0,u:iso()};a.push(nb);logc({k:'add',l:'Added '+(w==='home'?'house bill':'personal bill'),x:'"'+nb.n+'"'});save();render();focusK(w+'.bills.'+(a.length-1)+'.n')}
+function del(w,i){const b=S[w].bills[i];if(b)logc({k:'del',l:'Removed '+(w==='home'?'house bill':'personal bill')+' "'+b.n+'"',x:'Was '+gbp(+b.a||0)+(w==='home'&&b.d?', taken '+b.d:'')});S[w].bills.splice(i,1);save();render()}
+function ask(v){if(S.me.fromAcct!==v)logc({k:'chg',p:'me.fromAcct',l:'Household bills paid from',f:'acct',o:S.me.fromAcct,n:v});S.me.fromAcct=v;save();render()}
+function reset(){RST=true;render()}
+function doReset(){RST=false;const lg=S.log||[];S=structuredClone(seed);S.log=lg;migrate();logc({k:'sys',l:'Reset everything to the starting values'});save();render()}
+function card(l,v,c){return `<div class="card ${c||''}"><div class="lbl">${l}</div><div class="big">${v}</div></div>`}
+function billRows(w){return S[w].bills.map((b,i)=>`<tr>
+<td><input class="nm" data-k="${w}.bills.${i}.n" value="${esc(b.n)}" onchange="set('${w}.bills.${i}.n',this.value)" aria-label="Bill name"></td>
+<td><span class="mny"><span class="cur">£</span><input class="num" data-k="${w}.bills.${i}.a" type="number" inputmode="decimal" step="any" value="${b.a}" onchange="set('${w}.bills.${i}.a',this.value,1)" aria-label="Amount"></span></td>
+${w==='home'?`<td><select data-k="home.bills.${i}.t" onchange="set('home.bills.${i}.t',this.value)" aria-label="Split type"><option value="split" ${b.t==='split'?'selected':''}>Split between everyone</option><option value="each" ${b.t==='each'?'selected':''}>Each person pays this</option></select></td>
+<td><input class="dt" data-k="home.bills.${i}.d" value="${esc(b.d||'')}" onchange="set('home.bills.${i}.d',this.value)" aria-label="Date taken"></td>`:''}
+<td><small>${dd(b.u)}</small></td><td><button class="ghost" onclick="del('${w}',${i})" aria-label="Delete">Remove</button></td></tr>`).join('')}
+function driftNote(c){const h=S.home,r2=x=>Math.round(x*100)/100;
+ const lines=h.bills.reduce((t,b)=>t+r2(b.t==='each'?b.a:b.a/c.p),0)+r2((+h.rentTotal||0)/c.p);
+ return Math.abs(r2(lines)-r2(c.share))>0.001?`<p><small>Each line is rounded to the nearest penny, so the lines add up to ${gbp(lines)} while the exact total is ${gbp(c.share)}.</small></p>`:''}
+function rentRow(){const h=S.home,p=Math.max(1,+h.people||1);
+ return `<tr><td><input class="nm" value="Rent" disabled aria-label="Rent"></td><td><span class="mny"><span class="cur">£</span><input class="num" disabled value="${((+h.rentTotal||0)/p).toFixed(2)}" aria-label="Rent individual share"></span></td><td><small>Individual share of ${gbp(+h.rentTotal||0)} total rent${p>1?' (split '+p+' ways)':''}</small></td><td><input class="dt" data-k="home.rentDate" value="${esc(h.rentDate||'')}" onchange="set('home.rentDate',this.value)" aria-label="Rent date taken"></td><td><small>${dd(S.upd['home.rentTotal'])}</small></td><td></td></tr>`}
+/* ---------- Donut chart: how the salary is apportioned ---------- */
+let DD=null;
+function splitData(c){const m=S.me;
+ return [{n:'House bills (your share)',v:c.share,c:'#c15f3c'},{n:'Personal bills',v:c.mine,c:'#d9a23f'},{n:'Spending allocated',v:+m.spend||0,c:'#5f86a3'},{n:'Savings',v:Math.max(0,c.save),c:'#5b9a6a'}].filter(x=>x.v>0.004)}
+function donutCard(c){
+ const it=splitData(c),tot=sum(it,x=>x.v),over=c.save<0;
+ if(!it.length){DD=null;return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your salary goes</b><small>Add your salary and bills and this chart will show how your money is split between house bills, personal bills, spending and savings.</small></div></div></div>`}
+ const mid=over?`<small>Overspent by</small><b style="color:var(--bad)">${gbp(-c.save)}</b>`:`<small>Monthly salary</small><b>${gbp(+S.me.salary||0)}</b>`;
+ DD={it,tot,mid};
+ let acc=0;
+ const segs=it.map((x,i)=>{const len=x.v/tot*100,g=it.length>1?Math.min(.8,len*.5):0,l=Math.max(len-g,.01),o=-(acc+g/2);acc+=len;
+  return `<circle class="dseg${PLAY?' anim':''}" id="ds${i}" cx="21" cy="21" r="15.9155" stroke="${x.c}" stroke-dasharray="${l.toFixed(3)} ${(100-l).toFixed(3)}" stroke-dashoffset="${o.toFixed(3)}" style="--i:${i}" onmouseenter="dHi(${i})" onmouseleave="dLo()" onclick="dHi(${i})"/>`}).join('');
+ const leg=it.map((x,i)=>`<button class="dl" onmouseenter="dHi(${i})" onmouseleave="dLo()" onfocus="dHi(${i})" onblur="dLo()" onclick="dHi(${i})"><i style="background:${x.c}"></i><span>${esc(x.n)}</span><b>${gbp(x.v)}</b><small>${(x.v/tot*100).toFixed(1)}%</small></button>`).join('');
+ return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Donut chart of how your monthly salary is split: ${esc(it.map(x=>x.n+' '+gbp(x.v)).join(', '))}"><circle class="dtrack" cx="21" cy="21" r="15.9155"/><g transform="rotate(-90 21 21)">${segs}</g></svg><div class="dmid" id="dmid">${mid}</div></div><div class="dleg">${leg}${over?'<small style="padding:6px 8px">Outgoings are more than your salary, so there is nothing left to save. Percentages are of total outgoings.</small>':''}</div></div></div>`}
+function dHi(i){const d=DD;if(!d)return;
+ d.it.forEach((x,j)=>{const e=document.getElementById('ds'+j);if(e)e.setAttribute('class','dseg '+(j===i?'on':'dim'))});
+ const x=d.it[i],m=document.getElementById('dmid');if(m)m.innerHTML=`<small>${esc(x.n)}</small><b>${gbp(x.v)}</b><small>${(x.v/d.tot*100).toFixed(1)}% of ${d.mid.includes('Overspent')?'outgoings':'salary'}</small>`}
+function dLo(){const d=DD;if(!d)return;
+ d.it.forEach((x,j)=>{const e=document.getElementById('ds'+j);if(e)e.setAttribute('class','dseg')});
+ const m=document.getElementById('dmid');if(m)m.innerHTML=d.mid}
+function home(c){
+ const h=S.home,budgetOk=c.share<=h.budget;
+ return `<div class="card inp"><div class="flds">${fld('home.people','People in household',{st:1})}${fld('home.rentTotal',c.p>1?'Total household rent ('+c.p+' people)':'Monthly rent',{cur:1})}${fld('home.budget','Monthly budget per person',{cur:1})}</div></div>
+<div class="grid">${card('Individual share each month',gbp(c.share),'hero')}${card('Household total each month',gbp(c.total))}</div>
+<div class="card"><span class="pill ${budgetOk?'ok':'warn'}">${budgetOk?'Within budget':'Over budget'}</span> <small>Individual share is ${gbp(c.share)} against a ${gbp(h.budget)} budget (${gbp(h.budget-c.share)} ${budgetOk?'spare':'over'}).</small></div>
+<h2>Bills</h2><div class="scroll"><table class="bt"><tr><th>Bill</th><th>Monthly amount</th><th>How it is divided</th><th>Date taken</th><th>Last updated</th><th></th></tr>${billRows('home')}${rentRow()}</table></div>
+<p><button class="btn" onclick="add('home')">Add bill</button></p>
+<h2>Per person, every month</h2><div class="scroll"><table><tr><th>Bill</th><th>Each person pays</th></tr>
+${h.bills.map(b=>{const s=b.t==='each'?b.a:b.a/c.p;return `<tr><td>${esc(b.n)}</td><td>${gbp(s)}</td></tr>`}).join('')}
+<tr><td>Rent</td><td>${gbp((+h.rentTotal||0)/c.p)}</td></tr>
+<tr class="tot"><td>Total</td><td>${gbp(c.share)}</td></tr></table></div>${driftNote(c)}`}
+function me(c){
+ const m=S.me,others=c.p-1;
+ const q=m.fromAcct===null?`<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Say yes if you pay them and the others pay you back. Say no if they are collected separately.</p><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div>`:
+ `<div class="card" style="margin-bottom:16px"><small>Household bills: <b>${c.yes?'paid from your account':'collected separately'}</b></small> <button class="ghost" style="color:var(--acc)" onclick="ask(null)">Change</button></div>`;
+ const owed=c.yes?`<h2>What comes back</h2><div class="grid">${card('Owed back in total',gbp(c.back),'hero')}${card('Owed by each of '+others+' '+(others===1?'person':'people'),others?gbp(c.back/others):'£0.00')}${card('Net cost of home bills to you',gbp(c.share))}</div>`:'';
+ return q+`<div class="card inp"><div class="flds">${fld('me.salary','Monthly salary (net)',{cur:1})}${fld('me.spend','Monthly spend allocated',{cur:1})}</div></div>
+<div class="grid">${card(c.yes?'You will save each month once others repay you':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn')}${card('Total deductions (lump sum out)',gbp(c.out))}</div>
+<h2>Where your salary goes</h2>${donutCard(c)}
+<h2>How it adds up</h2><table class="sum">
+<tr><td>Salary (net)</td><td>${gbp(m.salary)}</td></tr>
+<tr><td>Personal bills</td><td>- ${gbp(c.mine)}</td></tr>
+<tr><td>Household bills ${c.yes?'(full amount from your account)':'(individual share)'}</td><td>- ${gbp(c.yes?c.total:c.share)}</td></tr>
+<tr><td>Salary minus bills</td><td>${gbp(c.left)}</td></tr>
+${c.yes?`<tr><td>Repaid by others</td><td>+ ${gbp(c.back)}</td></tr>`:''}
+<tr><td>Monthly spend allocated</td><td>- ${gbp(m.spend)}</td></tr>
+<tr class="tot"><td>${c.yes?'Savings once others have repaid you':'Savings after deductions'}</td><td>${gbp(c.save)}</td></tr></table>${owed}
+<h2>Personal bills</h2><div class="scroll"><table class="bt"><tr><th>Bill</th><th>Monthly amount</th><th>Last updated</th><th></th></tr>${billRows('me')}
+<tr class="tot"><td>Personal deductions</td><td>${gbp(c.mine)}</td><td></td><td></td></tr></table></div>
+<p><button class="btn" onclick="add('me')">Add expense</button></p>`}
+function months(){const d=new Date(),o=[];for(let i=0;i<12;i++){const x=new Date(d.getFullYear(),d.getMonth()+i,1);o.push({k:x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0'),l:x.toLocaleString('en-GB',{month:'long',year:'numeric'})})}return o}
+function fadd(k){const a=(S.fc[k]=S.fc[k]||[]);a.push({n:'Credit card',a:0,u:iso()});logc({k:'add',l:'Added deduction',x:mlab(k)});save();render();focusK('fc.'+k+'.'+(a.length-1)+'.n')}
+function fdel(k,i){const d=S.fc[k][i];if(d)logc({k:'del',l:'Removed deduction "'+d.n+'"',x:'Was '+gbp(+d.a||0)+' in '+mlab(k)});S.fc[k].splice(i,1);save();render()}
+function frep(k,i){const d=S.fc[k][i],ms=months().map(m=>m.k);ms.slice(ms.indexOf(k)+1).forEach(m=>{(S.fc[m]=S.fc[m]||[]).push({n:d.n,a:d.a})});logc({k:'add',l:'Repeated deduction "'+d.n+'" in later months',x:gbp(+d.a||0)+' from '+mlab(k)+' onwards'});save();render()}
+/* ---------- Payments: what each housemate owes and has paid, month by month ----------
+   S.pay = {start:'YYYY-MM', mates:[{n:name,d:payment day}], m:{'YYYY-MM':{due,n,p:[paid per housemate],t:[updated]}}}
+   The current month uses the live individual share from the House tab. Once a month is over it keeps the share and headcount it had (due, n). */
+const ymk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+const kd=(k,day)=>new Date(+k.slice(0,4),+k.slice(5)-1,day==null?1:day);
+const pml=k=>kd(k).toLocaleString('en-GB',{month:'long',year:'numeric'});
+const sdm=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+const mate=i=>S.pay.mates[i]||{n:'',d:1};
+const mn=i=>mate(i).n||'Housemate '+(i+1);
+const nOf=(k,c)=>{const r=S.pay.m[k];return r&&r.n!=null?r.n:c.p-1};
+const dueOf=(k,c)=>{const r=S.pay.m[k];return r&&r.due!=null?r.due:rd2(c.share)};
+function payMonths(){const o=[],cur=ymk(new Date());let k=S.pay.start||cur;if(k>cur)k=cur;for(let g=0;g<240;g++){o.push(k);if(k===cur)break;k=ymk(kd(k,32))}return o.reverse()}
+function paySync(c){const P=S.pay,cur=ymk(new Date());let ch=false;
+ if(!P.start||P.start>cur){P.start=cur;ch=true}
+ const ms=payMonths();
+ ms.forEach(k=>{if(k<cur){const r=P.m[k]=P.m[k]||{p:[]};if(r.due==null){r.due=rd2(c.share);r.n=c.p-1;ch=true}}});
+ const N=Math.max(c.p-1,...ms.map(k=>nOf(k,c))),d0=Math.min(31,Math.max(1,parseInt(S.home.rentDate)||1));
+ while(P.mates.length<N){P.mates.push({n:'Housemate '+(P.mates.length+1),d:d0});S.upd['pay.mates.'+(P.mates.length-1)+'.d']=iso();ch=true}
+ if(ch)save(true);return N}
+function pst(k,i,c){const r=S.pay.m[k]||{},due=dueOf(k,c),paid=+(r.p||[])[i]||0,out=Math.max(0,rd2(due-paid)),end=kd(k,32);end.setDate(0);
+ const day=Math.min(+mate(i).d||1,end.getDate()),late=Date.now()>=kd(k,day+1).getTime();
+ return{due,paid,out,dt:kd(k,day),st:due<.005?'none':out<.005?'paid':late?'over':paid>0?'part':'due'}}
+function ppill(st,dt){return st==='paid'?'<span class="pill paid">Paid</span>':st==='over'?'<span class="pill over">Overdue</span>':st==='part'?'<span class="pill part">Part paid</span>':st==='none'?'<span class="pill ok">Nothing owed</span>':'<span class="pill ok">Due'+(dt?' '+sdm(dt):'')+'</span>'}
+const worst=a=>a.includes('over')?'over':a.every(s=>s==='none')?'none':a.every(s=>s==='paid'||s==='none')?'paid':a.includes('part')||a.includes('paid')?'part':'due';
+function paySet(k,i,val){const r=S.pay.m[k]=S.pay.m[k]||{p:[]};r.p=r.p||[];const old=+r.p[i]||0,n=Math.max(0,rd2(val));if(Math.abs(old-n)<.005)return false;
+ r.p[i]=n;(r.t=r.t||[])[i]=iso();logc({k:'chg',p:'pay.m.'+k+'.'+i,l:mn(i)+': paid for '+pml(k),f:'money',o:old,n});return true}
+function payAmt(k,i,v){if(paySet(k,i,parseFloat(v)||0))save();rr()}
+function payTick(k,i){const s=pst(k,i,calc());if(s.st==='none')return;if(paySet(k,i,s.st==='paid'?0:s.due))save();render()}
+function payAll(k){const c=calc(),ss=Array.from({length:nOf(k,c)},(_,i)=>pst(k,i,c)),all=ss.every(s=>s.st==='paid'||s.st==='none');let ch=false;
+ ss.forEach((s,i)=>{if(s.st==='none')return;if(all)ch=paySet(k,i,0)||ch;else if(s.st!=='paid')ch=paySet(k,i,s.due)||ch});if(ch)save();render()}
+function payBack(){const k=ymk(kd(S.pay.start||ymk(new Date()),0));S.pay.start=k;logc({k:'add',l:'Added a month to Payments',x:pml(k)});save();render()}
+function payDrop(){const ms=payMonths();if(ms.length<2)return;const k=ms[ms.length-1];delete S.pay.m[k];S.pay.start=ms[ms.length-2];logc({k:'del',l:'Removed a month from Payments',x:pml(k)});save();render()}
+function payPage(c,N){
+ if(!N)return `<div class="card ask"><b>No housemates yet</b><p class="lbl">Payments tracks what the other people in your household owe you each month. Set People in household to 2 or more on the House tab and they will appear here.</p><button class="btn" onclick="tab('home')">Go to House</button></div>`;
+ const ms=payMonths(),cur=ms[0],first=ms[ms.length-1],now=c.p-1,GG='class="grid gg" style="grid-template-columns:repeat(auto-fill,minmax(290px,1fr))"';
+ const T=Array.from({length:N},()=>({due:0,paid:0,out:0,ov:0,sts:[],cs:null}));
+ let cOut=0,cPaid=0,cTot=0,cSt='none';
+ const cards=ms.map(k=>{const n=nOf(k,c),due=dueOf(k,c),sts=[];let mp=0,mo=0;
+  const rows=Array.from({length:n},(_,i)=>{const s=pst(k,i,c),t=T[i],nm=esc(mn(i));
+   t.due+=s.due;t.paid+=Math.min(s.paid,s.due);t.out+=s.out;if(s.st==='over')t.ov+=s.out;t.sts.push(s.st);if(k===cur)t.cs=s;
+   mp+=s.paid;mo+=s.out;sts.push(s.st);
+   return `<div class="pr"><div class="ph"><b>${nm}</b>${ppill(s.st,s.dt)}</div>
+   <div class="prg"><span class="mny"><span class="cur">£</span><input class="num" type="number" inputmode="decimal" step="any" min="0" data-k="pay.m.${k}.${i}" value="${s.paid||''}" placeholder="0.00" onchange="payAmt('${k}',${i},this.value)" aria-label="Amount paid by ${nm} for ${pml(k)}"></span><button type="button" class="tk${s.st==='paid'?' on':''}" aria-pressed="${s.st==='paid'}" onclick="payTick('${k}',${i})" aria-label="${nm} paid in full for ${pml(k)}"${s.st==='none'?' disabled':''}><i>✓</i>Paid in full</button></div>
+   <small>Owes ${gbp(s.due)}, due ${sdm(s.dt)}${s.out>.005&&s.paid>0?'. '+gbp(s.out)+' still to pay':''}</small></div>`}).join('');
+  const st=worst(sts),tot=due*n;
+  if(k===cur){cOut=mo;cPaid=mp;cTot=tot;cSt=st}
+  return `<div class="card"><div class="ph"><b>${pml(k)}</b>${ppill(st)}</div>
+  <div class="big" style="color:${st==='over'?'var(--bad)':'inherit'}">${gbp(mo)}</div><div class="lbl">outstanding of ${gbp(tot)} owed${n>1?' ('+gbp(due)+' each)':''}</div>
+  ${rows}
+  <div class="pf">${n>1?`<button type="button" class="tk${st==='paid'?' on':''}" aria-pressed="${st==='paid'}" onclick="payAll('${k}')" aria-label="Everyone paid in full for ${pml(k)}"${st==='none'?' disabled':''}><i>✓</i>All paid in full</button>`:''}<small>Received ${gbp(mp)} of ${gbp(tot)}</small>${k===first&&k!==cur&&mp<.005?`<button class="ghost" style="font-size:13px" onclick="payDrop()" aria-label="Remove ${pml(k)}">Remove month</button>`:''}</div></div>`}).join('');
+ const allOut=sum(T,t=>t.out),allOv=sum(T,t=>t.ov),mname=kd(cur).toLocaleString('en-GB',{month:'long'});
+ const mates=T.map((t,i)=>{const m=mate(i),st=t.sts.includes('over')?'over':t.due<.005?'none':t.out<.005?'paid':t.cs?t.cs.st:'part';
+  return `<div class="card"><div class="ph"><input class="hn" data-k="pay.mates.${i}.n" value="${esc(m.n)}" placeholder="Housemate ${i+1}" onchange="set('pay.mates.${i}.n',this.value)" aria-label="Housemate ${i+1} name">${ppill(st,t.cs&&t.cs.dt)}</div>
+  <div class="big" style="color:${t.ov>.005?'var(--bad)':'inherit'}">${gbp(t.out)}</div><div class="lbl">owed to you across all months${t.ov>.005?' ('+gbp(t.ov)+' overdue)':''}</div>
+  <div class="hmr"><span><b>Payment day</b><small class="ut">Day of each month they pay by</small></span><span class="mny st pd"><input class="num" type="number" inputmode="numeric" min="1" max="31" data-k="pay.mates.${i}.d" value="${m.d}" onchange="set('pay.mates.${i}.d',this.value,1)" aria-label="Payment day of the month for ${esc(mn(i))}"><button type="button" class="sb l" onclick="stp('pay.mates.${i}.d',-1)" aria-label="Earlier payment day for ${esc(mn(i))}"${m.d<=1?' disabled':''}>−</button><button type="button" class="sb r" onclick="stp('pay.mates.${i}.d',1)" aria-label="Later payment day for ${esc(mn(i))}"${m.d>=31?' disabled':''}>+</button></span></div>
+  <small>Paid ${gbp(t.paid)} of ${gbp(t.due)} owed since ${pml(first)}${i>=now?'. No longer in the household':''}</small></div>`}).join('');
+ const kc=(l,v,sub,cls)=>`<div class="card ${cls||''}"><div class="lbl">${l}</div><div class="big">${v}</div><small class="ut">${sub}</small></div>`;
+ return `<p class="lbl" style="max-width:680px">Track what your housemates pay you each month. Each housemate owes the individual share from the House tab, currently <b>${gbp(rd2(c.share))}</b> a month. Tick Paid in full or type the amount received. Once a month is over it keeps the share that applied at the time.${c.yes?'':' On the Personal tab, household bills are '+(S.me.fromAcct===null?'not yet set as paid from your account':'set as collected separately')+'; Payments still tracks each housemate\'s share.'}</p>
+ <div class="grid">${kc('Outstanding for '+mname,gbp(cOut),'of '+gbp(cTot)+' owed this month',cSt==='over'?'warn':'hero')}${kc('Received for '+mname,gbp(cPaid),cSt==='paid'?'Everyone has paid in full':cSt==='none'?'Nothing owed this month':gbp(cOut)+' still to come')}${kc('Owed to you in total',gbp(allOut),'Across '+ms.length+(ms.length===1?' month':' months'))}${kc('Overdue',gbp(allOv),allOv>.005?'Past the payment day and not paid in full':'Nothing is overdue',allOv>.005?'warn':'')}</div>
+ <h2>Housemates</h2><div ${GG}>${mates}</div>
+ <h2>Month by month</h2><div ${GG}>${cards}</div>
+ <p style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><button class="btn out" onclick="payBack()">Add an earlier month</button><small>Earlier months start from today's share of ${gbp(rd2(c.share))}.</small></p>`}
+/* ---------- Line graph: savings balance month by month ---------- */
+let FCG=null;
+function shortM(k){return new Date(+k.slice(0,4),+k.slice(5)-1,1).toLocaleString('en-GB',{month:'short'})+' '+k.slice(2,4)}
+function niceTicks(lo,hi){const raw=(hi-lo)/4,mag=Math.pow(10,Math.floor(Math.log10(raw))),n=raw/mag,st=(n<=1?1:n<=2?2:n<=5?5:10)*mag,t=[];
+ for(let v=Math.floor(lo/st+1e-9)*st;;v+=st){t.push(Math.round(v*100)/100);if(v>=hi-1e-9)break}return t}
+const axl=v=>{const a=Math.abs(v);return(v<0?'-':'')+'£'+(a>=1000?(a/1000).toFixed(a>=10000||a%1000===0?0:1)+'k':String(Math.round(a*100)/100))};
+function fcChart(ser){
+ const pts=[{l:'Now',s:'Now',bal:+S.fcStart||0,chg:null,ded:0},...ser.map(x=>({l:x.l,s:shortM(x.k),bal:x.bal,chg:x.chg,ded:x.ded}))];
+ const W=Math.max(280,Math.min(900,document.documentElement.clientWidth-82)),H=W<480?240:300,P={l:W<480?50:58,r:18,t:14,b:30},N=pts.length-1;
+ let lo=Math.min(0,...pts.map(p=>p.bal)),hi=Math.max(0,...pts.map(p=>p.bal));if(hi-lo<1)hi=lo+100;
+ const tk=niceTicks(lo,hi),y0=tk[0],y1=tk[tk.length-1],iw=W-P.l-P.r,ih=H-P.t-P.b;
+ const X=i=>P.l+i*iw/N,Y=v=>P.t+ih*(1-(v-y0)/(y1-y0));
+ FCG={W,P,N,pts,X,Y};
+ const line=pts.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(p.bal).toFixed(1)).join('');
+ const area=line+`L${X(N).toFixed(1)},${Y(0).toFixed(1)}L${X(0).toFixed(1)},${Y(0).toFixed(1)}Z`;
+ const grid=tk.map(v=>`<line class="gl" x1="${P.l}" x2="${W-P.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="ax" x="${P.l-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${axl(v)}</text>`).join('');
+ const nth=W<420?3:W<700?2:1;
+ const xl=pts.map((p,i)=>i%nth===0?`<text class="ax" x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${p.s}</text>`:'').join('');
+ const dots=pts.map((p,i)=>`<circle class="pt${PLAY?' anim':''}" style="--i:${i}" cx="${X(i).toFixed(1)}" cy="${Y(p.bal).toFixed(1)}" r="${W<480?3.5:4.5}" fill="${i===0?'var(--mute)':p.chg<0?'var(--bad)':'var(--acc)'}"/>`).join('');
+ const last=pts[N],first=pts[0],diff=last.bal-first.bal;
+ return `<div class="card" style="margin-bottom:16px"><b>Savings balance by month</b><div class="lbl" style="margin-bottom:8px">Hover or touch the line to see each month. Dots in red are months where savings drop.</div>
+ <div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line graph of projected savings balance. It goes from ${gbp(first.bal)} now to ${gbp(last.bal)} after 12 months, a change of ${gbp(diff)}." onpointermove="fcHov(event)" onpointerdown="fcHov(event)" onpointerleave="fcOut()">
+ ${grid}<line class="zl" x1="${P.l}" x2="${W-P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}"/>${xl}
+ <path class="ar${PLAY?' anim':''}" d="${area}"/><path class="ln${PLAY?' anim':''}" pathLength="1" d="${line}"/>${dots}
+ <line id="fcx" class="zl" style="display:none" y1="${P.t}" y2="${H-P.b}"/><circle id="fcd" r="7" fill="none" stroke="var(--ink)" stroke-width="2" style="display:none"/></svg>
+ <div id="fct" class="tip"></div></div></div>`}
+function fcHov(e){const g=FCG;if(!g)return;
+ const r=e.currentTarget.getBoundingClientRect(),sx=g.W/r.width,px=(e.clientX-r.left)*sx,
+ i=Math.max(0,Math.min(g.N,Math.round((px-g.P.l)/(g.X(1)-g.X(0))))),p=g.pts[i],x=g.X(i);
+ const ln=document.getElementById('fcx'),dt=document.getElementById('fcd'),tp=document.getElementById('fct');if(!ln||!dt||!tp)return;
+ ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.style.display='';
+ dt.setAttribute('cx',x);dt.setAttribute('cy',g.Y(p.bal));dt.style.display='';
+ tp.innerHTML=`<b>${esc(p.l)}</b><br>Balance <b>${gbp(p.bal)}</b>`+(p.chg===null?'<br><small>Savings you already have</small>':`<br><span style="color:${p.chg<0?'#ff9d94':'#8fd19e'}">${p.chg<0?'▼ down':'▲ up'} ${gbp(Math.abs(p.chg))} this month</span>`+(p.ded?`<br><small>after ${gbp(p.ded)} of deductions</small>`:''));
+ tp.style.display='block';const w=tp.offsetWidth;tp.style.left=Math.max(4,Math.min(r.width-w-4,x/sx-w/2))+'px'}
+function fcOut(){['fcx','fcd','fct'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
+function fc(c){
+ const base=c.save;let cum=+S.fcStart||0,td=0,ts=0;const ser=[];
+ const cards=months().map(m=>{const l=S.fc[m.k]||[],ded=sum(l,x=>+x.a||0),f=base-ded;cum+=f;td+=ded;ts+=f;ser.push({k:m.k,l:m.l,bal:cum,chg:f,ded});
+ return `<div class="card"><b>${m.l}</b><div class="big ${f<0?'':''}" style="color:${f<0?'var(--bad)':'inherit'}">${gbp(f)}</div><div class="lbl">forecast savings</div>
+ ${l.map((x,i)=>`<div class="dr"><div class="dg"><input data-k="fc.${m.k}.${i}.n" value="${esc(x.n)}" onchange="set('fc.${m.k}.${i}.n',this.value)" aria-label="Deduction name"><span class="mny"><span class="cur">£</span><input class="num" data-k="fc.${m.k}.${i}.a" type="number" inputmode="decimal" step="any" value="${x.a}" onchange="set('fc.${m.k}.${i}.a',this.value,1)" aria-label="Amount"></span></div><div class="da"><button class="ghost" style="color:var(--acc)" title="Copy to every later month" onclick="frep('${m.k}',${i})">Repeat in later months</button><button class="ghost" onclick="fdel('${m.k}',${i})" aria-label="Remove">Remove</button></div></div>`).join('')}
+ <p style="margin:10px 0 6px"><button class="ghost" style="color:var(--acc);padding-left:0" onclick="fadd('${m.k}')">Add deduction</button></p>
+ <small>Deductions ${gbp(ded)}. Running total ${gbp(cum)}</small></div>`}).join('');
+ return `<p class="lbl" style="max-width:640px">Each month starts from your monthly saving ${c.yes?'(after others repay you)':''} of <b>${gbp(base)}</b> from the Personal tab. Add anything not in your personal outgoings, such as credit card payments, to see the forecast.</p>
+ <div class="card inp"><div class="flds one">${fld('fcStart','Savings you already have<small>Optional</small>',{cur:1})}</div></div>
+ <div class="grid">${card('Forecast saved over 12 months',gbp(ts),ts>=0?'hero':'warn')}${card('Extra deductions entered',gbp(td))}${card('Projected balance after 12 months',gbp((+S.fcStart||0)+ts))}</div>
+ ${fcChart(ser)}
+ <div class="grid gg" style="grid-template-columns:repeat(auto-fill,minmax(290px,1fr))">${cards}</div>`}
+/* ---------- Simulator: what-if scenarios (never saved, never changes your data) ---------- */
+let SIM=null,SLG=null,SDN=null;
+const rd2=x=>Math.round((+x||0)*100)/100;
+const sgn=d=>Math.abs(d)<.005?gbp(0):(d>0?'+':'-')+gbp(Math.abs(d));
+const SIMF=[
+ {k:'salary',l:'Salary',sub:'Net, per month',good:1,max:5000,rd:500,st:10},
+ {k:'house',l:'House bills (excluding rent)',sub:'Your individual share, per month',max:500,rd:100,st:5},
+ {k:'personal',l:'Personal bills',sub:'Per month',max:500,rd:100,st:5},
+ {k:'spend',l:'Spend deductions',sub:'Monthly spend allocated',max:1000,rd:100,st:5}];
+const SDC=[{n:'Rent (your share)',c:'#8f8a7e'},{n:'House bills (excl. rent)',c:'#c15f3c'},{n:'Personal bills',c:'#d9a23f'},{n:'Spend deductions',c:'#5f86a3'},{n:'Savings',c:'#5b9a6a'}];
+const HZ=[[6,'6M','6 months'],[12,'1Y','12 months'],[24,'2Y','2 years'],[36,'3Y','3 years'],[60,'5Y','5 years']];
+function simBase(c){const h=S.home,m=S.me,rentSh=(+h.rentTotal||0)/c.p;
+ return{salary:rd2(m.salary),rent:rd2(rentSh),house:rd2(c.share-rentSh),personal:rd2(c.mine),spend:rd2(m.spend)}}
+function simCalc(v,b){const costs=b.rent+v.house+v.personal+v.spend,save=v.salary-costs;
+ return{salary:v.salary,rent:b.rent,house:v.house,personal:v.personal,spend:v.spend,costs,save,rate:v.salary>0?save/v.salary*100:null}}
+function ensureSim(c){const b=simBase(c),sig=JSON.stringify(b);
+ if(!SIM||SIM.sig!==sig)SIM={salary:b.salary,house:b.house,personal:b.personal,spend:b.spend,hz:SIM?SIM.hz:12,b,sig}}
+function simPage(c){ensureSim(c);const b=SIM.b;
+ const ctl=SIMF.map(f=>{const mx=Math.max(f.max,Math.ceil(b[f.k]*2/f.rd)*f.rd,Math.ceil(SIM[f.k]/f.rd)*f.rd);
+  return `<div class="sc"><div class="sch"><b>${f.l}</b><span class="chip same" id="d-${f.k}">Unchanged</span></div>
+  <div class="scin"><span class="mny"><span class="cur">£</span><input class="num" id="n-${f.k}" type="number" min="0" step="0.01" inputmode="decimal" value="${SIM[f.k]}" oninput="simSet('${f.k}',this.value,'n')" aria-label="${f.l}"></span></div>
+  <input class="rng" id="s-${f.k}" type="range" min="0" max="${mx}" step="${f.st}" value="${SIM[f.k]}" oninput="simSet('${f.k}',this.value,'r')" aria-label="${f.l} slider">
+  <small class="ut">${f.sub}. Currently ${gbp(b[f.k])}</small></div>`}).join('');
+ return `<p class="lbl" style="max-width:680px">Try out what-if scenarios. Change an amount and the dashboard and charts below update straight away. The figures start from what you have entered on the other tabs. Nothing here is saved or changes your data.</p>
+ <div class="card" style="margin-bottom:16px"><div class="simtop"><div><b>Your scenario</b><div class="lbl" id="simState"></div></div><button class="btn" id="simReset" onclick="simReset()">Reset to current values</button></div>
+ <div class="simgrid">${ctl}</div>
+ <p class="lbl" style="margin:12px 0 0">Rent (your share ${gbp(b.rent)} a month) stays the same in every scenario.</p></div>
+ <div class="grid" id="simKpi"></div>
+ <div class="card" style="margin-bottom:16px" id="simMonth"></div>
+ <div class="card" style="margin-bottom:16px" id="simLine"></div>
+ <h2>How your money would be apportioned</h2><div class="card" id="simDonut"></div>`}
+function simSet(k,val,src){const v=Math.max(0,parseFloat(val)||0);SIM[k]=v;
+ if(src==='r'){const n=document.getElementById('n-'+k);if(n)n.value=v}else{const s=document.getElementById('s-'+k);if(s)s.value=v}
+ simDraw(false)}
+function simReset(){if(!SIM)return;SIMF.forEach(f=>{SIM[f.k]=SIM.b[f.k];const n=document.getElementById('n-'+f.k),s=document.getElementById('s-'+f.k);if(n)n.value=SIM.b[f.k];if(s)s.value=SIM.b[f.k]});simDraw(false)}
+function simHz(h){SIM.hz=h;simDraw(false)}
+function simDraw(anim){
+ if(!SIM||S.tab!=='sim'||!document.getElementById('simKpi'))return;
+ const b=SIM.b,s=simCalc(SIM,b),o=simCalc(b,b),ch=SIMF.some(f=>Math.abs(SIM[f.k]-b[f.k])>=.005);
+ SIMF.forEach(f=>{const e=document.getElementById('d-'+f.k);if(!e)return;const d=SIM[f.k]-b[f.k];
+  if(Math.abs(d)<.005){e.className='chip same';e.textContent='Unchanged'}
+  else{e.className='chip '+((f.good?d>0:d<0)?'good':'bad');e.textContent=sgn(d)+' a month'}});
+ document.getElementById('simState').textContent=ch?'This scenario differs from your current figures.':'Matches your current figures. Move a slider or type an amount to explore.';
+ document.getElementById('simReset').disabled=!ch;
+ const hz=SIM.hz,hl=HZ.find(x=>x[0]===hz)[2],dm=s.save-o.save;
+ const kc=(l,v,sub,cls,vc)=>`<div class="card ${cls||''}"><div class="lbl">${l}</div><div class="big ${vc||''}">${v}</div><small class="ut">${sub}</small></div>`;
+ document.getElementById('simKpi').innerHTML=
+  kc('Potential monthly savings',gbp(s.save),'Now '+gbp(o.save),s.save>=0?'hero':'warn')+
+  kc('Change in monthly savings',sgn(dm),Math.abs(dm)<.005?'Same as now':dm>0?'More than now':'Less than now','',Math.abs(dm)<.005?'':dm>0?'pos':'neg')+
+  kc('Potential monthly costs',gbp(s.costs),'Now '+gbp(o.costs)+' ('+sgn(s.costs-o.costs)+')')+
+  kc('Extra saved over '+hl,sgn(dm*hz),'Compared with your current figures','',Math.abs(dm)<.005?'':dm>0?'pos':'neg')+
+  kc('Savings rate',s.rate===null?'-':s.rate.toFixed(1)+'%','Now '+(o.rate===null?'-':o.rate.toFixed(1)+'%')+' of salary')+
+  kc('Total saved over '+hl,gbp(s.save*hz),'Now '+gbp(o.save*hz),s.save*hz<0?'warn':'');
+ simLineDraw(s,o,anim);simMonthDraw(s,o,anim);simDonutDraw(s,o,anim)}
+function simLineDraw(s,o,anim){
+ const hz=SIM.hz,W=Math.max(280,Math.min(900,document.documentElement.clientWidth-82)),H=W<480?250:310,P={l:W<480?54:62,r:20,t:14,b:30};
+ const ea=s.save*hz,ec=o.save*hz;
+ let lo=Math.min(0,ea,ec),hi=Math.max(0,ea,ec);if(hi-lo<1)hi=lo+100;
+ const tk=niceTicks(lo,hi),y0=tk[0],y1=tk[tk.length-1],iw=W-P.l-P.r,ih=H-P.t-P.b;
+ const X=i=>P.l+i*iw/hz,Y=v=>P.t+ih*(1-(v-y0)/(y1-y0));
+ const now=new Date(),lab=i=>i===0?'Now':new Date(now.getFullYear(),now.getMonth()+i,1).toLocaleString('en-GB',{month:'short'})+' '+String(new Date(now.getFullYear(),now.getMonth()+i,1).getFullYear()).slice(2);
+ SLG={W,P,hz,X,Y,s,o,lab};
+ const mx=W<480?5:8,need=Math.ceil(hz/mx),step=[1,2,3,6,12].find(x=>x>=need)||12;
+ let xl='';for(let i=0;i<=hz;i+=step)xl+=`<text class="ax" x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${lab(i)}</text>`;
+ const grid=tk.map(v=>`<line class="gl" x1="${P.l}" x2="${W-P.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="ax" x="${P.l-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${axl(v)}</text>`).join('');
+ const gain=ea>=ec,gap=`M${X(0).toFixed(1)},${Y(0).toFixed(1)}L${X(hz).toFixed(1)},${Y(ea).toFixed(1)}L${X(hz).toFixed(1)},${Y(ec).toFixed(1)}Z`;
+ const seg=HZ.map(h=>`<button class="seg${h[0]===hz?' on':''}" onclick="simHz(${h[0]})" aria-pressed="${h[0]===hz}">${h[1]}</button>`).join('');
+ const dm=ea-ec;
+ document.getElementById('simLine').innerHTML=`<div class="charthead"><div><b>Savings you could build</b><div class="lbl">Cumulative savings over ${HZ.find(x=>x[0]===hz)[2]}, scenario against your current figures</div></div><div class="segs" role="group" aria-label="Time period">${seg}</div></div>
+ <div class="lgd"><span><i style="border-color:var(--acc)"></i>Scenario</span><span><i style="border-color:var(--mute);border-top-style:dashed"></i>Current figures</span><span><i class="sw" style="background:${gain?'#5b9a6a':'var(--bad)'};opacity:.45"></i>${gain?'Extra saved':'Savings lost'}</span></div>
+ <div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line graph of cumulative savings over ${HZ.find(x=>x[0]===hz)[2]}. The scenario reaches ${gbp(ea)} and your current figures reach ${gbp(ec)}, a difference of ${gbp(dm)}." onpointermove="simHov(event)" onpointerdown="simHov(event)" onpointerleave="simOut()">
+ ${grid}<line class="zl" x1="${P.l}" x2="${W-P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}"/>${xl}
+ <path d="${gap}" fill="${gain?'#5b9a6a':'var(--bad)'}" opacity=".2"${anim?' style="animation:fade .8s ease-out .6s backwards"':''}/>
+ <path d="M${X(0).toFixed(1)},${Y(0).toFixed(1)}L${X(hz).toFixed(1)},${Y(ec).toFixed(1)}" fill="none" stroke="var(--mute)" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round"/>
+ <path class="ln${anim?' anim':''}" pathLength="1" d="M${X(0).toFixed(1)},${Y(0).toFixed(1)}L${X(hz).toFixed(1)},${Y(ea).toFixed(1)}"/>
+ <circle cx="${X(hz).toFixed(1)}" cy="${Y(ec).toFixed(1)}" r="4.5" fill="var(--mute)" class="pt"/><circle cx="${X(hz).toFixed(1)}" cy="${Y(ea).toFixed(1)}" r="5.5" fill="var(--acc)" class="pt"/>
+ <line id="sx" class="zl" style="display:none" y1="${P.t}" y2="${H-P.b}"/><circle id="sd1" r="6" fill="var(--acc)" stroke="var(--card)" stroke-width="2" style="display:none"/><circle id="sd2" r="5" fill="var(--mute)" stroke="var(--card)" stroke-width="2" style="display:none"/></svg>
+ <div id="st" class="tip"></div></div>`}
+function simHov(e){const g=SLG;if(!g)return;
+ const r=e.currentTarget.getBoundingClientRect(),sx=g.W/r.width,px=(e.clientX-r.left)*sx,
+ i=Math.max(0,Math.min(g.hz,Math.round((px-g.P.l)/(g.X(1)-g.X(0))))),a=g.s.save*i,c=g.o.save*i,x=g.X(i);
+ const ln=document.getElementById('sx'),d1=document.getElementById('sd1'),d2=document.getElementById('sd2'),tp=document.getElementById('st');if(!ln||!tp)return;
+ ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.style.display='';
+ d1.setAttribute('cx',x);d1.setAttribute('cy',g.Y(a));d1.style.display='';d2.setAttribute('cx',x);d2.setAttribute('cy',g.Y(c));d2.style.display='';
+ const df=a-c;
+ tp.innerHTML=`<b>${esc(g.lab(i))}</b><br>Scenario <b>${gbp(a)}</b><br>Current figures <b>${gbp(c)}</b><br><span style="color:${Math.abs(df)<.005?'#b8b5ad':df>0?'#8fd19e':'#ff9d94'}">${Math.abs(df)<.005?'No difference':(df>0?'▲ ':'▼ ')+gbp(Math.abs(df))+(df>0?' more':' less')}</span>`;
+ tp.style.display='block';const w=tp.offsetWidth;tp.style.left=Math.max(4,Math.min(r.width-w-4,x/sx-w/2))+'px'}
+function simOut(){['sx','sd1','sd2','st'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
+/* Monthly line graph: savings left from each month's salary, using the Forecast deductions */
+let SMG=null;
+function simMonthDraw(s,o,anim){
+ const ms=months(),n=ms.length-1,ded=ms.map(m=>sum(S.fc[m.k]||[],x=>+x.a||0)),td=sum(ded,x=>x);
+ const A=ded.map(d=>s.save-d),C=ded.map(d=>o.save-d),dm=s.save-o.save;
+ const W=Math.max(280,Math.min(900,document.documentElement.clientWidth-82)),H=W<480?250:310,P={l:W<480?54:62,r:20,t:14,b:30};
+ let lo=Math.min(0,...A,...C),hi=Math.max(0,...A,...C);if(hi-lo<1)hi=lo+100;
+ const tk=niceTicks(lo,hi),y0=tk[0],y1=tk[tk.length-1],iw=W-P.l-P.r,ih=H-P.t-P.b;
+ const X=i=>P.l+i*iw/n,Y=v=>P.t+ih*(1-(v-y0)/(y1-y0));
+ SMG={W,P,n,X,Y,ms,A,C,ded,sal:s.salary};
+ const path=a=>a.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join('');
+ const gain=dm>=0,gap=A.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join('')+C.map((v,i)=>'L'+X(n-i).toFixed(1)+','+Y(C[n-i]).toFixed(1)).join('')+'Z';
+ const grid=tk.map(v=>`<line class="gl" x1="${P.l}" x2="${W-P.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="ax" x="${P.l-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${axl(v)}</text>`).join('');
+ const nth=W<420?3:W<700?2:1,xl=ms.map((m,i)=>i%nth===0?`<text class="ax" x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${shortM(m.k)}</text>`:'').join('');
+ const dots=A.map((v,i)=>`<circle class="pt${anim?' anim':''}" style="--i:${i}" cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${W<480?3.5:4.5}" fill="${v<0?'var(--bad)':'var(--acc)'}"/>`).join('');
+ const dots2=C.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3" fill="var(--mute)" class="pt"/>`).join('');
+ document.getElementById('simMonth').innerHTML=`<div><b>Monthly savings from your salary</b><div class="lbl">What is left of each month's salary after your costs and the deductions entered on the Forecast tab. This is per month, not a running total.</div></div>
+ <div class="lgd"><span><i style="border-color:var(--acc)"></i>Scenario</span><span><i style="border-color:var(--mute);border-top-style:dashed"></i>Current figures</span><span><i class="sw" style="background:${gain?'#5b9a6a':'var(--bad)'};opacity:.45"></i>${gain?'Extra saved each month':'Saved less each month'}</span></div>
+ <div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line graph of savings each month from salary. Over the next 12 months the scenario saves between ${gbp(Math.min(...A))} and ${gbp(Math.max(...A))} a month, against ${gbp(Math.min(...C))} to ${gbp(Math.max(...C))} with your current figures." onpointermove="simMHov(event)" onpointerdown="simMHov(event)" onpointerleave="simMOut()">
+ ${grid}<line class="zl" x1="${P.l}" x2="${W-P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}"/>${xl}
+ <path d="${gap}" fill="${gain?'#5b9a6a':'var(--bad)'}" opacity=".2"${anim?' style="animation:fade .8s ease-out .6s backwards"':''}/>
+ <path d="${path(C)}" fill="none" stroke="var(--mute)" stroke-width="2" stroke-dasharray="6 5" stroke-linejoin="round" stroke-linecap="round"/>${dots2}
+ <path class="ln${anim?' anim':''}" pathLength="1" d="${path(A)}"/>${dots}
+ <line id="mx" class="zl" style="display:none" y1="${P.t}" y2="${H-P.b}"/><circle id="md1" r="7" fill="none" stroke="var(--ink)" stroke-width="2" style="display:none"/></svg>
+ <div id="mt" class="tip"></div></div>
+ <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between;margin-top:8px"><small>${td>0?'Forecast deductions of '+gbp(td)+' over the next 12 months are included, so those months dip.':'No deductions are entered on the Forecast tab yet, so every month is the same. Add credit card payments or other deductions there to see months dip.'}</small><button class="ghost" style="color:var(--acc)" onclick="tab('fc')">Edit Forecast deductions</button></div>`}
+function simMHov(e){const g=SMG;if(!g)return;
+ const r=e.currentTarget.getBoundingClientRect(),sx=g.W/r.width,px=(e.clientX-r.left)*sx,
+ i=Math.max(0,Math.min(g.n,Math.round((px-g.P.l)/(g.X(1)-g.X(0))))),a=g.A[i],c=g.C[i],x=g.X(i);
+ const ln=document.getElementById('mx'),d1=document.getElementById('md1'),tp=document.getElementById('mt');if(!ln||!tp)return;
+ ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.style.display='';d1.setAttribute('cx',x);d1.setAttribute('cy',g.Y(a));d1.style.display='';
+ const df=a-c;
+ tp.innerHTML=`<b>${esc(g.ms[i].l)}</b><br>Scenario <b>${gbp(a)}</b>${g.sal>0?' <small>('+(a/g.sal*100).toFixed(1)+'% of salary)</small>':''}<br>Current figures <b>${gbp(c)}</b>`+(g.ded[i]?`<br><small>after ${gbp(g.ded[i])} of Forecast deductions</small>`:'')+`<br><span style="color:${Math.abs(df)<.005?'#b8b5ad':df>0?'#8fd19e':'#ff9d94'}">${Math.abs(df)<.005?'No difference':(df>0?'▲ ':'▼ ')+gbp(Math.abs(df))+(df>0?' more':' less')}</span>`;
+ tp.style.display='block';const w=tp.offsetWidth;tp.style.left=Math.max(4,Math.min(r.width-w-4,x/sx-w/2))+'px'}
+function simMOut(){['mx','md1','mt'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
+function simDonutDraw(s,o,anim){
+ const vals=x=>[x.rent,x.house,x.personal,x.spend,Math.max(0,x.save)],v=vals(s),w=vals(o),tot=sum(v,x=>x),over=s.save<0,host=document.getElementById('simDonut');
+ if(tot<.005){SDN=null;host.innerHTML=`<div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your salary goes</b><small>Enter a salary and some bills on the other tabs, or type amounts above, and this chart will show how your money is apportioned.</small></div></div>`;return}
+ if(!document.getElementById('ss0')){
+  host.innerHTML=`<div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" id="ssvg"><circle class="dtrack" cx="21" cy="21" r="15.9155"/><g transform="rotate(-90 21 21)">${SDC.map((x,i)=>`<circle class="dseg sdseg${anim?' anim':''}" id="ss${i}" cx="21" cy="21" r="15.9155" stroke="${x.c}" style="--i:${i};stroke-dasharray:0 100;stroke-dashoffset:0" onmouseenter="sHi(${i})" onmouseleave="sLo()" onclick="sHi(${i})"/>`).join('')}</g></svg><div class="dmid" id="smid"></div></div><div class="dleg" id="sleg"></div></div>`}
+ const mid=over?`<small>Overspent by</small><b style="color:var(--bad)">${gbp(-s.save)}</b>`:`<small>Monthly salary</small><b>${gbp(s.salary)}</b>`;
+ SDN={v,tot,mid,over};
+ let acc=0;const nz=v.filter(x=>x>.004).length;
+ v.forEach((x,i)=>{const len=x/tot*100,on=len>.004,g=nz>1&&on?Math.min(.8,len*.5):0,l=on?Math.max(len-g,.01):0,e=document.getElementById('ss'+i);
+  if(e){e.style.strokeDasharray=l.toFixed(3)+' '+(100-l).toFixed(3);e.style.strokeDashoffset=(-(acc+g/2)).toFixed(3)}acc+=len});
+ document.getElementById('smid').innerHTML=mid;
+ document.getElementById('ssvg').setAttribute('aria-label','Donut chart of how your monthly salary would be apportioned: '+SDC.map((x,i)=>x.n+' '+gbp(v[i])).join(', '));
+ document.getElementById('sleg').innerHTML=SDC.map((x,i)=>{const d=v[i]-w[i],good=i===4?d>0:d<0,t=Math.abs(d)<.005?'No change':sgn(d)+' vs now';
+  return `<button class="dl" onmouseenter="sHi(${i})" onmouseleave="sLo()" onfocus="sHi(${i})" onblur="sLo()" onclick="sHi(${i})"><i style="background:${x.c}"></i><span>${x.n}<small class="ut ${Math.abs(d)<.005?'':good?'pos':'neg'}">${t}</small></span><b>${gbp(v[i])}</b><small>${(v[i]/tot*100).toFixed(1)}%</small></button>`}).join('')+(over?'<small style="padding:6px 8px">Costs are more than the salary, so there is nothing left to save. Percentages are of total costs.</small>':'')}
+function sHi(i){const d=SDN;if(!d)return;
+ SDC.forEach((x,j)=>{const e=document.getElementById('ss'+j);if(e){e.classList.toggle('on',j===i);e.classList.toggle('dim',j!==i)}});
+ const m=document.getElementById('smid');if(m)m.innerHTML=`<small>${SDC[i].n}</small><b>${gbp(d.v[i])}</b><small>${(d.v[i]/d.tot*100).toFixed(1)}% of ${d.over?'costs':'salary'}</small>`}
+function sLo(){const d=SDN;if(!d)return;
+ SDC.forEach((x,j)=>{const e=document.getElementById('ss'+j);if(e){e.classList.remove('on','dim')}});
+ const m=document.getElementById('smid');if(m)m.innerHTML=d.mid}
+function payTile(c){if(c.p<2)return '';
+ let ov=0,out=0;payMonths().forEach(k=>{for(let i=0;i<nOf(k,c);i++){const s=pst(k,i,c);out+=s.out;if(s.st==='over')ov+=s.out}});
+ if(ov>.005)return card('Payments overdue',gbp(ov),'warn');
+ if(out>.005)return card('Payments · '+gbp(out)+' still to come','Nothing overdue');
+ return `<div class="card good"><div class="lbl">Payments</div><div class="big">Payments up to date</div></div>`}
+function dash(c){
+ const go=(t,h)=>`<button class="btn out sm" onclick="tab('${t}')">${h}</button>`;
+ return `<section class="brandbox"><div class="logo">YAK<span>.</span></div><p><b style="color:#fff;font-weight:800">Your Accounts Keeper</b>: your house and personal finances in one place</p></section>
+ ${importCard()}
+ <h2 style="margin-top:4px">What do you want to do?</h2>
+ <div class="ctas">${go('home','Manage house bills')}${go('me','Track personal finances')}${go('pay','Track housemate payments')}${go('fc','Forecast your savings')}${go('sim','Simulate a scenario')}${go('log','View change log')}</div>
+ <h2>At a glance</h2>
+ <div class="grid">${card(c.yes?'You will save each month once repaid':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn')}${card('Individual share each month',gbp(c.share))}${card('Personal deductions each month',gbp(c.mine))}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?card('Household bills paid from','Not set yet'):card('House bills paid separately','Yes'))}${payTile(c)}</div>
+ <h2>Where your salary goes</h2>${donutCard(c)}
+ <div style="margin-top:16px">${lockCard()}</div>`}
+/* ---------- Mobile menu (narrow screens only; desktop keeps the tabs) ---------- */
+const TITLES={home:'House Finances',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log'};
+const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes']];
+let MO=false;
+function mSync(){const b=document.getElementById('mbtn'),l=document.getElementById('mlist');if(!b||!l)return;b.setAttribute('aria-expanded',String(MO));l.classList.toggle('open',MO)}
+function mToggle(){MO=!MO;if(MO){document.getElementById('mitems').innerHTML=PAGES.filter(p=>p[0]!==S.tab).map((p,i)=>`<button style="--i:${i}" onclick="tab('${p[0]}')">${p[1]}</button>`).join('')}mSync()}
+document.addEventListener('click',e=>{if(MO&&!e.target.closest('#mbtn,#mlist')){MO=false;mSync()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&MO){MO=false;mSync();const b=document.getElementById('mbtn');if(b)b.focus()}});
+function render(){
+ QR=false;
+ if(LOCKED){MO=false;mSync();document.getElementById('app').innerHTML='';showLock();return}
+ document.getElementById('lock').hidden=true;LSHOWN='';
+ const c=calc(),PN=paySync(c);
+ PAGES.forEach(p=>{document.getElementById('t-'+p[0]).className=S.tab===p[0]?'on':''});
+ document.getElementById('mcur').textContent=(PAGES.find(p=>p[0]===S.tab)||PAGES[0])[1];mSync();
+ document.getElementById('app').innerHTML=banner()+(TITLES[S.tab]?`<h2 class="ptitle">${TITLES[S.tab]}</h2>`:'')+(S.tab==='dash'?dash(c):S.tab==='home'?home(c):S.tab==='pay'?payPage(c,PN):S.tab==='fc'?fc(c):S.tab==='sim'?simPage(c):S.tab==='log'?logPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)"><button class="ghost" onclick="reset()">Reset to starting values</button></p>
+ <details><summary><small>YAK v${VERSION}: version history</small></summary><table class="sum" style="margin-top:8px">${CHANGELOG.map(x=>`<tr><td><b>v${x.v}</b> <small>${x.d}</small></td><td style="text-align:left">${x.n}</td></tr>`).join('')}</table></details>`;
+ if(S.tab==='sim')simDraw(PLAY);
+ PLAY=false;
+}
+let LW=document.documentElement.clientWidth;
+addEventListener('resize',()=>{const w=document.documentElement.clientWidth;if(w!==LW){LW=w;if(S.tab==='fc'||S.tab==='sim')render()}});
+if(migrate())save(true);
+render();
+</script></body></html>
