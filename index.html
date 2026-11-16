@@ -1299,7 +1299,7 @@ ${sec('History: how each month compared',`<p>YAK keeps a snapshot of each month 
    S.sync = {id, k, w, sig, at}  manager only: household id, read key, write token, what was last sent and when. Travels in the manager's own export.
    HH.sync = {id, k, at}         housemate: household id and read key from the invite link.
    The service never sees the key: it is carried after the # in the invite link, which browsers do not send to servers. */
-const SYNC_LIVE='SYNCLIVEURL';
+const SYNC_LIVE='https://yak-sync.jake-rjames.workers.dev'; // the live sync Worker, deployed from main
 const SYNC_URL=/\.workers\.dev$/.test(location.hostname)?location.origin:SYNC_LIVE; // the test build is served by the test Worker and talks to it
 const SYCAP=300,SYCK='yak.sync'; // most requests a device may make in a day, so a fault can never use up the allowance
 let SYS='',SYT=0,SYBUSY=false,SYLAST=0,JOINP=null,SYMEM={};
