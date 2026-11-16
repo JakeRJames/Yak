@@ -1,6 +1,6 @@
 // YAK offline support. The page is fetched fresh whenever there is a connection,
 // and the last copy is used when there is not. Saved data lives in the browser, not here.
-const CACHE = 'yak-v4.1.1';
+const CACHE = 'yak-v4.1.2';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
