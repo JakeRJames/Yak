@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK v4.1.3</title>
-<meta name="version" content="4.1.3">
+<title>YAK v4.2.0</title>
+<meta name="version" content="4.2.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624"><script>try{var t=localStorage.getItem("yak.theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -250,6 +250,13 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
 .li.rent .ic{background:var(--okbg);color:var(--okink)}
 .addrow{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;font:700 14px var(--f);color:var(--acc);background:none;border:1.5px dashed var(--line);border-color:color-mix(in srgb,var(--acc) 45%,var(--line));border-radius:12px;padding:12px;cursor:pointer}
 .addrow:hover{background:var(--accbg)}
+.li.ro{cursor:default}.li.ro:hover,.li.ro:active{background:none}
+.ddal>span>b,.ddal>span>small{display:block}.ddal>span>small{margin-top:2px}
+.ddr{padding:0;gap:0}
+.dds{font-weight:600}.dds.over{color:var(--bad)}.dds.paid{color:var(--gink)}.dds.part{color:var(--amink)}.ddr:hover{background:none}
+.ddm{display:flex;align-items:center;gap:12px;flex:1;min-width:0;font:inherit;color:inherit;background:none;border:0;padding:12px 10px 12px 14px;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}.ddm:active{background:var(--bg)}
+.ddm .pill{flex:none;font-size:12px}
+.ddr .tk{flex:none;margin-right:12px;height:34px}
 .mpanel{padding:4px 14px 14px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 55%,transparent);animation:enter .25s ease-out}
 .mpanel .dr:first-child{margin-top:4px}
 /* hero */
@@ -322,9 +329,10 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 <div class="scrim" id="scrim" hidden onclick="sheetClose()"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Details" hidden></div>
 <input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)">
 <script>
-const VERSION='4.1.3';
+const VERSION='4.2.0';
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
-const CHANGELOG=[{v:'4.1.3',d:'16 Nov 2026',n:'Lined up the buttons in the To do list on Home. Every action button is now the same size and sits in the same place on each row, with room kept for the dismiss cross so the buttons stay aligned whether or not a row has one. Saved data is unchanged.'},
+const CHANGELOG=[{v:'4.2.0',d:'16 Nov 2026',n:'Housemates can now pay their share by one direct debit to whoever manages the bills, instead of paying each bill separately. On the Personal tab, How you pay your share lets them choose a direct debit, set the amount and the day it leaves their account. Housemates who pay this way get their own Payments tab in the bottom bar (Forecast moves into More), where each month can be ticked as paid or given a part payment, like the manager\'s Payments tab. Home shows the next direct debit instead of the next bill, and both Home and Personal say how much is owed when a month has not been paid in full or has only been part paid. If the direct debit is less than their share, YAK shows the gap and counts it as owed. Their own figures now use the direct debit amount as their house cost. The housemate Home and House tabs also now use the same tidy list and tile style as the rest of YAK. Saved data is unchanged apart from the new direct debit details, which are included in the housemate\'s exports.'},
+{v:'4.1.3',d:'16 Nov 2026',n:'Lined up the buttons in the To do list on Home. Every action button is now the same size and sits in the same place on each row, with room kept for the dismiss cross so the buttons stay aligned whether or not a row has one. Saved data is unchanged.'},
 {v:'4.1.2',d:'16 Nov 2026',n:'Fixed Home showing a minus amount (your share of the house bills) as what you can save before you have added your income, for example straight after a housemate imports a household pack. Until your income is entered, Home, the Where your income goes chart and the Personal tab now ask you to add it instead. Salary is now called income everywhere in YAK (for example Monthly income and Where your income goes), so it suits any kind of pay. Saved data is unchanged.'},
 {v:'4.1.1',d:'16 Nov 2026',n:'The + in the Set a goal circle on Home now sits exactly in the centre of the circle. Saved data is unchanged.'},
 {v:'4.1.0',d:'16 Nov 2026',n:'Added an Appearance switch in More. Choose Light, Dark or Match phone (the default, which follows your phone or computer setting). The choice is saved on each device and is not included in exports. Saved data is unchanged.'},
@@ -442,6 +450,7 @@ function migrate(){let ch=false;const n=iso();
  if(!S.upd){S.upd={};ch=true}
  if(!Array.isArray(S.log)){S.log=[];ch=true}
  if(!S.goal||typeof S.goal!=='object'){S.goal={a:0};ch=true}
+ if(!S.dd||typeof S.dd!=='object'||typeof S.dd.m!=='object'||!S.dd.m){S.dd={on:false,a:0,d:1,start:null,m:{}};ch=true}
  if(!S.pay||typeof S.pay.m!=='object'||!S.pay.m||!Array.isArray(S.pay.mates)){S.pay={start:null,mates:[],m:{}};ch=true}
  if(S.me&&'adj' in S.me){delete S.me.adj;delete S.upd['me.adj'];ch=true}
  SCALARS.forEach(k=>{if(!S.upd[k]){S.upd[k]=n;ch=true}});
@@ -556,16 +565,17 @@ function calc(){
  const months=+h.months||fyMonths();
  const m=S.me,mine=sum(m.bills,b=>+b.a||0);
  const yes=m.fromAcct==='yes';
- const out=mine+(yes?total:share);
+ const dd=HM()&&!!(S.dd&&S.dd.on),house=dd?(+S.dd.a||0):share;
+ const out=mine+(yes?total:house);
  const back=yes?total-share:0;
  const net=out-back;
  const save=m.salary-out+back-m.spend;
- return{p,total,share,months,mine,yes,out,back,net,left:m.salary-out,save};
+ return{p,total,share,house,dd,months,mine,yes,out,back,net,left:m.salary-out,save};
 }
 /* ---------- Change log: kept inside the data file so it is exported and imported with it ---------- */
 const LOGMAX=1000;
-const SLAB={'name':'Your name','home.people':'People in household','home.rentTotal':'Total household rent','home.rentDate':'Rent date taken','home.budget':'Monthly budget per person','home.months':'Months counted this year','me.salary':'Monthly income','me.spend':'Monthly spend allocated','fcStart':'Savings you already have','goal.a':'Savings goal'};
-const SFMT={'name':'text','home.people':'num','home.months':'num','home.rentDate':'text'};
+const SLAB={'name':'Your name','home.people':'People in household','home.rentTotal':'Total household rent','home.rentDate':'Rent date taken','home.budget':'Monthly budget per person','home.months':'Months counted this year','me.salary':'Monthly income','me.spend':'Monthly spend allocated','fcStart':'Savings you already have','goal.a':'Savings goal','dd.a':'Direct debit amount','dd.d':'Direct debit day'};
+const SFMT={'dd.d':'num','name':'text','home.people':'num','home.months':'num','home.rentDate':'text'};
 const FN={n:'name',a:'amount',d:'date taken',t:'split'};
 function lgInfo(path){
  if(SLAB[path])return{l:SLAB[path],f:SFMT[path]||'money'};
@@ -667,7 +677,7 @@ function rentRow(){const h=S.home,p=Math.max(1,+h.people||1);
 /* ---------- Donut chart: how the income is apportioned ---------- */
 let DD=null;
 function splitData(c){const m=S.me;
- return [{n:'House bills (your share)',v:c.share,c:'#c15f3c'},{n:'Personal bills',v:c.mine,c:'#d9a23f'},{n:'Spending allocated',v:+m.spend||0,c:'#5f86a3'},{n:'Savings',v:Math.max(0,c.save),c:'#5b9a6a'}].filter(x=>x.v>0.004)}
+ return [{n:c.dd?'Direct debit to '+mgrN():'House bills (your share)',v:c.house,c:'#c15f3c'},{n:'Personal bills',v:c.mine,c:'#d9a23f'},{n:'Spending allocated',v:+m.spend||0,c:'#5f86a3'},{n:'Savings',v:Math.max(0,c.save),c:'#5b9a6a'}].filter(x=>x.v>0.004)}
 function donutCard(c){
  const it=splitData(c),tot=sum(it,x=>x.v),over=c.save<0;
  if(!it.length||!(+S.me.salary)){DD=null;return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your income goes</b><small>${it.length?'Add your income on the Personal tab':'Add your income and bills'} and this chart will show how your money is split between house bills, personal bills, spending and savings.</small></div></div></div>`}
@@ -696,7 +706,7 @@ ${h.bills.map(b=>{const s=b.t==='each'?b.a:b.a/c.p;return `<tr><td>${esc(b.n)}</
 <tr class="tot"><td>Total</td><td>${gbp(c.share)}</td></tr></table></div></details>${driftNote(c)}`}
 function me(c){
  const m=S.me,others=c.p-1;
- const q=HM()?`<div class="card" style="margin-bottom:16px"><small>Household bills: <b>your share from the household pack</b> (${gbp(c.share)} a month)</small></div>`:m.fromAcct===null?`<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Say yes if you pay them and the others pay you back. Say no if they are collected separately.</p><div class="bar"><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div></div>`:
+ const q=HM()?ddRow(c)+ddAlerts(c,1):m.fromAcct===null?`<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Say yes if you pay them and the others pay you back. Say no if they are collected separately.</p><div class="bar"><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div></div>`:
  `<div class="card" style="margin-bottom:16px"><small>Household bills: <b>${c.yes?'paid from your account':'collected separately'}</b></small> <button class="ghost" style="color:var(--acc)" onclick="ask(null)">Change</button></div>`;
  const owed=c.yes?`<h2>What comes back</h2><div class="grid">${card('Owed back in total',gbp(c.back),'hero')}${card('Owed by each of '+others+' '+(others===1?'person':'people'),others?gbp(c.back/others):'£0.00')}${card('Net cost of home bills to you',gbp(c.share))}</div>`:'';
  return q+nameRow()+`<div class="card inp"><div class="flds">${fld('me.salary','Monthly income (net)',{cur:1})}${fld('me.spend','Monthly spend allocated',{cur:1})}</div></div>
@@ -705,7 +715,7 @@ function me(c){
 <h2>How it adds up</h2><table class="sum">
 <tr><td>Income (net)</td><td>${gbp(m.salary)}</td></tr>
 <tr><td>Personal bills</td><td>- ${gbp(c.mine)}</td></tr>
-<tr><td>Household bills ${c.yes?'(full amount from your account)':'(individual share)'}</td><td>- ${gbp(c.yes?c.total:c.share)}</td></tr>
+<tr><td>${c.dd?'Direct debit to '+esc(mgrN()):'Household bills '+(c.yes?'(full amount from your account)':'(individual share)')}</td><td>- ${gbp(c.yes?c.total:c.house)}</td></tr>
 <tr><td>Income minus bills</td><td>${gbp(c.left)}</td></tr>
 ${c.yes?`<tr><td>Repaid by others</td><td>+ ${gbp(c.back)}</td></tr>`:''}
 <tr><td>Monthly spend allocated</td><td>- ${gbp(m.spend)}</td></tr>
@@ -837,7 +847,7 @@ const SIMF=[
 const SDC=[{n:'Rent (your share)',c:'#8f8a7e'},{n:'House bills (excl. rent)',c:'#c15f3c'},{n:'Personal bills',c:'#d9a23f'},{n:'Spend deductions',c:'#5f86a3'},{n:'Savings',c:'#5b9a6a'}];
 const HZ=[[6,'6M','6 months'],[12,'1Y','12 months'],[24,'2Y','2 years'],[36,'3Y','3 years'],[60,'5Y','5 years']];
 function simBase(c){const h=S.home,m=S.me,rentSh=(+h.rentTotal||0)/c.p;
- return{salary:rd2(m.salary),rent:rd2(rentSh),house:rd2(c.share-rentSh),personal:rd2(c.mine),spend:rd2(m.spend)}}
+ return{salary:rd2(m.salary),rent:rd2(rentSh),house:rd2(c.house-rentSh),personal:rd2(c.mine),spend:rd2(m.spend)}}
 function simCalc(v,b){const costs=b.rent+v.house+v.personal+v.spend,save=v.salary-costs;
  return{salary:v.salary,rent:b.rent,house:v.house,personal:v.personal,spend:v.spend,costs,save,rate:v.salary>0?save/v.salary*100:null}}
 function ensureSim(c){const b=simBase(c),sig=JSON.stringify(b);
@@ -1062,18 +1072,15 @@ function dueTable(c,L){
 function hmDash(c){const go=(t,h)=>`<button class="cta" onclick="tab('${t}')">${h}</button>`,L=dueList(c),nx=L.find(x=>x.next);
  return heroBox(c)+todoCard()+`${packCard()}
  <h2>At a glance</h2>
- <div class="glance">${card('My share this month',gbp(c.share),'hero')}<div class="card"><div class="lbl">Next bill due</div><div class="big">${nx?esc(nx.n):'No dates set'}</div>${nx?`<small>${whenTxt(nx.next)} · your share ${gbp(nx.mine)}</small>`:''}</div>${+S.me.salary?card('You can save each month',gbp(c.save),c.save>=0?'':'warn'):`<button class="card" style="text-align:left;font:inherit;color:inherit;cursor:pointer" onclick="tab('me')"><div class="lbl">You can save each month</div><div class="big" style="font-size:20px">Add your income</div><small>On the Personal tab, to see what you can save</small></button>`}${card('Personal deductions each month',gbp(c.mine))}</div>
- <h2>Household bills</h2>${dueTable(c,L)}
+ <div class="glance2">${DDON()?ddTile(c):''}${DDON()?(()=>{const n=ddNext();return `<button class="card tapc" onclick="tab('pay')"><div class="lbl">Next direct debit</div><div class="big">${whenTxt(n)}</div><small>${gbp(+S.dd.a||0)} to ${esc(mgrN())}</small></button>`})():`<button class="card tapc" onclick="tab('home')"><div class="lbl">Next bill due</div><div class="big">${nx?esc(nx.n):'No dates set'}</div>${nx?`<small>${whenTxt(nx.next)}, your share ${gbp(nx.mine)}</small>`:''}</button>`}${tcard('My share each month',gbp(c.share),'home')}${tcard('Personal deductions each month',gbp(c.mine),'me')}</div>
+ ${DDON()?'':`<h2>Household bills</h2>${dueTable(c,L)}`}
  <h2>Where your income goes</h2>${donutCard(c)}
  <div style="margin-top:16px" id="lkc">${LK.mode?lockCard():''}</div>`}
 function hmHouse(c){const h=S.home,b=+h.budget||0,ok=c.share<=b;
  return `${packCard()}
-<div class="grid">${card('My share each month',gbp(c.share),'hero')}${card('Household total each month',gbp(c.total))}</div>
-${b?`<div class="card"><span class="pill ${ok?'ok':'warn'}">${ok?'Within budget':'Over budget'}</span> <small>Your share is ${gbp(c.share)} against a ${gbp(b)} budget per person (${gbp(Math.abs(b-c.share))} ${ok?'spare':'over'}).</small></div>`:''}
-<h2>Bills</h2><div class="scroll"><table><tr><th>Bill</th><th>Your share</th><th>Full bill</th><th>Taken</th></tr>
-${h.bills.map(x=>`<tr><td>${esc(x.n)}<br><small>${x.t==='each'?'Each person pays this':'Split between everyone'}</small></td><td><b>${gbp(x.t==='each'?+x.a||0:(+x.a||0)/c.p)}</b></td><td>${gbp(+x.a||0)}</td><td>${esc(x.d||'')||'<small>Not set</small>'}</td></tr>`).join('')}
-${+h.rentTotal?`<tr><td>Rent<br><small>Split between everyone</small></td><td><b>${gbp((+h.rentTotal)/c.p)}</b></td><td>${gbp(+h.rentTotal)}</td><td>${esc(h.rentDate||'')||'<small>Not set</small>'}</td></tr>`:''}
-<tr class="tot"><td>Total</td><td>${gbp(c.share)}</td><td>${gbp(c.total)}</td><td></td></tr></table></div>${peopleNote(c)}${driftNote(c)}
+<div class="kgrid">${card('My share each month',gbp(c.share),'hero')}${card('Household total each month',gbp(c.total))}</div>
+${b?`<div class="card" style="margin-bottom:16px"><span class="pill ${ok?'ok':'warn'}">${ok?'Within budget':'Over budget'}</span> <small>Your share is ${gbp(c.share)} against a ${gbp(b)} budget per person (${gbp(Math.abs(b-c.share))} ${ok?'spare':'over'}).</small></div>`:''}
+<h2>Bills</h2>${hmBillList(c)}${peopleNote(c)}${driftNote(c)}
 <p><small>These figures come from the household pack and can only be changed by ${packBy(HH.pack)?esc(packBy(HH.pack)):'whoever manages the bills'}. Import a new pack when they send you one.</small></p>`}
 function hmHelp(){
  const sec=(t,b,o)=>`<details${o?' open':''}><summary>${t}</summary><div class="hb">${b}</div></details>`;
@@ -1082,7 +1089,7 @@ function hmHelp(){
  <ul><li>You see <b>your share</b> of every bill, and the full amount, in a simple view.</li>
  <li>The household bills are <b>read only</b>. Only the person who manages them can change them, and they send you a new pack when they do.</li>
  <li>Everything else in YAK is yours: your pay, your own bills, the forecast and the simulator, kept completely separate from the pack.</li></ul>
- <p>The pack contains nothing about anyone's personal finances, and nothing you enter in YAK is sent back to them. YAK does not connect to your bank or send your figures anywhere. Everything stays on this device. The Payments tab is hidden in housemate mode because it is for the person collecting payments.</p>`,true)}
+ <p>The pack contains nothing about anyone's personal finances, and nothing you enter in YAK is sent back to them. YAK does not connect to your bank or send your figures anywhere. Everything stays on this device. The manager's Payments tab is not shown in housemate mode. If you pay your share by one direct debit, you get your own Payments tab instead (see Paying by direct debit).</p>`,true)}
  ${sec('Getting started in four steps',`<ol>
  <li><b>Save the pack.</b> When your housemate sends the file (for example by WhatsApp, AirDrop or Messages), save it to Files. It is called <b>yak-household-pack.json</b>.</li>
  <li><b>Import it.</b> Open YAK and tap <b>Import latest data</b> (a new device offers this straight away). Choose the pack, then tap <b>Use this pack</b>.</li>
@@ -1104,6 +1111,12 @@ function hmHelp(){
  <ul><li><b>An older pack:</b> if you pick a pack that is older than the one you have, YAK warns you before going back to older bills.</li>
  <li><b>A different household:</b> a pack from another household asks you to confirm before it replaces yours.</li>
  <li><b>The same pack:</b> if you already have it, YAK simply tells you.</li></ul>`)}
+ ${sec('Paying by direct debit',`<p>If you pay your share to whoever manages the bills by one direct debit or standing order, instead of paying each bill yourself, tell YAK on the Personal tab: tap <b>How you pay your share</b>, choose <b>One direct debit</b>, then enter the amount and the day it leaves your account.</p>
+ <ul><li><b>Payments tab:</b> appears in the bottom bar (Forecast moves into More). Each month shows what you owe and whether it is paid. Tap <b>Paid</b> when the direct debit has gone out, or tap the month to enter a part payment.</li>
+ <li><b>Home:</b> shows your next direct debit instead of the next bill.</li>
+ <li><b>What you owe:</b> once the payment day has passed, a month that is not paid in full shows as owed on Home, Personal and Payments.</li>
+ <li><b>If the direct debit is less than your share:</b> YAK shows the gap and counts it as owed, so you can top it up or change the amount.</li></ul>
+ <p>Your own figures use the direct debit amount as your house cost. None of this is sent to anyone.</p>`)}
  ${sec('Personal: what you can save',`<p>Enter your monthly pay after tax, an amount you set aside for spending, and your own bills such as phone, gym or insurance. The <b>How it adds up</b> table walks through the sum line by line: your pay, less your own bills and your share of the household bills, less your spending, leaves what you can save.</p>
  <p>The question about whose account the household bills come out of is not asked in housemate mode. YAK takes off your share only.</p>`)}
  ${sec('Forecast and Simulator',`<p><b>Forecast</b> shows your savings month by month for the next 12 months. Use <b>Add deduction</b> under a month for anything outside your regular bills, such as a credit card payment, and <b>Repeat in later months</b> to copy it forward. If you already have savings, enter them at the top.</p>
@@ -1243,7 +1256,7 @@ const IC={home:'<rect x="3" y="3" width="7.5" height="9" rx="2"/><rect x="13.5" 
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
 const ini=n=>esc((String(n||'').trim()[0]||'?').toUpperCase());
 /* bottom tab bar (phones) and the header Export button */
-const bnItems=()=>[['dash','Home','home'],['home','House','house'],['me','Personal','me'],HM()?['fc','Forecast','fc']:['pay','Payments','pay'],['more','More','more']];
+const bnItems=()=>[['dash','Home','home'],['home','House','house'],['me','Personal','me'],HM()&&!DDON()?['fc','Forecast','fc']:['pay','Payments','pay'],['more','More','more']];
 function bnav(){const BN=bnItems(),cur=BN.some(b=>b[0]===S.tab)?S.tab:'more';return BN.map(b=>`<button class="${cur===b[0]?'on':''}" onclick="${b[0]==='more'?'moreOpen()':`tab('${b[0]}')`}"${cur===b[0]?' aria-current="page"':''}>${ico(b[2])}<span>${b[0]==='more'&&cur==='more'?(PAGES.find(p=>p[0]===S.tab)||[,'More'])[1]:b[1]}</span></button>`).join('')}
 function hxSync(){const h=document.getElementById('hx');if(!h)return;h.className='hx'+(M.dirty?' dirty':'');h.title=M.dirty?'You have changes that are not exported yet':M.last?'Last exported '+stamp(M.last):'Not exported yet';h.innerHTML=ico('exp')+'<span>Export</span>'}
 /* bottom sheet */
@@ -1260,7 +1273,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')sheetClose()});
  document.addEventListener('touchend',()=>{if(y0===null)return;const el=s();y0=null;el.classList.remove('drag');if(dy>90)sheetClose();else el.style.transform='';dy=0})})();
 /* More */
 function moreOpen(){SH={k:'more'};MO=false;const L=lockInfo(),it=(t,ic,l,sub,cls)=>`<button class="${cls||''}" onclick="${t}">${ico(ic)}<span>${l}${sub?`<small>${sub}</small>`:''}</span></button>`;
- sheetOpen(`<h3>More</h3><div class="mlinks">${HM()?'':it("sheetClose();tab('fc')",'fc','Forecast','Your savings over the next 12 months')}${it("sheetClose();tab('sim')",'sim','Simulator','Try what-if scenarios')}${it("sheetClose();tab('log')",'log','Changes','Everything you have changed')}${it("sheetClose();tab('help')",'help','Instructions','How YAK works')}</div>
+ sheetOpen(`<h3>More</h3><div class="mlinks">${HM()&&!DDON()?'':it("sheetClose();tab('fc')",'fc','Forecast','Your savings over the next 12 months')}${it("sheetClose();tab('sim')",'sim','Simulator','Try what-if scenarios')}${it("sheetClose();tab('log')",'log','Changes','Everything you have changed')}${it("sheetClose();tab('help')",'help','Instructions','How YAK works')}</div>
  <div class="shd">Your data</div><div class="mlinks">${it("sheetClose();doExport()",'exp','Export data',M.dirty?'<b style="color:var(--acc)">Unexported changes</b>'+(M.last?'. Last exported '+stamp(M.last):''):M.last?'Last exported '+stamp(M.last):'Not exported yet')}${it("sheetClose();openImport()",'imp','Import latest data',srcText())}${it("nameSheet()",'me','Your name',nm()?esc(nm()):'Not set')}${it("goalSheet()",'goal','Savings goal',+S.goal.a?gbp(+S.goal.a):'Not set')}${lockOK()?it(L?"lkMore()":"lkGo('set')",'lock','Passcode lock',L?'On':'Off'):''}</div>
  <div class="shd">Appearance</div><div class="segc s3" id="thseg">${[['light','Light'],['dark','Dark'],['auto','Match phone']].map(x=>`<button type="button" data-t="${x[0]}" class="${themeGet()===x[0]?'on':''}" onclick="themeSet('${x[0]}')">${x[1]}</button>`).join('')}</div>
  <div class="shd">App</div><div class="mlinks">${it("sheetClose();checkUpdate()",'upd','Check for updates','YAK v'+VERSION)}${it("sheetClose();reset()",'rst','Reset to starting values','Export first if you want a backup','dz')}</div>`)}
@@ -1322,13 +1335,14 @@ function todoItems(){const t=[];
  if(M.dirty){const age=M.last?Math.floor((Date.now()-Date.parse(M.last))/864e5):null;t.push({h:'Back up your changes',s:M.last?'Last exported '+(age<1?'today':age===1?'yesterday':age+' days ago')+'.':'You have not exported yet.',b:`<button class="btn sm" onclick="doExport()">Export</button>`,bad:age===null||age>=7})}
  if(needsReview()){const ref=Math.max(Date.parse(S.lastChange)||0,Date.parse(S.reviewed)||0);t.push({h:'Time to review your bills',s:'Nothing has changed or been checked since '+dd(new Date(ref).toISOString())+'.',b:`<button class="btn sm" onclick="reviewDone()">All the same</button>`})}
  if(lockOK()&&!lockInfo()&&!S.hideLockHint&&!LK.mode&&!M.fresh&&!PEND)t.push({h:'Passcode lock is off',s:'Anyone who opens YAK here can see your figures.',b:`<button class="btn sm" onclick="lkGo('set')">Set one</button>`,x:'lkHintOff()'});
+ if(DDON()){const o=ddOwed(calc()),g=ddGap(calc());if(o.ov>.005)t.unshift({h:'You owe '+esc(mgrN())+' '+gbp(o.ov),s:o.lines.join('. ')+'.',b:`<button class="btn sm" onclick="tab('pay')">Payments</button>`,bad:true});if(g<-.005)t.push({h:'Direct debit is '+gbp(-g)+' short',s:'Your share is '+gbp(calc().share)+' a month.',b:`<button class="btn sm" onclick="ddSheet()">Change</button>`})}
  if(!nm()&&!S.hideName&&!M.fresh&&!PPK&&!PEND&&!LEAVE)t.push({h:'Add your name',s:'So YAK can greet you'+(HM()?'':' and housemates can see who packs are from')+'.',b:`<button class="btn sm" onclick="nameSheet()">Add</button>`,x:'S.hideName=true;save(true);render()'});
  return t}
 function todoCard(){const t=todoItems();if(!t.length)return '';const bad=t.find(x=>x.bad);
  return `<details class="todo"${TDO?' open':''} ontoggle="TDO=this.open"><summary>To do <span class="cnt">${t.length}</span><span class="pv${bad?' bad':''}">${esc((bad||t[0]).h)}</span></summary>${t.map(x=>`<div class="tdr"><i class="dot${x.bad?' bad':''}"></i><span><b>${x.h}</b><small>${x.s}</small></span>${x.b}${x.x?`<button class="x" onclick="${x.x}" aria-label="Dismiss">×</button>`:'<span></span>'}</div>`).join('')}</details>`}
 /* donut: tap a slice or key twice to open that part of YAK */
-const DTAB={'House bills (your share)':'home','Personal bills':'me','Spending allocated':'me','Savings':'fc'};
-function dTap(i){const d=DD;if(!d)return;const t=DTAB[d.it[i].n],go=t&&t!==S.tab;if(DTI===i&&go){DTI=-1;tab(t);return}DTI=i;dHi(i);if(go){const m=document.getElementById('dmid');if(m)m.insertAdjacentHTML('beforeend','<small class="dgo">Tap again to open</small>')}}
+const DTAB={'Direct debit':'pay','House bills (your share)':'home','Personal bills':'me','Spending allocated':'me','Savings':'fc'};
+function dTap(i){const d=DD;if(!d)return;const t=DTAB[d.it[i].n]||(/^Direct debit/.test(d.it[i].n)?'pay':null),go=t&&t!==S.tab;if(DTI===i&&go){DTI=-1;tab(t);return}DTI=i;dHi(i);if(go){const m=document.getElementById('dmid');if(m)m.insertAdjacentHTML('beforeend','<small class="dgo">Tap again to open</small>')}}
 /* forecast months */
 function fcTog(k){FCO=FCO===k?null:k;render();if(FCO){const e=document.getElementById('m-'+k);if(e)e.scrollIntoView({block:'nearest',behavior:RM?'auto':'smooth'})}}
 function fcPick(){const g=FCG;if(!g||!g.cur)return;const m=months()[g.cur-1];if(!m)return;FCO=m.k;render();const e=document.getElementById('m-'+m.k);if(e)e.scrollIntoView({block:'center',behavior:RM?'auto':'smooth'})}
@@ -1345,8 +1359,81 @@ themeMeta();try{matchMedia('(prefers-color-scheme: dark)').addEventListener('cha
 /* offline app and storage that the browser should keep */
 if('serviceWorker' in navigator&&location.protocol==='https:'&&/github\.io$/.test(location.hostname))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persisted().then(p=>{if(!p)return navigator.storage.persist()}).catch(()=>{})}catch(e){}
+/* ---------- v4.2 Housemate direct debit: one payment to whoever manages the bills ----------
+   S.dd = {on, a: monthly amount, d: day of the month, start:'YYYY-MM', m:{'YYYY-MM':{due, p, t}}} is the housemate's own data and is exported with it.
+   Each month they owe their share from the pack. Once a month is over it keeps the share it had (due). */
+const DDON=()=>HM()&&!!(S.dd&&S.dd.on);
+const mgrN=()=>(HH&&packBy(HH.pack))||'your housemate';
+const tkey=()=>HM()&&S.tab==='home'?'hmhome':HM()&&S.tab==='pay'?'hmpay':S.tab;
+const ord=n=>n+(n%10===1&&n!==11?'st':n%10===2&&n!==12?'nd':n%10===3&&n!==13?'rd':'th');
+function ddMonths(){const o=[],cur=ymk(new Date());let k=S.dd.start||cur;if(k>cur)k=cur;for(let g=0;g<240;g++){o.push(k);if(k===cur)break;k=ymk(kd(k,32))}return o.reverse()}
+function ddSync(c){const D=S.dd,cur=ymk(new Date());let ch=false;if(!D.start||D.start>cur){D.start=cur;ch=true}
+ ddMonths().forEach(k=>{if(k<cur){const r=D.m[k]=D.m[k]||{p:0};if(r.due==null){r.due=rd2(c.share);ch=true}}});if(ch)save(true)}
+const ddDue=(k,c)=>{const r=S.dd.m[k];return r&&r.due!=null?r.due:rd2(c.share)};
+function ddDate(k){const end=kd(k,32);end.setDate(0);return kd(k,Math.min(+S.dd.d||1,end.getDate()))}
+function dst(k,c){const r=S.dd.m[k]||{},due=ddDue(k,c),paid=+r.p||0,out=Math.max(0,rd2(due-paid)),dt=ddDate(k),late=Date.now()>=kd(k,dt.getDate()+1).getTime();
+ return{due,paid,out,dt,st:due<.005?'none':out<.005?'paid':late?'over':paid>0?'part':'due'}}
+function ddOwed(c){let ov=0,soon=0;const lines=[];ddMonths().forEach(k=>{const s=dst(k,c),mn=kd(k).toLocaleString('en-GB',{month:'long'});
+ if(s.st==='over'){ov+=s.out;lines.push(s.paid>.005?mn+' part paid, '+gbp(s.out)+' to go':mn+' not marked as paid')}else if(s.st==='part'||s.st==='due')soon+=s.out});
+ return{ov:rd2(ov),soon:rd2(soon),lines}}
+const ddGap=c=>rd2((+S.dd.a||0)-c.share);
+function ddNext(){const t=new Date(),t0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),k=ymk(t);let d=ddDate(k);if(d<t0)d=ddDate(ymk(kd(k,32)));return d}
+function ddSetPaid(k,val){const r=S.dd.m[k]=S.dd.m[k]||{p:0},old=+r.p||0,n=Math.max(0,rd2(val));if(Math.abs(old-n)<.005)return false;
+ r.p=n;r.t=iso();logc({k:'chg',p:'dd.m.'+k,l:'Paid '+mgrN()+' for '+pml(k),f:'money',o:old,n});return true}
+const ddTickAmt=s=>Math.abs((+S.dd.a||0)-s.due)<.005||!(+S.dd.a)?s.due:+S.dd.a;
+const ddTickOn=s=>s.paid>.005&&(s.st==='paid'||Math.abs(s.paid-(+S.dd.a||0))<.005);
+function ddTick(k){const s=dst(k,calc());if(s.st==='none')return;if(ddSetPaid(k,ddTickOn(s)?0:ddTickAmt(s)))save();render()}
+function ddBack(){const k=ymk(kd(S.dd.start||ymk(new Date()),0));S.dd.start=k;logc({k:'add',l:'Added a month to My Payments',x:pml(k)});save();render()}
+/* how you pay your share */
+function ddRow(c){const on=DDON();
+ return `<div class="list" style="margin-bottom:16px"><button class="li" onclick="ddSheet()"><span class="ic">${ico('pay')}</span><span class="tx"><small>How you pay your share</small><b>${on?'Direct debit to '+esc(mgrN()):'Each bill separately'}</b></span><span class="am">${gbp(on?+S.dd.a||0:c.share)}<small>${on?'on the '+ord(+S.dd.d||1):'a month'}</small></span><span class="chev"></span></button></div>`}
+function ddSheet(){if(!HM())return;const c=calc(),D=S.dd;SH={k:'dd',on:!!D.on};const a=+D.a||rd2(c.share);
+ sheetOpen(`<h3>How you pay your share</h3><p class="lbl" style="margin:0">Your share of the household bills is <b>${gbp(c.share)}</b> a month.</p>
+ <form onsubmit="event.preventDefault();ddSave()"><div class="sf"><span>Payment</span><div class="segc"><button type="button" class="${SH.on?'':'on'}" onclick="ddT(false,this)">Each bill separately</button><button type="button" class="${SH.on?'on':''}" onclick="ddT(true,this)">One direct debit</button></div></div>
+ <div id="ddf"${SH.on?'':' hidden'}><label class="sf"><span>Amount each month, to ${esc(mgrN())}</span><span class="mny"><span class="cur">£</span><input id="dd-a" class="num" type="number" inputmode="decimal" step="any" value="${a}"></span></label>
+ <label class="sf"><span>Day it leaves your account</span><input id="dd-d" class="num" type="number" inputmode="numeric" min="1" max="31" value="${+D.d||1}" placeholder="1 to 31"></label>
+ <p class="lbl" style="margin:12px 0 0">If this is less than your share, YAK shows the gap and counts it as owed. Tick each month on the Payments tab once it has gone out.</p></div>
+ <div class="acts"><button class="btn" type="submit">Save</button></div></form>`)}
+function ddT(on,el){if(!SH)return;SH.on=on;el.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===el));const f=document.getElementById('ddf');if(f)f.hidden=!on}
+function ddSave(){const s=SH;if(!s||s.k!=='dd')return;const D=S.dd,c=calc();let ch=false;
+ if(!!D.on!==s.on){logc({k:'chg',p:'dd.on',l:'How you pay your share',f:'text',o:D.on?'One direct debit':'Each bill separately',n:s.on?'One direct debit':'Each bill separately'});D.on=s.on;S.upd['dd.on']=iso();ch=true;if(s.on){D.start=ymk(new Date())}}
+ if(s.on){const a=Math.max(0,rd2(parseFloat(document.getElementById('dd-a').value)||0))||rd2(c.share),d=Math.min(31,Math.max(1,Math.round(parseFloat(document.getElementById('dd-d').value)||1)));
+  if(Math.abs((+D.a||0)-a)>.004)ch=setQ('dd.a',a,1)||ch;if((+D.d||1)!==d)ch=setQ('dd.d',d,1)||ch}
+ sheetClose();if(ch){save();PLAY=true;render()}}
+/* owed and gap notes on Personal; a tile on Home */
+function ddAlerts(c,personal){if(!DDON())return '';const o=ddOwed(c),g=ddGap(c);let h='';
+ if(o.ov>.005&&S.tab!=='pay')h+=`<div class="card warn ddal" style="margin-bottom:12px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span><b>You owe ${esc(mgrN())} ${gbp(o.ov)}</b><small>${esc(o.lines.join('. '))}.</small></span><button class="btn sm" onclick="tab('pay')">Payments</button></div>`;
+ if(g<-.005)h+=`<div class="card review ddal" style="margin-bottom:12px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span><b>Your direct debit is ${gbp(-g)} short of your share</b><small>You pay ${gbp(+S.dd.a||0)} but your share is ${gbp(c.share)}, so ${gbp(-g)} a month is counted as owed.</small></span><button class="btn sm" onclick="ddSheet()">Change</button></div>`;
+ else if(g>.005&&personal)h+=`<div class="card" style="margin-bottom:12px"><small>Your direct debit is <b>${gbp(g)}</b> more than your share of ${gbp(c.share)}.</small></div>`;
+ return h?h+'<div style="height:4px"></div>':''}
+function ddTile(c){const o=ddOwed(c);
+ if(o.ov>.005)return `<button class="card tapc warn" onclick="tab('pay')"><div class="lbl">Owed to ${esc(mgrN())}</div><div class="big">${gbp(o.ov)}</div></button>`;
+ if(o.soon>.005)return `<button class="card tapc" onclick="tab('pay')"><div class="lbl">Payments</div><div class="big">Nothing owed</div><small>${gbp(o.soon)} due ${sdm(ddDate(ymk(new Date())))}</small></button>`;
+ return `<button class="card tapc good" onclick="tab('pay')"><div class="lbl">Payments</div><div class="big">Up to date</div></button>`}
+/* My Payments (housemate) */
+function hmPayPage(c){const ms=ddMonths(),cur=ms[0],o=ddOwed(c),cs=dst(cur,c),nx=ddNext(),A=+S.dd.a||0;let paid=0,due=0;ms.forEach(k=>{const s=dst(k,c);paid+=Math.min(s.paid,s.due);due+=s.due});
+ const tick=(k,s)=>`<button type="button" class="tk${ddTickOn(s)?' on':''}" aria-pressed="${ddTickOn(s)}" onclick="ddTick('${k}')" aria-label="Direct debit paid for ${pml(k)}"${s.st==='none'?' disabled':''}><i>✓</i>Paid</button>`;
+ const rows=ms.map(k=>{const s=dst(k,c);return `<div class="li ddr"><button class="ddm" onclick="ddMonthSheet('${k}')"><span class="ic">${kd(k).toLocaleString('en-GB',{month:'short'})}</span><span class="tx"><b>${pml(k)}</b><small><span class="dds ${s.st}">${s.st==='paid'?'Paid':s.st==='over'?'Overdue':s.st==='part'?'Part paid':s.st==='none'?'Nothing owed':'Due '+sdm(s.dt)}</span>${s.out>.005&&s.paid>.005?', '+gbp(s.out)+' to go':s.st==='paid'||s.st==='none'?', '+gbp(s.paid)+' paid':', '+gbp(s.due)+' due '+sdm(s.dt)}</small></span></button>${tick(k,s)}</div>`}).join('');
+ const mname=kd(cur).toLocaleString('en-GB',{month:'long'});
+ return `<p class="lbl" style="max-width:640px;margin-top:-6px">Your share is <b>${gbp(c.share)}</b> a month and you pay ${esc(mgrN())} <b>${gbp(A)}</b> by direct debit on the ${ord(+S.dd.d||1)}. Tick <b>Paid</b> once it has gone out, or tap a month to enter a part payment.</p>
+ ${ddAlerts(c)}
+ <div class="kgrid">${card('Owed to '+esc(mgrN()),gbp(o.ov),o.ov>.005?'warn':'hero')}${card(mname,cs.st==='paid'?'Paid':cs.st==='part'||cs.st==='over'?gbp(cs.out)+' to go':cs.st==='none'?'Nothing owed':'Due '+sdm(cs.dt))}<button class="card tapc" onclick="ddSheet()"><div class="lbl">Next direct debit</div><div class="big">${whenTxt(nx)}</div><small>${gbp(A)}</small></button>${card('Paid since '+kd(ms[ms.length-1]).toLocaleString('en-GB',{month:'short',year:'numeric'}),gbp(paid))}</div>
+ ${ddRow(c)}
+ <h2>Month by month</h2><div class="list">${rows}</div>
+ <button class="addrow" onclick="ddBack()">+ Add an earlier month</button>`}
+function ddMonthSheet(k){const c=calc(),s=dst(k,c);SH={k:'ddm',m:k};
+ sheetOpen(`<h3>${pml(k)}</h3><p class="lbl" style="margin:0">Your share for this month is <b>${gbp(s.due)}</b>, due ${sdm(s.dt)}. Your direct debit is ${gbp(+S.dd.a||0)}.</p>
+ <form onsubmit="event.preventDefault();ddMonthSave()"><label class="sf"><span>Amount paid</span><span class="mny"><span class="cur">£</span><input id="ddm-a" class="num" type="number" inputmode="decimal" step="any" value="${s.paid||''}" placeholder="0.00"></span></label>
+ <div class="acts"><button type="button" class="btn out" onclick="document.getElementById('ddm-a').value='${s.due}'">Paid in full</button><button class="btn" type="submit">Save</button></div></form>`)}
+function ddMonthSave(){const s=SH;if(!s||s.k!=='ddm')return;const v=parseFloat(document.getElementById('ddm-a').value)||0;sheetClose();if(ddSetPaid(s.m,v))save();render()}
+/* housemate House tab: read-only list rows */
+function hmBillList(c){const h=S.home;
+ const row=(n,sub,mine,full,icn)=>`<div class="li ro"><span class="ic">${icn}</span><span class="tx"><b>${esc(n)}</b><small>${sub}</small></span><span class="am">${gbp(mine)}${c.p>1||full!==mine?`<small>of ${gbp(full)}</small>`:''}</span></div>`;
+ const rows=h.bills.map(b=>{const a=+b.a||0;return row(b.n,[b.t==='each'?'Each person pays':'Split '+c.p+' ways',b.d?'taken '+esc(b.d):''].filter(Boolean).join(', '),b.t==='each'?a:a/c.p,a,ini(b.n))}).join('');
+ const rent=+h.rentTotal?row('Rent','Split '+c.p+' ways'+(h.rentDate?', taken '+esc(h.rentDate):''),(+h.rentTotal)/c.p,+h.rentTotal,ico('house')).replace('class="li ro"','class="li ro rent"'):'';
+ return `<div class="list">${rows}${rent}<div class="li tot"><span class="tx"><b>Your share each month</b></span><span class="am">${gbp(c.share)}</span></div></div>`}
 /* ---------- Page names (the desktop tabs; phones use the bottom tab bar) ---------- */
-const TITLES={home:'House Finances',hmhome:'Household Bills',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log',help:'How to use YAK'};
+const TITLES={hmpay:'My Payments',home:'House Finances',hmhome:'Household Bills',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log',help:'How to use YAK'};
 const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes'],['help','Instructions']];
 let MO=false;
 function mSync(){const b=document.getElementById('mbtn'),l=document.getElementById('mlist');if(!b||!l)return;b.setAttribute('aria-expanded',String(MO));l.classList.toggle('open',MO)}
@@ -1357,12 +1444,12 @@ function render(){
  QR=false;
  if(LOCKED){MO=false;sheetClose();document.getElementById('app').innerHTML='';showLock();return}
  document.getElementById('lock').hidden=true;LSHOWN='';
- if(HM()&&S.tab==='pay')S.tab='dash';
- const c=calc(),PN=HM()?0:paySync(c);
- document.getElementById('t-pay').style.display=HM()?'none':'';
+ if(HM()&&!DDON()&&S.tab==='pay')S.tab='dash';
+ const c=calc(),PN=HM()?0:paySync(c);if(DDON())ddSync(c);
+ document.getElementById('t-pay').style.display=HM()&&!DDON()?'none':'';
  PAGES.forEach(p=>{document.getElementById('t-'+p[0]).className=S.tab===p[0]?'on':''});
  document.getElementById('bnav').innerHTML=bnav();hxSync();
- document.getElementById('app').innerHTML=banner()+(TITLES[HM()&&S.tab==='home'?'hmhome':S.tab]?`<h2 class="ptitle">${S.tab==='me'&&nm()?esc(nm())+'\'s Personal Finances':TITLES[HM()&&S.tab==='home'?'hmhome':S.tab]}</h2>`:'')+(S.tab==='dash'?(HM()?hmDash(c):dash(c)):S.tab==='home'?(HM()?hmHouse(c):home(c)):S.tab==='pay'?payPage(c,PN):S.tab==='fc'?fc(c):S.tab==='sim'?simPage(c):S.tab==='log'?logPage():S.tab==='help'?helpPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><span class="foot-acts"><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><button class="ghost" onclick="reset()">Reset to starting values</button><br><button class="ghost" style="color:var(--acc)" onclick="checkUpdate()">Check for updates</button></span> <small>${UPD}</small></p>
+ document.getElementById('app').innerHTML=banner()+(TITLES[tkey()]?`<h2 class="ptitle">${S.tab==='me'&&nm()?esc(nm())+'\'s Personal Finances':TITLES[tkey()]}</h2>`:'')+(S.tab==='dash'?(HM()?hmDash(c):dash(c)):S.tab==='home'?(HM()?hmHouse(c):home(c)):S.tab==='pay'?(HM()?hmPayPage(c):payPage(c,PN)):S.tab==='fc'?fc(c):S.tab==='sim'?simPage(c):S.tab==='log'?logPage():S.tab==='help'?helpPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><span class="foot-acts"><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><button class="ghost" onclick="reset()">Reset to starting values</button><br><button class="ghost" style="color:var(--acc)" onclick="checkUpdate()">Check for updates</button></span> <small>${UPD}</small></p>
  <details><summary><small>YAK v${VERSION}: version history</small></summary><table class="sum" style="margin-top:8px">${CHANGELOG.map(x=>`<tr><td><b>v${x.v}</b> <small>${x.d}</small></td><td style="text-align:left">${x.n}</td></tr>`).join('')}</table></details>`;
  if(S.tab==='sim')simDraw(PLAY);
  if(PLAY)countUp();

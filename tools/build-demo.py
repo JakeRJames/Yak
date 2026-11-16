@@ -56,7 +56,8 @@ const day=864e5,PACK=PACKJSON,BASE=structuredClone(S.me);
 let UT='mgr',MGR=null;
 const hmOff=()=>{if(HM()){HH=null;saveHH();if(MGR)S.home=structuredClone(MGR)}S.me=structuredClone(BASE)};
 const hmOn=()=>{if(!HM())MGR=structuredClone(S.home);const j=structuredClone(PACK);j.exported=new Date(Date.now()-2*day).toISOString();HH={pack:j,imported:new Date().toISOString(),name:'yak-household-pack.json',diff:[]};saveHH();S.me=structuredClone(BASE);hhApply()};
-const clr=()=>{M.fresh=false;ASK=false;PEND=null;RST=false;NEWV='';MSG=null;PPK=null;LEAVE=false;LK={mode:null,err:''};TDO=false;sheetClose();delete S.hh;S.tab='dash';try{localStorage.removeItem('yak.lock')}catch(e){};UT==='hm'?hmOn():hmOff()};
+const ddDemo=m=>{const cur=ymk(new Date()),k1=ymk(kd(cur,0)),k2=ymk(kd(k1,0)),due=rd2(calc().share);S.dd={on:true,a:m==='short'?750:due,d:1,start:k2,m:{}};S.dd.m[k2]={due,p:m==='short'?750:due};S.dd.m[k1]={due,p:m==='owe'?500:m==='short'?750:due};S.dd.m[cur]={p:m==='ok'?due:m==='short'?750:0}};
+const clr=()=>{S.dd={on:false,a:0,d:1,start:null,m:{}};M.fresh=false;ASK=false;PEND=null;RST=false;NEWV='';MSG=null;PPK=null;LEAVE=false;LK={mode:null,err:''};TDO=false;sheetClose();delete S.hh;S.tab='dash';try{localStorage.removeItem('yak.lock')}catch(e){};UT==='hm'?hmOn():hmOff()};
 const imp=older=>({d:structuredClone(S),name:'yak-data.json',device:'Mac',exported:new Date(Date.now()-(older?5:0)*day).toISOString(),fl:Date.now()-(older?5:0)*day,ll:Date.now()-(older?0:day),older,hh:HM()?HH.pack:null});
 const pk=seq=>{const j=structuredClone(PACK);j.seq=seq;j.exported=new Date().toISOString();if(seq>1){j.home.bills[0].a=155;j.home.bills.push({n:'Window cleaner',a:15,d:'1st',t:'split'})}return pkPend(j,'yak-household-pack.json')};
 const common=[
@@ -99,6 +100,13 @@ const T={
   ['Instructions',()=>{S.tab='help'}],
   ['More menu',()=>{},()=>moreOpen()],
   ['No income entered yet',()=>{S.me.salary=0}],
+  ['Direct debit: set it up',()=>{S.tab='me'},()=>ddSheet()],
+  ['Direct debit: Home when you owe',()=>{ddDemo('owe');TDO=true}],
+  ['Direct debit: My Payments',()=>{ddDemo('owe');S.tab='pay'}],
+  ['Direct debit: Personal when you owe',()=>{ddDemo('owe');S.tab='me'}],
+  ['Direct debit: short of your share',()=>{ddDemo('short');S.tab='me'}],
+  ['Direct debit: edit a month',()=>{ddDemo('owe');S.tab='pay'},()=>ddMonthSheet(ymk(kd(ymk(new Date()),0)))],
+  ['Direct debit: all paid up',()=>{ddDemo('ok')}],
   ['A new pack arrives (changes shown)',()=>{PPK=pk(2)}],
   ['Leave housemate mode?',()=>{LEAVE=true}],
   ...common]}};
