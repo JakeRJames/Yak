@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>YAK v2.16.2</title>
-<meta name="version" content="2.16.2">
+<meta name="version" content="3.0.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -196,9 +196,9 @@ nav{display:none}
 <div class="lockscr" id="lock" hidden></div>
 <main id="app"><div class="card" style="margin:20px 0"><b>YAK needs a web browser to run.</b><p class="lbl">This preview cannot run the app. Open YAK in Safari, Chrome or Edge instead (or use the YAK link) and your saved data will load there.</p></div></main>
 <script>
-const VERSION='2.16.2';
+const VERSION='3.0.0';
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
-const CHANGELOG=[{v:'2.16.2',d:'16 Nov 2026',n:'On Home, the Payments tile in At a glance (Payments overdue, or Payments up to date) now sits directly underneath the You can save each month tile, instead of at the end. On a phone it follows the savings tile straight away; on a wider screen it sits in the same column, beneath it. Saved data is unchanged.'},{v:'2.16.1',d:'16 Nov 2026',n:'Tidied the buttons in the What do you want to do section on Home. They are now a neat grid of equal-sized tiles that line up flush with each other and with the rest of the page, instead of a ragged row of outlined pills. Each tile has the same height, left-aligned text and a small orange arrow, and highlights in orange when tapped or hovered. On a phone they sit two to a row, with the last one running the full width; on a wider screen they sit four then three across. Saved data is unchanged.'},{v:'2.16.0',d:'16 Nov 2026',n:'YAK now checks for updates by itself every time it opens, and again when you come back to it after it has been in the background. If a newer version is available, a bar saying Update available for YAK appears at the top of the page with an Update button, which does the same as Check for updates. If you are up to date, nothing appears. The Check for updates button at the bottom of every page still works as before. Saved data is unchanged.'},{v:'2.15.2',d:'16 Nov 2026',n:'Fixed the spacing of the buttons in the prompt boxes, such as Import latest data and Start with the starting values. The filled orange button no longer looks like it overlaps the outlined one: they now sit in a row with an even gap between them (and wrap neatly onto two lines on a phone), with matching heights. The same spacing is used in the replace-data, reset, passcode and household-bills prompts. Saved data is unchanged.'},{v:'2.15.1',d:'16 Nov 2026',n:'Added a Check for updates button at the bottom of every page. The YAK app on an iPhone Home Screen can keep showing an older copy of the page after an update. Check for updates fetches the latest copy and, if it is newer than the one you are using, reloads YAK with it. If you are already up to date it tells you so. Your saved data is not touched.'},
+const CHANGELOG=[{v:'3.0.0',d:'16 Nov 2026',n:'Added household packs and housemate mode. If you manage the bills, the House tab now has a Share household pack button. It creates a small file (yak-household-pack.json) containing only the house bills, rent, budget and the number of people in the house, with nothing from Personal, Payments or Forecast. On a phone it opens the share sheet so you can send it by WhatsApp, AirDrop or Messages. Each pack is numbered, and YAK tells you when the house bills have changed since you last shared one. A housemate imports the pack with Import latest data, and their YAK switches to housemate mode: Home becomes a simpler page showing their share this month, the next bill due and every household bill with their share, and the House tab becomes read only. Their own Personal, Forecast and Simulator figures work as normal and are never touched by a pack. When an updated pack is imported, YAK shows what changed (for example Electric +£6.00) and how their share moves before anything is applied. YAK warns before a pack from a different household or an older pack replaces the current one, and before a pack switches a device that already has its own house bills into housemate mode. Leave housemate mode makes the House tab editable again. People in household now notes that it is the total number of people in the house, including you. Older data files still import fine.'},{v:'2.16.2',d:'16 Nov 2026',n:'On Home, the Payments tile in At a glance (Payments overdue, or Payments up to date) now sits directly underneath the You can save each month tile, instead of at the end. On a phone it follows the savings tile straight away; on a wider screen it sits in the same column, beneath it. Saved data is unchanged.'},{v:'2.16.1',d:'16 Nov 2026',n:'Tidied the buttons in the What do you want to do section on Home. They are now a neat grid of equal-sized tiles that line up flush with each other and with the rest of the page, instead of a ragged row of outlined pills. Each tile has the same height, left-aligned text and a small orange arrow, and highlights in orange when tapped or hovered. On a phone they sit two to a row, with the last one running the full width; on a wider screen they sit four then three across. Saved data is unchanged.'},{v:'2.16.0',d:'16 Nov 2026',n:'YAK now checks for updates by itself every time it opens, and again when you come back to it after it has been in the background. If a newer version is available, a bar saying Update available for YAK appears at the top of the page with an Update button, which does the same as Check for updates. If you are up to date, nothing appears. The Check for updates button at the bottom of every page still works as before. Saved data is unchanged.'},{v:'2.15.2',d:'16 Nov 2026',n:'Fixed the spacing of the buttons in the prompt boxes, such as Import latest data and Start with the starting values. The filled orange button no longer looks like it overlaps the outlined one: they now sit in a row with an even gap between them (and wrap neatly onto two lines on a phone), with matching heights. The same spacing is used in the replace-data, reset, passcode and household-bills prompts. Saved data is unchanged.'},{v:'2.15.1',d:'16 Nov 2026',n:'Added a Check for updates button at the bottom of every page. The YAK app on an iPhone Home Screen can keep showing an older copy of the page after an update. Check for updates fetches the latest copy and, if it is newer than the one you are using, reloads YAK with it. If you are already up to date it tells you so. Your saved data is not touched.'},
 {v:'2.15.0',d:'16 Nov 2026',n:'Added an Instructions tab for anyone new to YAK. It explains in plain language what each tab does, how the numbers are worked out, and how exporting and importing your data works, including how to move between devices safely and what to do if you forget your passcode. A How to use YAK button on Home takes you straight to it. Saved data is unchanged.'},{v:'2.14.0',d:'16 Nov 2026',n:'Added a reminder at the top of every tab when the passcode lock is off on this device, saying that anyone who opens YAK here can see your figures. Set a passcode takes you to the Passcode lock card on Home, and the reminder disappears once a passcode is set. Don\'t remind me hides it, and that choice is saved in your data, so it is included in exports and carried to other devices when you import. The reminder waits until you have imported or chosen starting values on a new device. Older data files still import fine.'},
 {v:'2.13.1',d:'16 Nov 2026',n:'Added the YAK logo as the app icon (white YAK with an orange full stop on charcoal) and named the app YAK, so it shows on the iPhone Home Screen when added from Safari. Saved data is unchanged.'},
 {v:'2.13.0',d:'15 Nov 2026',n:'Removed the Extra adjustment this month box from the Personal tab, along with the Adjustment line in How it adds up and the Adjustments slice in the salary charts. One-off costs such as credit card payments now live only on the Forecast tab, where each month\'s deductions are entered. Monthly savings on Home and Personal no longer have an adjustment taken off, and the Forecast and Simulator start from that same figure. An adjustment saved in an older data file is dropped when it is opened or imported, so if you had one entered your monthly saving will rise by that amount; add it as a Forecast deduction instead if you still need it.'},
@@ -265,6 +265,17 @@ let M={dirty:false,last:null,lastOpen:null,fresh:false,src:null};
 try{M=Object.assign(M,JSON.parse(localStorage.getItem('budgit.meta')))}catch(e){}
 function saveMeta(){try{localStorage.setItem('budgit.meta',JSON.stringify(M))}catch(e){}}
 if(!HAD&&!M.fresh){M.fresh=true;saveMeta()}
+// ---- v3 Household packs: a housemate's copy of the house bills, kept apart from their own data ----
+// yak.household holds {pack, imported, name, diff}. While it exists the device is in housemate mode: S.home is rebuilt from the pack and the House tab is read only.
+const HKEY='yak.household',PACKFILE='yak-household-pack.json';
+let HH=null;try{HH=JSON.parse(localStorage.getItem(HKEY))}catch(e){}
+if(HH&&!(HH.pack&&HH.pack.home&&Array.isArray(HH.pack.home.bills)))HH=null;
+const HM=()=>!!HH;
+function saveHH(){try{if(HH)localStorage.setItem(HKEY,JSON.stringify(HH));else localStorage.removeItem(HKEY)}catch(e){}}
+function packHome(p){const h=p.home;return{people:Math.max(1,Math.round(+h.people||1)),budget:+h.budget||0,months:0,rentTotal:+h.rentTotal||0,rentDate:String(h.rentDate||''),bills:h.bills.map(b=>({n:String(b.n||'Bill'),a:+b.a||0,d:String(b.d||''),t:b.t==='each'?'each':'split',u:p.exported||iso()}))}}
+function hhApply(){if(!HH)return;const mo=(S.home&&+S.home.months)||0;S.home=packHome(HH.pack);S.home.months=mo;if(S.me)S.me.fromAcct='no'}
+let PPK=null,LEAVE=false;
+hhApply();
 const GAP=1*864e5; // time away before YAK asks whether you have used it on another device (1 day)
 // ---- Optional passcode lock (device only: stored separately, never exported) ----
 const LKEY='yak.lock',AUTOLOCK=8000; // AUTOLOCK: a gap this long between clock checks means the page was paused without telling us
@@ -320,7 +331,7 @@ async function doExport(){
  NOLOCK=Date.now()+60000;
  const now=new Date(),name='yak-data.json';
  const ent={k:'sys',l:'Exported data to a file',x:name+' (from '+deviceName()+')'};logc(ent);let kept=false;
- const txt=JSON.stringify({app:'YAK',version:VERSION,exported:now.toISOString(),device:deviceName(),data:S},null,2);
+ const txt=JSON.stringify({app:'YAK',version:VERSION,exported:now.toISOString(),device:deviceName(),data:S,household:HH?HH.pack:undefined},null,2);
  try{
   let done=false;
   const dn=(window.claude&&claude.use)?await claude.use('downloads'):null;
@@ -338,24 +349,26 @@ function say(t){MSG=t;render()}
 function openImport(){NOLOCK=Date.now()+60000;const i=document.getElementById('imp');if(i)i.click()}
 function doImport(inp){
  const f=inp.files[0];if(!f)return;const rd=new FileReader();
- rd.onload=()=>{try{const j=JSON.parse(rd.result),d=j.data||j;
+ rd.onload=()=>{try{const j=JSON.parse(rd.result);
+  if(j&&j.type==='household-pack'){if(!j.home||!Array.isArray(j.home.bills))throw new Error('This household pack is incomplete.');PPK=pkPend(j,f.name);PEND=null;MSG=null;render();inp.value='';return}
+  const d=j.data||j;
   if(!d||!d.home||!d.me)throw new Error('This does not look like a YAK data file.');
   const fl=Date.parse(d.lastChange)||Date.parse(j.exported)||0,ll=Date.parse(S.lastChange)||0;
-  PEND={d,name:f.name,device:j.device||'',exported:j.exported||'',fl,ll,older:!!(!M.fresh&&fl&&ll&&fl<ll)};
+  PEND={d,name:f.name,device:j.device||'',exported:j.exported||'',fl,ll,older:!!(!M.fresh&&fl&&ll&&fl<ll),hh:j.household&&j.household.home&&Array.isArray(j.household.home.bills)?j.household:null};PPK=null;
   MSG=null;render()}catch(e){MSG='Import failed: '+e.message;render()}inp.value=''};
  rd.onerror=()=>{MSG='That file could not be read.';render()};
  rd.readAsText(f)}
-function applyImport(){const p=PEND;if(!p)return;S=p.d;S.fc=S.fc||{};S.fcStart=S.fcStart||0;S.tab=S.tab||'dash';migrate();logc({k:'sys',l:'Imported data from a file',x:p.name+(p.device?' (from '+p.device+(p.exported?', exported '+stamp(p.exported):'')+')':(p.exported?' (exported '+stamp(p.exported)+')':''))});save(true);
+function applyImport(){const p=PEND;if(!p)return;S=p.d;S.fc=S.fc||{};S.fcStart=S.fcStart||0;S.tab=S.tab||'dash';migrate();HH=p.hh?{pack:p.hh,imported:iso(),name:p.name,diff:[]}:null;saveHH();hhApply();logc({k:'sys',l:'Imported data from a file',x:p.name+(p.device?' (from '+p.device+(p.exported?', exported '+stamp(p.exported):'')+')':(p.exported?' (exported '+stamp(p.exported)+')':''))});save(true);
  M.dirty=false;M.fresh=false;M.imported=iso();M.src={device:p.device,exported:p.exported};M.lastOpen=iso();ASK=false;PEND=null;saveMeta();render()}
 function freshDone(){M.fresh=false;M.lastOpen=iso();saveMeta();render()}
 function askNo(){ASK=false;M.lastOpen=iso();saveMeta();render()}
 const OUT='style="background:none;color:var(--acc);border:1.5px solid var(--acc)"',BTN='';
 function msgBox(){return MSG?`<div class="card review" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span>${esc(MSG)}</span><button class="btn" onclick="MSG=null;render()">OK</button></div>`:''}
 function pendBox(){if(!PEND)return '';const p=PEND;
- return `<div class="card review" style="margin-bottom:16px"><b>${p.older?'This file is older than the data on this device.':'Replace the data in YAK with this file?'}</b><p class="lbl">File: ${esc(p.name)}${p.device?' (from '+esc(p.device)+')':''}, last changed ${p.fl?stamp(new Date(p.fl).toISOString()):'at an unknown time'}.${M.fresh?'':' Data on this device was last changed '+(p.ll?stamp(S.lastChange):'at an unknown time')+'.'}${p.older?' Importing it would overwrite newer figures.':''}</p><div class="bar"><button class="btn" ${BTN} onclick="applyImport()">${p.older?'Replace anyway':'Replace my data'}</button><button class="btn" ${OUT} onclick="PEND=null;render()">Cancel</button></div></div>`}
-function freshBox(){return M.fresh?`<div class="card ask"><b>New on this device?</b><p class="lbl">If you already use YAK somewhere else, import your latest data from Files. Otherwise, start with the starting values.</p><div class="bar"><button class="btn" ${BTN} onclick="openImport()">Import latest data</button><button class="btn" ${OUT} onclick="freshDone()">Start with the starting values</button></div></div>`:''}
+ return `<div class="card review" style="margin-bottom:16px"><b>${p.older?'This file is older than the data on this device.':'Replace the data in YAK with this file?'}</b><p class="lbl">File: ${esc(p.name)}${p.device?' (from '+esc(p.device)+')':''}, last changed ${p.fl?stamp(new Date(p.fl).toISOString()):'at an unknown time'}.${M.fresh?'':' Data on this device was last changed '+(p.ll?stamp(S.lastChange):'at an unknown time')+'.'}${p.older?' Importing it would overwrite newer figures.':''}${HM()&&!p.hh?' This is a full YAK data file, not a household pack, so importing it also switches off housemate mode and the House tab becomes editable again.':''}${!HM()&&p.hh?' This file includes a household pack, so this device will be in housemate mode with a read-only House tab.':''}</p><div class="bar"><button class="btn" ${BTN} onclick="applyImport()">${p.older?'Replace anyway':'Replace my data'}</button><button class="btn" ${OUT} onclick="PEND=null;render()">Cancel</button></div></div>`}
+function freshBox(){return M.fresh?`<div class="card ask"><b>New on this device?</b><p class="lbl">If you already use YAK somewhere else, import your latest data from Files. If a housemate manages the bills, import the household pack they sent you. Otherwise, start with the starting values.</p><div class="bar"><button class="btn" ${BTN} onclick="openImport()">Import latest data</button><button class="btn" ${OUT} onclick="freshDone()">Start with the starting values</button></div></div>`:''}
 function askBox(){return ASK&&!M.fresh?`<div class="card ask"><b>Have you used YAK on another device since?</b><p class="lbl">YAK was last open here on ${stamp(M.lastOpen)}. If you changed anything elsewhere, import your latest data from Files.</p><div class="bar"><button class="btn" ${BTN} onclick="openImport()">Yes, import latest</button><button class="btn" ${OUT} onclick="askNo()">No, carry on</button></div></div>`:''}
-function rstBox(){return RST?`<div class="card review" style="margin-bottom:16px"><b>Reset everything to the starting values?</b><p class="lbl">This replaces all of the data in YAK on this device. Export first if you want a backup.</p><div class="bar"><button class="btn" ${BTN} onclick="doReset()">Yes, reset</button><button class="btn" ${OUT} onclick="RST=false;render()">Cancel</button></div></div>`:''}
+function rstBox(){return RST?`<div class="card review" style="margin-bottom:16px"><b>Reset everything to the starting values?</b><p class="lbl">${HM()?'This clears your personal figures, forecast and change log on this device. The household pack is kept.':'This replaces all of the data in YAK on this device.'} Export first if you want a backup.</p><div class="bar"><button class="btn" ${BTN} onclick="doReset()">Yes, reset</button><button class="btn" ${OUT} onclick="RST=false;render()">Cancel</button></div></div>`:''}
 function srcText(){return M.src?(M.src.exported?'Data on this device came from '+esc(M.src.device||'an earlier export')+', exported '+stamp(M.src.exported)+'.':'Data on this device came from an imported file.'):'Last changed on this device on '+dd(S.lastChange)+'.'}
 function importCard(){return `<div class="card" style="margin:16px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Switched device?</b><br><small>${srcText()}</small></span><button class="btn" onclick="openImport()">Import latest data</button></div>`}
 function showLock(){const el=document.getElementById('lock'),k=LKF?'f':'p';
@@ -370,7 +383,7 @@ async function lkUnlock(e){e.preventDefault();const i=document.getElementById('l
  else{FAILS++;i.value='';if(FAILS%5===0){WAITUNTIL=Date.now()+30000;er.textContent='Too many attempts. Try again in 30 seconds.'}else er.textContent='That passcode is not right.';if(i.getAttribute('inputmode')&&!document.getElementById('lkalt'))er.insertAdjacentHTML('afterend','<button class="ghost lkf" id="lkalt" onclick="lkAlt()">Use letters and numbers</button>');i.focus()}
  return false}
 function lkAlt(){const i=document.getElementById('lkin');if(!i)return;i.removeAttribute('inputmode');i.removeAttribute('pattern');const b=document.getElementById('lkalt');if(b)b.remove();i.blur();i.focus()}
-function lkWipe(){try{[KEY,'budgit.meta',LKEY].forEach(k=>localStorage.removeItem(k))}catch(e){}
+function lkWipe(){try{[KEY,'budgit.meta',LKEY,HKEY].forEach(k=>localStorage.removeItem(k))}catch(e){}HH=null;PPK=null;LEAVE=false;
  S=structuredClone(seed);migrate();M={dirty:false,last:null,lastOpen:null,fresh:true,src:null};saveMeta();save(true);LOCKED=false;LKF=false;ASK=false;PEND=null;LK={mode:null,err:''};PLAY=true;render()}
 function lockNow(){if(!lockInfo())return;LOCKED=true;LKF=false;render()}
 // Locks as soon as you leave the app. The clock check is a backup for phones that pause a page without saying it was hidden.
@@ -396,7 +409,7 @@ function lockCard(){if(!lockOK())return '';const on=!!lockInfo(),m=LK.mode,pf=(i
  if(m){return `<div class="card ask"><b>${m==='set'?'Set a passcode':m==='change'?'Change passcode':'Turn off passcode lock'}</b><p class="lbl">${m==='off'?'Enter your passcode to turn the lock off.':(NUMK?'Numbers only, at least 4 digits.':'At least 4 characters.')+' It is stored on this device only and is not included in exports. If you forget it, you can clear this device and import your latest export.'}</p><div class="flds" style="margin:10px 0 14px">${m!=='set'?pf('lk-cur','Current passcode','off',kpCur()):''}${m!=='off'?pf('lk-p1','New passcode','new-password',kpNew())+pf('lk-p2','Repeat new passcode','new-password',kpNew()):''}</div>${LK.err?`<p class="lbl" style="color:var(--bad);margin:0 0 10px" role="alert">${esc(LK.err)}</p>`:''}<div class="bar"><button class="btn" ${BTN} onclick="lkSubmit()">${m==='off'?'Turn off':'Save passcode'}</button><button class="btn" ${OUT} onclick="lkMode(null)">Cancel</button></div></div>`}
  return `<div class="card" style="margin:0 0 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>Passcode lock</b> <span class="lkpill ${on?'on':'off'}">${on?'On':'Off'}</span><br><small>${on?'YAK asks for your passcode when it opens and whenever you leave the app. It keeps casual access out but does not encrypt your data.':'Add a passcode so YAK asks for it each time it opens on this device.'}</small></span><span class="bar">${on?`<button class="btn sm out" ${BTN} onclick="lockNow()">Lock now</button><button class="btn sm out" ${BTN} onclick="lkMode('change')">Change</button><button class="btn sm out" onclick="lkMode('off')">Turn off</button>`:`<button class="btn sm" onclick="lkMode('set')">Set a passcode</button>`}</span></div>`}
 function banner(){
- return updBox()+msgBox()+pendBox()+freshBox()+askBox()+rstBox()+lockHintBox()+reviewBox()+(M.dirty?`<div class="card pending tb"><span><b>Unexported changes</b></span><button class="btn sm" onclick="doExport()">Export</button></div>`
+ return updBox()+msgBox()+pkBox()+leaveBox()+pendBox()+(PPK?'':freshBox())+askBox()+rstBox()+lockHintBox()+reviewBox()+(M.dirty?`<div class="card pending tb"><span><b>Unexported changes</b></span><button class="btn sm" onclick="doExport()">Export</button></div>`
  :`<div class="xbar tb"><span>${M.last?'Last exported <b>'+stamp(M.last)+'</b>':'Not exported yet'}</span><button class="btn sm out" onclick="doExport()">Export</button></div>`)}
 const gbp=n=>(n<0?'-':'')+'£'+Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
 const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
@@ -490,6 +503,7 @@ document.addEventListener('focusin',e=>{const t=e.target;if(t.tagName==='INPUT'&
 document.addEventListener('mouseup',e=>{if(SELQ&&e.target.tagName==='INPUT'){SELQ=false;e.preventDefault()}},true);
 const PDAY=/^pay\.mates\.\d+\.d$/;
 function set(path,v,num){
+ if(HM()&&path.startsWith('home.'))return;
  const k=path.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];
  const key=k.at(-1),old=o[key],inf=lgInfo(path);let val=num?(parseFloat(v)||0):v;if(path==='home.people')val=Math.max(1,Math.round(val));if(path==='home.months')val=Math.min(12,Math.max(0,Math.round(val)));if(PDAY.test(path))val=Math.min(31,Math.max(1,Math.round(val)||1));o[key]=val;{const same=typeof val==='number'&&typeof old==='number'?Math.abs(old-val)<1e-9:String(old)===String(val);if(!same)logc({k:'chg',p:path,l:inf.l,f:inf.f,o:old,n:val})}if(k.includes('bills')||k[0]==='fc')o.u=iso();else{S.upd=S.upd||{};S.upd[path]=iso()}save();rr()}
 const gv=p=>p.split('.').reduce((o,k)=>o[k],S);
@@ -498,11 +512,11 @@ function stp(path,d){const lim=LIM[path]||(PDAY.test(path)?[1,31]:[-1e9,1e9]),cu
 function fld(path,label,o){o=o||{};const v=gv(path),lim=LIM[path],plain=label.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(),
  sb=(d,t)=>`<button type="button" class="sb ${d<0?'l':'r'}" onclick="stp('${path}',${d})" aria-label="${d<0?'Decrease':'Increase'} ${esc(plain)}"${lim&&(d<0?v<=lim[0]:v>=lim[1])?' disabled':''}>${t}</button>`;
  return `<label class="fld"><span class="fl">${label}</span><span class="mny${o.st?' st':''}">${o.cur?'<span class="cur">£</span>':''}<input class="num" type="number" data-k="${path}" inputmode="${o.st?'numeric':'decimal'}" step="any" value="${v}" onchange="set('${path}',this.value,1)" aria-label="${esc(plain)}">${o.st?sb(-1,'−')+sb(1,'+'):''}</span>${ut(path)}</label>`}
-function add(w){const a=S[w].bills;const nb=w==='home'?{n:'New bill',a:0,d:'',t:'split',u:iso()}:{n:'New expense',a:0,u:iso()};a.push(nb);logc({k:'add',l:'Added '+(w==='home'?'house bill':'personal bill'),x:'"'+nb.n+'"'});save();render();focusK(w+'.bills.'+(a.length-1)+'.n')}
-function del(w,i){const b=S[w].bills[i];if(b)logc({k:'del',l:'Removed '+(w==='home'?'house bill':'personal bill')+' "'+b.n+'"',x:'Was '+gbp(+b.a||0)+(w==='home'&&b.d?', taken '+b.d:'')});S[w].bills.splice(i,1);save();render()}
-function ask(v){if(S.me.fromAcct!==v)logc({k:'chg',p:'me.fromAcct',l:'Household bills paid from',f:'acct',o:S.me.fromAcct,n:v});S.me.fromAcct=v;save();render()}
+function add(w){if(HM()&&w==='home')return;const a=S[w].bills;const nb=w==='home'?{n:'New bill',a:0,d:'',t:'split',u:iso()}:{n:'New expense',a:0,u:iso()};a.push(nb);logc({k:'add',l:'Added '+(w==='home'?'house bill':'personal bill'),x:'"'+nb.n+'"'});save();render();focusK(w+'.bills.'+(a.length-1)+'.n')}
+function del(w,i){if(HM()&&w==='home')return;const b=S[w].bills[i];if(b)logc({k:'del',l:'Removed '+(w==='home'?'house bill':'personal bill')+' "'+b.n+'"',x:'Was '+gbp(+b.a||0)+(w==='home'&&b.d?', taken '+b.d:'')});S[w].bills.splice(i,1);save();render()}
+function ask(v){if(HM())return;if(S.me.fromAcct!==v)logc({k:'chg',p:'me.fromAcct',l:'Household bills paid from',f:'acct',o:S.me.fromAcct,n:v});S.me.fromAcct=v;save();render()}
 function reset(){RST=true;render()}
-function doReset(){RST=false;const lg=S.log||[];S=structuredClone(seed);S.log=lg;migrate();logc({k:'sys',l:'Reset everything to the starting values'});save();render()}
+function doReset(){RST=false;const lg=S.log||[];S=structuredClone(seed);S.log=lg;migrate();hhApply();logc({k:'sys',l:'Reset everything to the starting values'});save();render()}
 function card(l,v,c){return `<div class="card ${c||''}"><div class="lbl">${l}</div><div class="big">${v}</div></div>`}
 function billRows(w){return S[w].bills.map((b,i)=>`<tr>
 <td><input class="nm" data-k="${w}.bills.${i}.n" value="${esc(b.n)}" onchange="set('${w}.bills.${i}.n',this.value)" aria-label="Bill name"></td>
@@ -537,18 +551,18 @@ function dLo(){const d=DD;if(!d)return;
  const m=document.getElementById('dmid');if(m)m.innerHTML=d.mid}
 function home(c){
  const h=S.home,budgetOk=c.share<=h.budget;
- return `<div class="card inp"><div class="flds">${fld('home.people','People in household',{st:1})}${fld('home.rentTotal',c.p>1?'Total household rent ('+c.p+' people)':'Monthly rent',{cur:1})}${fld('home.budget','Monthly budget per person',{cur:1})}</div></div>
+ return `<div class="card inp"><div class="flds">${fld('home.people','People in household<small>Total in the house, including you</small>',{st:1})}${fld('home.rentTotal',c.p>1?'Total household rent ('+c.p+' people)':'Monthly rent',{cur:1})}${fld('home.budget','Monthly budget per person',{cur:1})}</div></div>
 <div class="grid">${card('Individual share each month',gbp(c.share),'hero')}${card('Household total each month',gbp(c.total))}</div>
 <div class="card"><span class="pill ${budgetOk?'ok':'warn'}">${budgetOk?'Within budget':'Over budget'}</span> <small>Individual share is ${gbp(c.share)} against a ${gbp(h.budget)} budget (${gbp(h.budget-c.share)} ${budgetOk?'spare':'over'}).</small></div>
 <h2>Bills</h2><div class="scroll"><table class="bt"><tr><th>Bill</th><th>Monthly amount</th><th>How it is divided</th><th>Date taken</th><th>Last updated</th><th></th></tr>${billRows('home')}${rentRow()}</table></div>
-<p><button class="btn" onclick="add('home')">Add bill</button></p>
+<p><button class="btn" onclick="add('home')">Add bill</button></p>${shareCard(c)}
 <h2>Per person, every month</h2><div class="scroll"><table><tr><th>Bill</th><th>Each person pays</th></tr>
 ${h.bills.map(b=>{const s=b.t==='each'?b.a:b.a/c.p;return `<tr><td>${esc(b.n)}</td><td>${gbp(s)}</td></tr>`}).join('')}
 <tr><td>Rent</td><td>${gbp((+h.rentTotal||0)/c.p)}</td></tr>
 <tr class="tot"><td>Total</td><td>${gbp(c.share)}</td></tr></table></div>${driftNote(c)}`}
 function me(c){
  const m=S.me,others=c.p-1;
- const q=m.fromAcct===null?`<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Say yes if you pay them and the others pay you back. Say no if they are collected separately.</p><div class="bar"><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div></div>`:
+ const q=HM()?`<div class="card" style="margin-bottom:16px"><small>Household bills: <b>your share from the household pack</b> (${gbp(c.share)} a month)</small></div>`:m.fromAcct===null?`<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Say yes if you pay them and the others pay you back. Say no if they are collected separately.</p><div class="bar"><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div></div>`:
  `<div class="card" style="margin-bottom:16px"><small>Household bills: <b>${c.yes?'paid from your account':'collected separately'}</b></small> <button class="ghost" style="color:var(--acc)" onclick="ask(null)">Change</button></div>`;
  const owed=c.yes?`<h2>What comes back</h2><div class="grid">${card('Owed back in total',gbp(c.back),'hero')}${card('Owed by each of '+others+' '+(others===1?'person':'people'),others?gbp(c.back/others):'£0.00')}${card('Net cost of home bills to you',gbp(c.share))}</div>`:'';
  return q+`<div class="card inp"><div class="flds">${fld('me.salary','Monthly salary (net)',{cur:1})}${fld('me.spend','Monthly spend allocated',{cur:1})}</div></div>
@@ -829,13 +843,105 @@ function payTile(c){if(c.p<2)return '';
 function dash(c){
  const go=(t,h)=>`<button class="cta" onclick="tab('${t}')">${h}</button>`;
  return `<section class="brandbox"><div class="logo">YAK<span>.</span></div><p><b style="color:#fff;font-weight:800">Your Accounts Keeper</b>: your house and personal finances in one place</p></section>
- ${importCard()}
+ ${importCard()}${packNudge(c)}
  <h2 style="margin-top:4px">What do you want to do?</h2>
  <div class="ctas">${go('home','Manage house bills')}${go('me','Track personal finances')}${go('pay','Track housemate payments')}${go('fc','Forecast your savings')}${go('sim','Simulate a scenario')}${go('log','View change log')}${go('help','How to use YAK')}</div>
  <h2>At a glance</h2>
  <div class="glance">${card(c.yes?'You will save each month once repaid':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn')}${payTile(c)}${card('Individual share each month',gbp(c.share))}${card('Personal deductions each month',gbp(c.mine))}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?card('Household bills paid from','Not set yet'):card('House bills paid separately','Yes'))}</div>
  <h2>Where your salary goes</h2>${donutCard(c)}
  <div style="margin-top:16px" id="lkc">${lockCard()}</div>`}
+/* ---------- v3 Household packs: share (manager) and housemate mode ---------- */
+function homeSig(){const h=S.home;return JSON.stringify([Math.max(1,+h.people||1),+h.rentTotal||0,h.rentDate||'',+h.budget||0,h.bills.map(b=>[b.n,+b.a||0,b.d||'',b.t])])}
+function rid(){return Array.from(crypto.getRandomValues(new Uint8Array(8)),x=>x.toString(16).padStart(2,'0')).join('')}
+function shareOf(h){const p=Math.max(1,+h.people||1);return (+h.rentTotal||0)/p+sum(h.bills,b=>b.t==='each'?+b.a||0:(+b.a||0)/p)}
+async function sendFile(name,txt){
+ try{const f=new File([txt],name,{type:'application/json'});
+  if(navigator.canShare&&navigator.share&&/iPhone|iPad|Android/.test(navigator.userAgent)&&navigator.canShare({files:[f]})){
+   try{await navigator.share({files:[f],title:'YAK household pack'});return true}catch(e){if(e&&e.name==='AbortError')return false}}
+ }catch(e){}
+ const dn=(window.claude&&claude.use)?await claude.use('downloads'):null;
+ if(dn){try{await dn.save({filename:name,data:txt});return true}catch(e){if(e&&e.code==='declined')return false;throw e}}
+ if(window.showSaveFilePicker){try{const h=await showSaveFilePicker({suggestedName:name,types:[{description:'YAK household pack',accept:{'application/json':['.json']}}]});const w=await h.createWritable();await w.write(txt);await w.close();return true}catch(e){if(e.name==='AbortError')return false}}
+ dl(name,txt);return true}
+async function doPack(){if(HM())return;NOLOCK=Date.now()+60000;
+ const hs=S.hh&&S.hh.id?S.hh:{id:rid(),seq:0,last:null,sig:''},seq=(+hs.seq||0)+1,now=new Date(),h=S.home;
+ const pack={app:'YAK',type:'household-pack',format:1,version:VERSION,household:hs.id,seq,exported:now.toISOString(),device:deviceName(),recipient:null,
+  home:{people:Math.max(1,+h.people||1),rentTotal:+h.rentTotal||0,rentDate:h.rentDate||'',budget:+h.budget||0,bills:h.bills.map(b=>({n:b.n,a:+b.a||0,d:b.d||'',t:b.t==='each'?'each':'split'}))}};
+ try{if(!(await sendFile(PACKFILE,JSON.stringify(pack,null,2))))return;
+  S.hh={id:hs.id,seq,last:now.toISOString(),sig:homeSig()};logc({k:'sys',l:'Shared household pack '+seq,x:PACKFILE+' (from '+deviceName()+')'});save();
+  say('Household pack '+seq+' is ready. Send it to your housemates and ask them to tap Import latest data in YAK.')}
+ catch(e){say('Sharing the household pack failed: '+(e&&e.message||'unknown error'))}}
+function shareCard(c){if(c.p<2)return '';const hs=S.hh,ch=!!(hs&&hs.last&&hs.sig!==homeSig());
+ return `<h2>Share with housemates</h2><div class="card${ch?' review':''}" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>${ch?'House bills have changed since you last shared them':'Household pack'}</b><br><small>${hs&&hs.last?'Pack '+hs.seq+' shared '+stamp(hs.last)+'. ':''}Send your housemates a file with these bills, the rent and the budget so they can see their share in YAK, read only. Nothing from Personal, Payments or Forecast is included.</small></span><button class="btn" onclick="doPack()">${hs&&hs.last?'Share updated pack':'Share household pack'}</button></div>`}
+function packNudge(c){const hs=S.hh;if(c.p<2||!hs||!hs.last||hs.sig===homeSig())return '';
+ return `<div class="card review" style="margin:0 0 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><span><b>House bills have changed since you last shared them.</b><br><small>Pack ${hs.seq} was shared ${stamp(hs.last)}.</small></span><button class="btn sm" onclick="doPack()">Share updated pack</button></div>`}
+function packDiff(a,b){const o=[],r=x=>Math.round(x*100)/100,am=x=>(x>0?'+':'−')+gbp(Math.abs(x)),key=x=>String(x.n).trim().toLowerCase();
+ const A=new Map(a.home.bills.map(x=>[key(x),x])),B=new Map(b.home.bills.map(x=>[key(x),x]));
+ if(Math.max(1,+a.home.people||1)!==Math.max(1,+b.home.people||1))o.push('People in the house '+Math.max(1,+a.home.people||1)+' → '+Math.max(1,+b.home.people||1));
+ {const d=r((+b.home.rentTotal||0)-(+a.home.rentTotal||0));if(d)o.push('Rent '+am(d));}
+ if((a.home.rentDate||'')!==(b.home.rentDate||''))o.push('Rent date now '+(b.home.rentDate||'not set'));
+ let same=0;
+ B.forEach((x,k)=>{const y=A.get(k);if(!y){o.push(x.n+' added ('+gbp(+x.a||0)+')');return}
+  const d=r((+x.a||0)-(+y.a||0)),parts=[];if(d)parts.push(am(d));if(x.t!==y.t)parts.push(x.t==='each'?'now each person pays this':'now split between everyone');if((x.d||'')!==(y.d||''))parts.push('date now '+(x.d||'not set'));
+  if(parts.length)o.push(x.n+' '+parts.join(', '));else same++});
+ A.forEach((y,k)=>{if(!B.has(k))o.push(y.n+' removed')});
+ return{lines:o,same,from:shareOf(a.home),to:shareOf(b.home)}}
+function pkPend(j,name){const P={pack:j,name,diff:null};
+ const mine=S.home.bills.some(b=>+b.a)||+S.home.rentTotal>0||!!(S.hh&&S.hh.last);
+ if(!HH){P.kind=M.fresh?'new':mine?'switch':'new';P.mgr=!!(S.hh&&S.hh.last);return P}
+ const cur=HH.pack;
+ if(j.household&&cur.household&&j.household!==cur.household){P.kind='other';return P}
+ P.diff=packDiff(cur,j);
+ P.kind=(+j.seq||0)<(+cur.seq||0)?'older':((+j.seq||0)===(+cur.seq||0)&&!P.diff.lines.length)?'same':'update';
+ return P}
+function pkWhen(j){return 'Pack '+(+j.seq||1)+(j.device?' from '+esc(j.device):'')+', made '+(j.exported?stamp(j.exported):'at an unknown time')}
+function pkBox(){const P=PPK;if(!P)return '';const j=P.pack,can=`<button class="btn" ${OUT} onclick="PPK=null;render()">Cancel</button>`,go=t=>`<button class="btn" ${BTN} onclick="pkApply()">${t}</button>`;
+ const dl2=P.diff?`${P.diff.lines.length?'<ul style="margin:8px 0 6px;padding-left:20px">'+P.diff.lines.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p class="lbl">No bills have changed.</p>'}<p class="lbl" style="margin:0 0 12px">${P.diff.same?P.diff.same+' other '+(P.diff.same===1?'bill is':'bills are')+' unchanged. ':''}Your share: <b>${gbp(P.diff.from)}</b> → <b>${gbp(P.diff.to)}</b> a month.</p>`:'';
+ if(P.kind==='same')return `<div class="card review" style="margin-bottom:16px"><b>You already have this household pack.</b><p class="lbl">${pkWhen(j)}. Nothing has changed.</p><div class="bar"><button class="btn" onclick="PPK=null;render()">OK</button></div></div>`;
+ if(P.kind==='update')return `<div class="card ask"><b>Update the household bills?</b><p class="lbl" style="margin-bottom:0">${pkWhen(j)}. Here is what changes:</p>${dl2}<div class="bar">${go('Apply update')}${can}</div></div>`;
+ if(P.kind==='older')return `<div class="card review" style="margin-bottom:16px"><b>This household pack is older than the one you have.</b><p class="lbl" style="margin-bottom:0">${pkWhen(j)}. You have pack ${+HH.pack.seq||1}. Importing it would go back to older bills:</p>${dl2}<div class="bar">${go('Replace anyway')}${can}</div></div>`;
+ if(P.kind==='other')return `<div class="card review" style="margin-bottom:16px"><b>This pack is from a different household.</b><p class="lbl">${pkWhen(j)}. Importing it replaces the bills from your current household. Your personal figures are kept.</p><div class="bar">${go('Replace household')}${can}</div></div>`;
+ if(P.kind==='switch')return `<div class="card review" style="margin-bottom:16px"><b>Switch this device to housemate mode?</b><p class="lbl">This is a household pack (${pkWhen(j)}). Importing it replaces the house bills on this device with the ones in the pack and makes the House tab read only. Your personal figures, forecast and change log stay as they are.${P.mgr?' <b>This device has shared household packs before. If you manage the bills, do not import it here.</b>':''}</p><div class="bar">${go('Switch to housemate mode')}${can}</div></div>`;
+ return `<div class="card ask"><b>Set up YAK with this household pack?</b><p class="lbl">${pkWhen(j)}. It holds the household bills, read only, so you can see your share. Add your own salary and bills on the Personal tab to use the rest of YAK.</p><div class="bar">${go('Use this pack')}${can}</div></div>`}
+function pkApply(){const P=PPK;if(!P)return;const j=P.pack,was=HM(),lines=P.diff?P.diff.lines:[];
+ HH={pack:j,imported:iso(),name:P.name,diff:P.kind==='update'||P.kind==='older'?lines:[]};saveHH();hhApply();
+ logc({k:'sys',l:was?'Imported household pack '+(+j.seq||1):'Switched to housemate mode with household pack '+(+j.seq||1),x:P.name+(j.device?' (from '+j.device+(j.exported?', made '+stamp(j.exported):'')+')':'')+(lines.length?'. '+lines.join('; '):'')});
+ PPK=null;if(M.fresh){M.fresh=false;M.lastOpen=iso();saveMeta()}save(true);
+ MSG=was?'Household bills updated.':'Housemate mode is on. Home shows your share and the House tab now shows the household bills, read only.';S.tab=was?S.tab:'dash';PLAY=true;render()}
+function leaveBox(){return LEAVE&&HM()?`<div class="card review" style="margin-bottom:16px"><b>Leave housemate mode?</b><p class="lbl">The House tab becomes editable again and starts from the bills in the last pack. Your personal figures are not affected, and you can import a household pack again at any time.</p><div class="bar"><button class="btn" ${BTN} onclick="hhLeave()">Leave housemate mode</button><button class="btn" ${OUT} onclick="LEAVE=false;render()">Cancel</button></div></div>`:''}
+function hhLeave(){if(!HH)return;const n=+HH.pack.seq||1;HH=null;LEAVE=false;saveHH();logc({k:'sys',l:'Left housemate mode',x:'House bills kept from household pack '+n});save();MSG='Housemate mode is off. The House tab is editable again.';render()}
+function dayOf(d){const m=String(d||'').match(/\d{1,2}/);return m?Math.min(31,Math.max(1,+m[0])):null}
+function nextOn(day){const t=new Date(),t0=new Date(t.getFullYear(),t.getMonth(),t.getDate());for(let i=0;i<2;i++){const y=t.getFullYear(),mo=t.getMonth()+i,last=new Date(y,mo+1,0).getDate(),dt=new Date(y,mo,Math.min(day,last));if(dt>=t0)return dt}return null}
+function dueList(c){const h=S.home,o=h.bills.map(b=>({n:b.n,full:b.t==='each'?(+b.a||0)*c.p:+b.a||0,mine:b.t==='each'?+b.a||0:(+b.a||0)/c.p,t:b.t,d:b.d||''}));
+ if(+h.rentTotal)o.push({n:'Rent',full:+h.rentTotal,mine:(+h.rentTotal)/c.p,t:'split',d:h.rentDate||''});
+ o.forEach(x=>{const dy=dayOf(x.d);x.next=dy?nextOn(dy):null});
+ return o.sort((a,b)=>(a.next?a.next.getTime():9e15)-(b.next?b.next.getTime():9e15))}
+const fdd=d=>d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+function whenTxt(d){const t=new Date(),t0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),n=Math.round((d-t0)/864e5);return n===0?'Today':n===1?'Tomorrow':fdd(d)}
+function peopleNote(c){return `<p><small>Split between <b>${c.p}</b> ${c.p===1?'person':'people'} in total, including you.</small></p>`}
+function packCard(){if(!HH)return '';const j=HH.pack;
+ return `<div class="card" style="margin:16px 0"><div style="display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap"><span><b>Household pack</b> <span class="lkpill off">Read only</span><br><small>Pack ${+j.seq||1}, updated <b>${j.exported?stamp(j.exported):'unknown'}</b>${j.device?' on '+esc(j.device):''}. Imported here ${dd(HH.imported)}.</small></span></div>${HH.diff&&HH.diff.length?`<p style="margin:8px 0 0"><small><b>Last update:</b> ${esc(HH.diff.join(' · '))}</small></p>`:''}<div class="bar" style="margin-top:12px"><button class="btn sm" onclick="openImport()">Import new pack</button><button class="btn sm out" onclick="LEAVE=true;render();scrollTo({top:0,behavior:'smooth'})">Leave housemate mode</button></div></div>`}
+function dueTable(c,L){
+ return `<div class="scroll"><table><tr><th>Bill</th><th>Next due</th><th>Your share</th><th>Full bill</th></tr>${L.map(x=>`<tr><td>${esc(x.n)}${x.t==='each'?'<br><small>Each person pays this</small>':''}</td><td style="white-space:nowrap">${x.next?whenTxt(x.next):'<small>'+(esc(x.d)||'Not set')+'</small>'}</td><td><b>${gbp(x.mine)}</b></td><td><small>${gbp(x.full)}</small></td></tr>`).join('')}<tr class="tot"><td>Total each month</td><td></td><td>${gbp(c.share)}</td><td><small>${gbp(c.total)}</small></td></tr></table></div>${peopleNote(c)}`}
+function hmDash(c){const go=(t,h)=>`<button class="cta" onclick="tab('${t}')">${h}</button>`,L=dueList(c),nx=L.find(x=>x.next);
+ return `<section class="brandbox"><div class="logo">YAK<span>.</span></div><p><b style="color:#fff;font-weight:800">Your Accounts Keeper</b>: your share of the house, and your own finances</p></section>
+ ${packCard()}
+ <h2 style="margin-top:4px">What do you want to do?</h2>
+ <div class="ctas">${go('home','View household bills')}${go('me','Track personal finances')}${go('fc','Forecast your savings')}${go('sim','Simulate a scenario')}${go('log','View change log')}${go('help','How to use YAK')}<button class="cta" onclick="openImport()">Import a new pack</button></div>
+ <h2>At a glance</h2>
+ <div class="glance">${card('My share this month',gbp(c.share),'hero')}<div class="card"><div class="lbl">Next bill due</div><div class="big">${nx?esc(nx.n):'No dates set'}</div>${nx?`<small>${whenTxt(nx.next)} · your share ${gbp(nx.mine)}</small>`:''}</div>${+S.me.salary?card('You can save each month',gbp(c.save),c.save>=0?'':'warn'):`<button class="card" style="text-align:left;font:inherit;color:inherit;cursor:pointer" onclick="tab('me')"><div class="lbl">You can save each month</div><div class="big" style="font-size:20px">Add your salary</div><small>On the Personal tab, to see what you can save</small></button>`}${card('Personal deductions each month',gbp(c.mine))}</div>
+ <h2>Household bills</h2>${dueTable(c,L)}
+ <h2>Where your salary goes</h2>${donutCard(c)}
+ <div style="margin-top:16px" id="lkc">${lockCard()}</div>`}
+function hmHouse(c){const h=S.home,b=+h.budget||0,ok=c.share<=b;
+ return `${packCard()}
+<div class="grid">${card('My share each month',gbp(c.share),'hero')}${card('Household total each month',gbp(c.total))}</div>
+${b?`<div class="card"><span class="pill ${ok?'ok':'warn'}">${ok?'Within budget':'Over budget'}</span> <small>Your share is ${gbp(c.share)} against a ${gbp(b)} budget per person (${gbp(Math.abs(b-c.share))} ${ok?'spare':'over'}).</small></div>`:''}
+<h2>Bills</h2><div class="scroll"><table><tr><th>Bill</th><th>Your share</th><th>Full bill</th><th>Taken</th></tr>
+${h.bills.map(x=>`<tr><td>${esc(x.n)}<br><small>${x.t==='each'?'Each person pays this':'Split between everyone'}</small></td><td><b>${gbp(x.t==='each'?+x.a||0:(+x.a||0)/c.p)}</b></td><td>${gbp(+x.a||0)}</td><td>${esc(x.d||'')||'<small>Not set</small>'}</td></tr>`).join('')}
+${+h.rentTotal?`<tr><td>Rent<br><small>Split between everyone</small></td><td><b>${gbp((+h.rentTotal)/c.p)}</b></td><td>${gbp(+h.rentTotal)}</td><td>${esc(h.rentDate||'')||'<small>Not set</small>'}</td></tr>`:''}
+<tr class="tot"><td>Total</td><td>${gbp(c.share)}</td><td>${gbp(c.total)}</td><td></td></tr></table></div>${peopleNote(c)}${driftNote(c)}
+<p><small>These figures come from the household pack and can only be changed by whoever manages the bills. Import a new pack when they send you one.</small></p>`}
 /* ---------- Instructions: a plain-language guide for new users ---------- */
 function helpPage(){
  const sec=(t,b,o)=>`<details${o?' open':''}><summary>${t}</summary><div class="hb">${b}</div></details>`;
@@ -867,6 +973,18 @@ function helpPage(){
  <li>For each housemate, either tick <b>Paid in full</b> or type the amount you received. <b>All paid in full</b> ticks everyone at once.</li>
  <li>Give each housemate a name and the day of the month they should pay by. A red <b>Overdue</b> label appears if that day passes without full payment, and a green <b>Paid</b> label shows when they are up to date.</li>
  <li>Past months keep the share that applied at the time, so changing a bill later does not rewrite history. <b>Add an earlier month</b> lets you go back and record older payments.</li></ul>`)}
+ ${sec('Household packs: sharing bills with housemates',`<p>If you manage the household bills, you can send your housemates a <b>household pack</b> so they can see their share in their own copy of YAK.</p>
+ <h3>If you manage the bills</h3>
+ <ol><li>Set <b>People in household</b> on the House tab to the total number of people in the house, including you.</li>
+ <li>Under <b>Share with housemates</b>, tap <b>Share household pack</b>. On a phone the share sheet opens, so you can send it by WhatsApp, AirDrop or Messages. Elsewhere the file <b>yak-household-pack.json</b> is saved.</li>
+ <li>When the bills change, YAK reminds you on Home and on the House tab. Tap <b>Share updated pack</b> and send it again.</li></ol>
+ <p>The pack holds only the house bills, rent, budget and number of people. Nothing from Personal, Payments or Forecast is included, and everyone gets the same file.</p>
+ <h3>If you are a housemate</h3>
+ <ol><li>Save the pack to Files, open YAK and tap <b>Import latest data</b>.</li>
+ <li>YAK switches to <b>housemate mode</b>. Home shows your share this month, the next bill due and every household bill with your share. The House tab is read only.</li>
+ <li>Use Personal, Forecast and the Simulator as normal. A pack never changes your own figures.</li>
+ <li>When you get an updated pack, import it the same way. YAK shows what changed and how your share moves before you apply it.</li></ol>
+ <div class="tip"><b>Good to know:</b> YAK warns you before a pack from a different household or an older pack replaces the one you have. <b>Leave housemate mode</b> on Home or the House tab makes the House tab editable again. Your own exports include the pack, so moving to a new phone keeps it.</div>`)}
  ${sec('Forecast: the next 12 months',`<p>Each of the next 12 months starts from your monthly saving. For anything that is not in your regular bills, such as a credit card payment, use <b>Add deduction</b> under that month. <b>Repeat in later months</b> copies a deduction forward so you do not have to retype it.</p>
  <p>If you already have savings, enter them in the optional box at the top. The line graph shows your savings balance month by month. Touch or hover over the line to see each month.</p>`)}
  ${sec('Simulator: trying out "what if"',`<p>Want to know what would happen if you got a pay rise, cancelled a subscription or cut your spending? Move the sliders or type new amounts for pay, house bills, personal bills and spending. The charts and figures update straight away to show how much more (or less) you could save over anything from 6 months to 5 years.</p>
@@ -928,21 +1046,23 @@ async function autoCheckUpdate(){
 }
 function updBox(){return NEWV?`<div class="card pending tb"><span><b>Update available for YAK</b> <small>(v${NEWV})</small></span><button class="btn sm" onclick="checkUpdate()">Update</button></div>`:''}
 /* ---------- Mobile menu (narrow screens only; desktop keeps the tabs) ---------- */
-const TITLES={home:'House Finances',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log',help:'How to use YAK'};
+const TITLES={home:'House Finances',hmhome:'Household Bills',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log',help:'How to use YAK'};
 const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes'],['help','Instructions']];
 let MO=false;
 function mSync(){const b=document.getElementById('mbtn'),l=document.getElementById('mlist');if(!b||!l)return;b.setAttribute('aria-expanded',String(MO));l.classList.toggle('open',MO)}
-function mToggle(){MO=!MO;if(MO){document.getElementById('mitems').innerHTML=PAGES.filter(p=>p[0]!==S.tab).map((p,i)=>`<button style="--i:${i}" onclick="tab('${p[0]}')">${p[1]}</button>`).join('')}mSync()}
+function mToggle(){MO=!MO;if(MO){document.getElementById('mitems').innerHTML=PAGES.filter(p=>p[0]!==S.tab&&!(HM()&&p[0]==='pay')).map((p,i)=>`<button style="--i:${i}" onclick="tab('${p[0]}')">${p[1]}</button>`).join('')}mSync()}
 document.addEventListener('click',e=>{if(MO&&!e.target.closest('#mbtn,#mlist')){MO=false;mSync()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&MO){MO=false;mSync();const b=document.getElementById('mbtn');if(b)b.focus()}});
 function render(){
  QR=false;
  if(LOCKED){MO=false;mSync();document.getElementById('app').innerHTML='';showLock();return}
  document.getElementById('lock').hidden=true;LSHOWN='';
- const c=calc(),PN=paySync(c);
+ if(HM()&&S.tab==='pay')S.tab='dash';
+ const c=calc(),PN=HM()?0:paySync(c);
+ document.getElementById('t-pay').style.display=HM()?'none':'';
  PAGES.forEach(p=>{document.getElementById('t-'+p[0]).className=S.tab===p[0]?'on':''});
  document.getElementById('mcur').textContent=(PAGES.find(p=>p[0]===S.tab)||PAGES[0])[1];mSync();
- document.getElementById('app').innerHTML=banner()+(TITLES[S.tab]?`<h2 class="ptitle">${TITLES[S.tab]}</h2>`:'')+(S.tab==='dash'?dash(c):S.tab==='home'?home(c):S.tab==='pay'?payPage(c,PN):S.tab==='fc'?fc(c):S.tab==='sim'?simPage(c):S.tab==='log'?logPage():S.tab==='help'?helpPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)"><button class="ghost" onclick="reset()">Reset to starting values</button><br><button class="ghost" style="color:var(--acc)" onclick="checkUpdate()">Check for updates</button> <small>${UPD}</small></p>
+ document.getElementById('app').innerHTML=banner()+(TITLES[HM()&&S.tab==='home'?'hmhome':S.tab]?`<h2 class="ptitle">${TITLES[HM()&&S.tab==='home'?'hmhome':S.tab]}</h2>`:'')+(S.tab==='dash'?(HM()?hmDash(c):dash(c)):S.tab==='home'?(HM()?hmHouse(c):home(c)):S.tab==='pay'?payPage(c,PN):S.tab==='fc'?fc(c):S.tab==='sim'?simPage(c):S.tab==='log'?logPage():S.tab==='help'?helpPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)"><button class="ghost" onclick="reset()">Reset to starting values</button><br><button class="ghost" style="color:var(--acc)" onclick="checkUpdate()">Check for updates</button> <small>${UPD}</small></p>
  <details><summary><small>YAK v${VERSION}: version history</small></summary><table class="sum" style="margin-top:8px">${CHANGELOG.map(x=>`<tr><td><b>v${x.v}</b> <small>${x.d}</small></td><td style="text-align:left">${x.n}</td></tr>`).join('')}</table></details>`;
  if(S.tab==='sim')simDraw(PLAY);
  PLAY=false;
