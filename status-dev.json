@@ -1,0 +1,9 @@
+{
+  "branch": "dev",
+  "name": "yak-sync-dev",
+  "ok": false,
+  "url": "",
+  "sha": "bb7e3de80049a8488ba6be4dc04378e164b88813",
+  "at": "2026-11-16T23:33:31.917Z",
+  "log": "\nFAILED: npx -y wrangler@4 kv namespace list\n\n\u001b[31m✘ \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mIn a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work. Please go to https://developers.cloudflare.com/fundamentals/api/get-started/create-token/ for instructions on how to create an api token, and assign its value to CLOUDFLARE_API_TOKEN.\u001b[0m\n\n  \n  To continue without logging in, rerun this command with `--temporary`. Wrangler will use a temporary account and print a claim URL.\n\n\n🪵  Logs were written to \"/home/runner/.config/.wrangler/logs/wrangler-2026-11-16_23-33-39_112.log\"\n"
+}
