@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK v2.14.0</title>
-<meta name="version" content="2.14.0">
+<title>YAK v2.15.0</title>
+<meta name="version" content="2.15.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -75,6 +75,16 @@ select{padding-right:32px;text-align-last:center;cursor:pointer;background-image
 .lgm{min-width:0;flex:1 1 220px}.lgm .ut{margin-top:0}
 .lgv{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}.lgo{color:var(--mute);text-decoration:line-through}.lga{color:var(--mute)}.lgd{font-weight:700;color:var(--mute)}
 .lgday{font:700 12.5px var(--f);color:var(--mute);padding:14px 2px 4px;text-transform:uppercase;letter-spacing:.04em}.lgday:first-child{padding-top:2px}
+.hp{max-width:760px}.hp>p.lead{color:var(--mute);margin:0 0 16px}
+.hp details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:0 0 10px}
+.hp summary{cursor:pointer;padding:13px 16px;font-weight:700;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hp summary::-webkit-details-marker{display:none}
+.hp summary::after{content:"";flex:none;width:8px;height:8px;border-right:2px solid var(--acc);border-bottom:2px solid var(--acc);transform:rotate(45deg);margin-top:-4px;transition:transform .2s}
+.hp details[open]>summary::after{transform:rotate(-135deg);margin-top:4px}
+.hp .hb{padding:0 16px 14px}.hp .hb p{margin:0 0 10px}.hp .hb ul,.hp .hb ol{margin:0 0 10px;padding-left:20px}.hp .hb li{margin:0 0 6px}
+.hp .hb h3{font:700 14px var(--f);margin:14px 0 6px;color:var(--acc)}
+.hp .tip{background:var(--accbg);border-radius:8px;padding:10px 12px;margin:0 0 10px;font-size:14px}
+.hp .tip b{color:var(--acc)}
 .ptitle{font:800 26px var(--f);letter-spacing:-.5px;margin:6px 0 14px}
 .tb{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;padding:3px 4px 3px 12px;margin-bottom:12px;font-size:12.5px;border-radius:8px}.tb>span{min-width:0;padding-top:2px}.tb .btn{padding:2px 12px;font-size:12px;line-height:1.5;flex:none}.pending.tb{border-width:1px}
 .xl{display:inline-flex;flex-wrap:wrap;gap:2px 18px;line-height:1.5}.xl .src{font-size:12px}
@@ -181,13 +191,13 @@ nav{display:none}
 }
 @media(prefers-reduced-motion:reduce){.dseg,.ln,.ar,.pt{animation:none!important}.sdseg{transition:none}.mbtn,.mbtn svg,.mlist,.mlist>div,.mlist button{transition:none!important}}
 </style></head><body>
-<header><h1 onclick="tab('dash')">YAK<span>.</span></h1><nav><button id="t-dash" onclick="tab('dash')">Home</button><button id="t-home" onclick="tab('home')">House</button><button id="t-me" onclick="tab('me')">Personal</button><button id="t-pay" onclick="tab('pay')">Payments</button><button id="t-fc" onclick="tab('fc')">Forecast</button><button id="t-sim" onclick="tab('sim')">Simulator</button><button id="t-log" onclick="tab('log')">Changes</button></nav><button class="mbtn" id="mbtn" onclick="mToggle()" aria-expanded="false" aria-controls="mlist"><span id="mcur">Home</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg></button><div class="mlist" id="mlist"><div id="mitems"></div></div></header>
+<header><h1 onclick="tab('dash')">YAK<span>.</span></h1><nav><button id="t-dash" onclick="tab('dash')">Home</button><button id="t-home" onclick="tab('home')">House</button><button id="t-me" onclick="tab('me')">Personal</button><button id="t-pay" onclick="tab('pay')">Payments</button><button id="t-fc" onclick="tab('fc')">Forecast</button><button id="t-sim" onclick="tab('sim')">Simulator</button><button id="t-log" onclick="tab('log')">Changes</button><button id="t-help" onclick="tab('help')">Instructions</button></nav><button class="mbtn" id="mbtn" onclick="mToggle()" aria-expanded="false" aria-controls="mlist"><span id="mcur">Home</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg></button><div class="mlist" id="mlist"><div id="mitems"></div></div></header>
 <div class="lockscr" id="lock" hidden></div>
 <main id="app"><div class="card" style="margin:20px 0"><b>YAK needs a web browser to run.</b><p class="lbl">This preview cannot run the app. Open YAK in Safari, Chrome or Edge instead (or use the YAK link) and your saved data will load there.</p></div></main>
 <script>
-const VERSION='2.14.0';
+const VERSION='2.15.0';
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
-const CHANGELOG=[{v:'2.14.0',d:'16 Nov 2026',n:'Added a reminder at the top of every tab when the passcode lock is off on this device, saying that anyone who opens YAK here can see your figures. Set a passcode takes you to the Passcode lock card on Home, and the reminder disappears once a passcode is set. Don\'t remind me hides it, and that choice is saved in your data, so it is included in exports and carried to other devices when you import. The reminder waits until you have imported or chosen starting values on a new device. Older data files still import fine.'},
+const CHANGELOG=[{v:'2.15.0',d:'16 Nov 2026',n:'Added an Instructions tab for anyone new to YAK. It explains in plain language what each tab does, how the numbers are worked out, and how exporting and importing your data works, including how to move between devices safely and what to do if you forget your passcode. A How to use YAK button on Home takes you straight to it. Saved data is unchanged.'},{v:'2.14.0',d:'16 Nov 2026',n:'Added a reminder at the top of every tab when the passcode lock is off on this device, saying that anyone who opens YAK here can see your figures. Set a passcode takes you to the Passcode lock card on Home, and the reminder disappears once a passcode is set. Don\'t remind me hides it, and that choice is saved in your data, so it is included in exports and carried to other devices when you import. The reminder waits until you have imported or chosen starting values on a new device. Older data files still import fine.'},
 {v:'2.13.1',d:'16 Nov 2026',n:'Added the YAK logo as the app icon (white YAK with an orange full stop on charcoal) and named the app YAK, so it shows on the iPhone Home Screen when added from Safari. Saved data is unchanged.'},
 {v:'2.13.0',d:'15 Nov 2026',n:'Removed the Extra adjustment this month box from the Personal tab, along with the Adjustment line in How it adds up and the Adjustments slice in the salary charts. One-off costs such as credit card payments now live only on the Forecast tab, where each month\'s deductions are entered. Monthly savings on Home and Personal no longer have an adjustment taken off, and the Forecast and Simulator start from that same figure. An adjustment saved in an older data file is dropped when it is opened or imported, so if you had one entered your monthly saving will rise by that amount; add it as a Forecast deduction instead if you still need it.'},
 {v:'2.12.0',d:'15 Nov 2026',n:'Exports are now recorded in the change log, as imports already were. Each export adds a line saying the data was exported to a file, with the file name and the device, and the line is included in the file itself. Imports now also record which device the file came from and when it was exported there. An export you cancel is not recorded. Saved data is unchanged.'},
@@ -819,14 +829,81 @@ function dash(c){
  return `<section class="brandbox"><div class="logo">YAK<span>.</span></div><p><b style="color:#fff;font-weight:800">Your Accounts Keeper</b>: your house and personal finances in one place</p></section>
  ${importCard()}
  <h2 style="margin-top:4px">What do you want to do?</h2>
- <div class="ctas">${go('home','Manage house bills')}${go('me','Track personal finances')}${go('pay','Track housemate payments')}${go('fc','Forecast your savings')}${go('sim','Simulate a scenario')}${go('log','View change log')}</div>
+ <div class="ctas">${go('home','Manage house bills')}${go('me','Track personal finances')}${go('pay','Track housemate payments')}${go('fc','Forecast your savings')}${go('sim','Simulate a scenario')}${go('log','View change log')}${go('help','How to use YAK')}</div>
  <h2>At a glance</h2>
  <div class="grid">${card(c.yes?'You will save each month once repaid':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn')}${card('Individual share each month',gbp(c.share))}${card('Personal deductions each month',gbp(c.mine))}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?card('Household bills paid from','Not set yet'):card('House bills paid separately','Yes'))}${payTile(c)}</div>
  <h2>Where your salary goes</h2>${donutCard(c)}
  <div style="margin-top:16px" id="lkc">${lockCard()}</div>`}
+/* ---------- Instructions: a plain-language guide for new users ---------- */
+function helpPage(){
+ const sec=(t,b,o)=>`<details${o?' open':''}><summary>${t}</summary><div class="hb">${b}</div></details>`;
+ return `<div class="hp"><p class="lead">A short guide to what YAK does and how to look after your data. Tap a heading to open it.</p>
+ ${sec('What is YAK?',`<p>YAK (Your Accounts Keeper) helps you keep track of money in a shared home. It does two jobs: it works out what each person owes towards the household bills, and it shows what you can save each month once your own bills and spending are taken off your pay.</p>
+ <p>It does <b>not</b> connect to your bank, and it does not send your figures anywhere. You type in the numbers, and YAK does the adding up. Everything is kept on the device you are using.</p>
+ <div class="tip"><b>Good to know:</b> because your figures live on this device only, YAK will not appear on your other devices by itself. Use Export and Import (see below) to move your data between a phone and a laptop.</div>`,true)}
+ ${sec('Getting started in five steps',`<ol>
+ <li><b>House tab:</b> set how many people live in the household, then the total monthly rent and the monthly budget you want each person to stay within.</li>
+ <li><b>House tab:</b> check the list of bills. Type in each amount, or use <b>Add bill</b> for anything missing. Remove any you do not have.</li>
+ <li><b>Personal tab:</b> answer the question about whether the household bills come out of your account. Then enter your monthly pay (after tax), the amount you set aside to spend, and your own bills.</li>
+ <li><b>Home tab:</b> see your results at a glance, including what you can save each month.</li>
+ <li><b>Export your data</b> once you are happy, so you have a backup (see Moving your data, below).</li>
+ </ol><p>All amounts are monthly. Anything you type is saved straight away, so there is no Save button.</p>`)}
+ ${sec('Home',`<p>Your summary page. It shows what you can save each month, your share of the house bills, your personal bills, and (when it applies) how much others owe you back. A ring chart shows where your pay goes: house bills, personal bills, spending and savings. Touch or hover over a slice to see its amount.</p>
+ <p>The row of small buttons takes you to the other tabs. This page is also where you can import data from another device and turn the passcode lock on or off.</p>`)}
+ ${sec('House: sharing the household bills',`<p>This is where the household costs live. Each bill has a name, a monthly amount, the day it is taken and a choice of how it is divided:</p>
+ <ul><li><b>Split between everyone:</b> the amount is divided equally by the number of people. Use this for things like gas, electricity, water and wifi.</li>
+ <li><b>Each person pays this:</b> everyone pays the full amount. Use this for something that is charged per person, such as a TV licence if each person needs their own.</li></ul>
+ <p>Rent is entered once as a total for the whole house and YAK divides it for you. The big figure at the top is your <b>individual share each month</b>, with a green or red label showing whether that is within your budget.</p>
+ <p>Each line shows when it was last changed. If nothing has been changed for three months, YAK reminds you to check your bills are still right. Amounts are rounded to the nearest penny, so the lines can differ from the total by a penny or so. YAK will tell you when that happens.</p>`)}
+ ${sec('Personal: what you can save',`<p>Enter your monthly pay after tax, an amount you set aside for spending, and your own bills such as phone, gym or insurance.</p>
+ <p>The first question matters: <b>do all the household bills come out of your account?</b></p>
+ <ul><li><b>Yes:</b> you pay the full household bills and the others pay you back. YAK takes the full amount off, then adds back what the others owe, and shows how much each person owes you.</li>
+ <li><b>No:</b> the bills are collected separately, so YAK only takes off your own share.</li></ul>
+ <p>The <b>How it adds up</b> table walks through the sum line by line, so you can see how the saving figure is reached. You can change your answer at any time.</p>`)}
+ ${sec('Payments: who has paid you',`<p>This tab appears once the household has two or more people. It is for tracking what your housemates pay you.</p>
+ <ul><li>Each month has a card showing how much is owed and how much has been received.</li>
+ <li>For each housemate, either tick <b>Paid in full</b> or type the amount you received. <b>All paid in full</b> ticks everyone at once.</li>
+ <li>Give each housemate a name and the day of the month they should pay by. A red <b>Overdue</b> label appears if that day passes without full payment, and a green <b>Paid</b> label shows when they are up to date.</li>
+ <li>Past months keep the share that applied at the time, so changing a bill later does not rewrite history. <b>Add an earlier month</b> lets you go back and record older payments.</li></ul>`)}
+ ${sec('Forecast: the next 12 months',`<p>Each of the next 12 months starts from your monthly saving. For anything that is not in your regular bills, such as a credit card payment, use <b>Add deduction</b> under that month. <b>Repeat in later months</b> copies a deduction forward so you do not have to retype it.</p>
+ <p>If you already have savings, enter them in the optional box at the top. The line graph shows your savings balance month by month. Touch or hover over the line to see each month.</p>`)}
+ ${sec('Simulator: trying out "what if"',`<p>Want to know what would happen if you got a pay rise, cancelled a subscription or cut your spending? Move the sliders or type new amounts for pay, house bills, personal bills and spending. The charts and figures update straight away to show how much more (or less) you could save over anything from 6 months to 5 years.</p>
+ <div class="tip"><b>Nothing here is saved.</b> The Simulator never changes your real figures. Press <b>Reset to current values</b> to start again.</div>`)}
+ ${sec('Changes: a record of every edit',`<p>YAK keeps a log of every change you make to a value, bill or date: what it was, what it became, and when. It also records exports and imports. <b>Summary</b> shows each item once, from its first value to its latest. <b>Every change</b> lists each edit in order, newest first.</p>
+ <p>It is useful for spotting where a mistake crept in. The log travels inside your exported file, and keeps the latest 1,000 entries.</p>`)}
+ ${sec('Passcode lock (optional)',`<p>You can ask YAK to show a login screen when it opens. Turn it on from the <b>Passcode lock</b> box at the bottom of Home. YAK then locks itself as soon as you leave the app or switch to another tab or app.</p>
+ <ul><li>The passcode belongs to that device only. It is not included in exports, so each device has its own.</li>
+ <li>It keeps casual snoopers out, but it does not scramble your data.</li>
+ <li><b>Forgotten it?</b> On the login screen choose the option to clear the device. This removes YAK's saved data and the passcode from that device, and you can then import your latest export to get everything back. This is another reason to export regularly.</li></ul>`)}
+ ${sec('Exporting your data',`<p>Exporting saves all of your figures into a single file called <b>yak-data.json</b>. That includes your bills, payments, forecast deductions and the change log. It does not include your passcode.</p>
+ <h3>How to export</h3>
+ <ol><li>Tap the small <b>Export</b> button in the thin bar at the top of any page.</li>
+ <li>Save the file. On a computer you may be asked where to put it. On a phone it is saved like any other download, so look in the Files app.</li></ol>
+ <p>The bar shows when you last exported. It turns <b>orange and says "Unexported changes"</b> when you have changed something since, which is your cue to export again.</p>
+ <div class="tip"><b>Keep it private:</b> the file is plain text with your finances in it, and it is not protected by the passcode. Store it somewhere only you can reach, and do not leave copies lying around.</div>`)}
+ ${sec('Importing your data',`<p>Importing loads a YAK file back into the app. Use it to set up a new device, or to bring a device up to date after you have made changes somewhere else.</p>
+ <h3>How to import</h3>
+ <ol><li>Tap <b>Import latest data</b> on the Home tab (or at the very bottom of any page).</li>
+ <li>Choose your <b>yak-data.json</b> file from Files or Downloads.</li>
+ <li>YAK shows the file's name, which device it came from and when it was last changed. Tap <b>Replace my data</b> to go ahead, or <b>Cancel</b> to leave things as they are.</li></ol>
+ <h3>Things to know</h3>
+ <ul><li><b>Importing replaces everything.</b> The file is not merged with what is already on the device. Whatever is in the file becomes your data.</li>
+ <li><b>YAK warns you if the file is older</b> than what is on the device, because importing it would overwrite newer figures. You then have to choose <b>Replace anyway</b>.</li>
+ <li>If you choose a file that is not from YAK, you will see a message saying so and nothing changes.</li>
+ <li>Files exported from earlier versions of YAK still work.</li></ul>`)}
+ ${sec('Moving between devices',`<p>Say you have been using YAK on your laptop and want the latest figures on your phone:</p>
+ <ol><li>On the laptop, tap <b>Export</b>.</li>
+ <li>Get the file to your phone, for example by AirDrop, email to yourself, or a cloud folder such as iCloud Drive.</li>
+ <li>On the phone, open YAK and tap <b>Import latest data</b>.</li></ol>
+ <p>YAK helps you remember. On a brand new device it asks <b>"New on this device?"</b> so you can import straight away or start fresh. If you have been away for a day or more it asks <b>"Have you used YAK on another device since?"</b>. The <b>Switched device</b> box on Home also shows where the data on this device came from.</p>
+ <div class="tip"><b>The golden rule:</b> use one device at a time. Export before you leave a device and import when you arrive on the next one. If you make changes on two devices without swapping files, the last file you import wins and the other changes are lost.</div>`)}
+ ${sec('Starting again, and backups',`<p>At the very bottom of every page, <b>Reset to starting values</b> clears your figures back to blank. YAK asks you to confirm first. Export beforehand if you might want your data back.</p>
+ <p>Your figures are stored in your web browser. If you clear your browser's website data or switch browsers, they will not be there. A recent export is your safety net, so get into the habit of exporting after you have made changes.</p>`)}
+ </div>`}
+
 /* ---------- Mobile menu (narrow screens only; desktop keeps the tabs) ---------- */
-const TITLES={home:'House Finances',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log'};
-const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes']];
+const TITLES={home:'House Finances',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log',help:'How to use YAK'};
+const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes'],['help','Instructions']];
 let MO=false;
 function mSync(){const b=document.getElementById('mbtn'),l=document.getElementById('mlist');if(!b||!l)return;b.setAttribute('aria-expanded',String(MO));l.classList.toggle('open',MO)}
 function mToggle(){MO=!MO;if(MO){document.getElementById('mitems').innerHTML=PAGES.filter(p=>p[0]!==S.tab).map((p,i)=>`<button style="--i:${i}" onclick="tab('${p[0]}')">${p[1]}</button>`).join('')}mSync()}
@@ -839,7 +916,7 @@ function render(){
  const c=calc(),PN=paySync(c);
  PAGES.forEach(p=>{document.getElementById('t-'+p[0]).className=S.tab===p[0]?'on':''});
  document.getElementById('mcur').textContent=(PAGES.find(p=>p[0]===S.tab)||PAGES[0])[1];mSync();
- document.getElementById('app').innerHTML=banner()+(TITLES[S.tab]?`<h2 class="ptitle">${TITLES[S.tab]}</h2>`:'')+(S.tab==='dash'?dash(c):S.tab==='home'?home(c):S.tab==='pay'?payPage(c,PN):S.tab==='fc'?fc(c):S.tab==='sim'?simPage(c):S.tab==='log'?logPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)"><button class="ghost" onclick="reset()">Reset to starting values</button></p>
+ document.getElementById('app').innerHTML=banner()+(TITLES[S.tab]?`<h2 class="ptitle">${TITLES[S.tab]}</h2>`:'')+(S.tab==='dash'?dash(c):S.tab==='home'?home(c):S.tab==='pay'?payPage(c,PN):S.tab==='fc'?fc(c):S.tab==='sim'?simPage(c):S.tab==='log'?logPage():S.tab==='help'?helpPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)"><button class="ghost" onclick="reset()">Reset to starting values</button></p>
  <details><summary><small>YAK v${VERSION}: version history</small></summary><table class="sum" style="margin-top:8px">${CHANGELOG.map(x=>`<tr><td><b>v${x.v}</b> <small>${x.d}</small></td><td style="text-align:left">${x.n}</td></tr>`).join('')}</table></details>`;
  if(S.tab==='sim')simDraw(PLAY);
  PLAY=false;
