@@ -3,9 +3,9 @@
   "name": "yak-sync-dev",
   "ok": false,
   "url": "",
-  "sha": "3d5c7b5031d0808bbea51a1276b2de5cbe28f1a3",
-  "at": "2026-11-16T23:35:28.186Z",
-  "log": "\nFAILED: npx -y wrangler@4 kv namespace list\n\n\u001b[31m✘ \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mIn a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work. Please go to https://developers.cloudflare.com/fundamentals/api/get-started/create-token/ for instructions on how to create an api token, and assign its value to CLOUDFLARE_API_TOKEN.\u001b[0m\n\n  \n  To continue without logging in, rerun this command with `--temporary`. Wrangler will use a temporary account and print a claim URL.\n\n\n🪵  Logs were written to \"/home/runner/.config/.wrangler/logs/wrangler-2026-11-16_23-35-35_147.log\"\n",
+  "sha": "40e30378bd374da2f0e158d1436d3fc5250fdec0",
+  "at": "2026-11-16T23:40:13.091Z",
+  "log": "\nFAILED: npx -y wrangler@4 kv namespace list\n\n\u001b[31m✘ \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mIn a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work. Please go to https://developers.cloudflare.com/fundamentals/api/get-started/create-token/ for instructions on how to create an api token, and assign its value to CLOUDFLARE_API_TOKEN.\u001b[0m\n\n  \n  To continue without logging in, rerun this command with `--temporary`. Wrangler will use a temporary account and print a claim URL.\n\n\n🪵  Logs were written to \"/home/runner/.config/.wrangler/logs/wrangler-2026-11-16_23-40-19_283.log\"\n",
   "secrets": {
     "CLOUDFLARE_API_TOKEN": false,
     "CLOUDFLARE_ACCOUNT_ID": false,
