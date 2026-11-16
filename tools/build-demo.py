@@ -33,13 +33,13 @@ data = {"tab": "dash", "fc": {"2027-01": [{"n": "Credit card", "a": 600, "u": no
 # Sample monthly snapshots (v4.3): earlier months, so History has something to compare.
 hb0 = [["Rent", 650], ["Gas & Electricity", 40], ["Water", 12.67], ["WiFi Bundle", 11.67], ["Council Tax", 53.33], ["TV Licence", 4.83]]
 pb0 = [["Phone Bill (Combined)", 32], ["Apple Music", 11], ["Gym Membership", 30], ["Car", 260], ["Car Insurance", 75], ["Fuel", 150], ["Personal Trainer", 160], ["iCloud Storage", 3]]
-def snap(i, pb, s, extra=None, f=False):
-    h = round(sum(x[1] for x in hb0), 2); b = sum(x[1] for x in pb)
-    d = {"i": i, "h": h, "b": b, "s": s, "v": round(i - h - b - s, 2), "hb": hb0, "pb": pb}
+def snap(i, pb, s, extra=None, f=False, fd=()):
+    h = round(sum(x[1] for x in hb0), 2); b = sum(x[1] for x in pb); od = round(sum(x[1] for x in fd), 2)
+    d = {"i": i, "h": h, "b": b, "s": s, "v": round(i - h - b - s - od, 2), "d": od, "hb": hb0, "pb": pb, "fd": [list(x) for x in fd]}
     if f: d["f"] = 1
     return d
 data["snap"] = {"2026-06": snap(3300, pb0 + [["Netflix", 11]], 500), "2026-07": snap(3300, pb0, 500),
-                "2026-08": snap(3300, pb0, 500, f=True), "2026-09": snap(3400, pb0, 500), "2026-10": snap(3400, pb0, 450)}
+                "2026-08": snap(3300, pb0, 500, f=True), "2026-09": snap(3400, pb0, 500, fd=[("Credit card", 400)]), "2026-10": snap(3400, pb0, 450)}
 meta = {"dirty": True, "last": "2026-11-07T18:00:00.000Z", "lastOpen": now, "fresh": False, "src": None}
 pack = {"app": "YAK", "type": "household-pack", "format": 1, "household": "demo-house", "seq": 1, "device": "iPhone",
         "from": "Jake", "recipient": None,
@@ -62,12 +62,12 @@ tour = r'''<style>
 <button id="tourb"></button>
 <div id="tourp" hidden><div class="h">Demo as</div><div class="segc" id="tourut"><button type="button" data-u="mgr">Manager</button><button type="button" data-u="hm">Housemate</button></div><div class="note" id="tourn"></div><div id="tourl"></div></div>
 <script>{
-const day=864e5,PACK=PACKJSON,BASE=structuredClone(S.me),SNAP0=structuredClone(S.snap||{});
+const day=864e5,PACK=PACKJSON,BASE=structuredClone(S.me),SNAP0=structuredClone(S.snap||{}),FC0=structuredClone(S.fc||{});
 let UT='mgr',MGR=null;
 const hmOff=()=>{if(HM()){HH=null;saveHH();if(MGR)S.home=structuredClone(MGR)}S.me=structuredClone(BASE)};
 const hmOn=()=>{if(!HM())MGR=structuredClone(S.home);const j=structuredClone(PACK);j.exported=new Date(Date.now()-2*day).toISOString();HH={pack:j,imported:new Date().toISOString(),name:'yak-household-pack.json',diff:[]};saveHH();S.me=structuredClone(BASE);hhApply()};
 const ddDemo=m=>{const cur=ymk(new Date()),k1=ymk(kd(cur,0)),k2=ymk(kd(k1,0)),due=rd2(calc().share);S.dd={on:true,a:m==='short'?750:due,d:1,start:k2,m:{}};S.dd.m[k2]={due,p:m==='short'?750:due};S.dd.m[k1]={due,p:m==='owe'?500:m==='short'?750:due};S.dd.m[cur]={p:m==='ok'?due:m==='short'?750:0}};
-const clr=()=>{S.snap=structuredClone(SNAP0);HSO=null;S.dd={on:false,a:0,d:1,start:null,m:{}};M.fresh=false;ASK=false;PEND=null;RST=false;NEWV='';MSG=null;PPK=null;LEAVE=false;LK={mode:null,err:''};TDO=false;sheetClose();delete S.hh;S.tab='dash';try{localStorage.removeItem('yak.lock')}catch(e){};UT==='hm'?hmOn():hmOff()};
+const clr=()=>{S.snap=structuredClone(SNAP0);S.fc=structuredClone(FC0);HSO=null;S.dd={on:false,a:0,d:1,start:null,m:{}};M.fresh=false;ASK=false;PEND=null;RST=false;NEWV='';MSG=null;PPK=null;LEAVE=false;LK={mode:null,err:''};TDO=false;sheetClose();delete S.hh;S.tab='dash';try{localStorage.removeItem('yak.lock')}catch(e){};UT==='hm'?hmOn():hmOff()};
 const imp=older=>({d:structuredClone(S),name:'yak-data.json',device:'Mac',exported:new Date(Date.now()-(older?5:0)*day).toISOString(),fl:Date.now()-(older?5:0)*day,ll:Date.now()-(older?0:day),older,hh:HM()?HH.pack:null});
 const pk=seq=>{const j=structuredClone(PACK);j.seq=seq;j.exported=new Date().toISOString();if(seq>1){j.home.bills[0].a=155;j.home.bills.push({n:'Window cleaner',a:15,d:'1st',t:'split'})}return pkPend(j,'yak-household-pack.json')};
 const common=[
@@ -94,6 +94,7 @@ const T={
   ['History',()=>{S.tab='hist'}],
   ['History: a month opened',()=>{S.tab='hist';HSO=ymk(new Date())}],
   ['History: first month only',()=>{S.tab='hist';const k=ymk(new Date());S.snap={};snapTake()}],
+  ['History: no one-off costs in Forecast',()=>{S.tab='hist';S.fc={};Object.values(S.snap).forEach(o=>{o.v=rd2(o.v+(+o.d||0));o.d=0;o.fd=[]});snapTake()}],
   ['Simulator',()=>{S.tab='sim'}],
   ['Changes',()=>{S.tab='log'}],
   ['Instructions',()=>{S.tab='help'}],
@@ -112,6 +113,7 @@ const T={
   ['Personal',()=>{S.tab='me'}],
   ['Forecast',()=>{S.tab='fc'}],
   ['History',()=>{S.tab='hist'}],
+  ['History: no one-off costs in Forecast',()=>{S.tab='hist';S.fc={};Object.values(S.snap).forEach(o=>{o.v=rd2(o.v+(+o.d||0));o.d=0;o.fd=[]});snapTake()}],
   ['Simulator',()=>{S.tab='sim'}],
   ['Instructions',()=>{S.tab='help'}],
   ['More menu',()=>{},()=>moreOpen()],
