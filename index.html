@@ -534,7 +534,7 @@ function showLock(){const el=document.getElementById('lock'),k=LKF?'f':'p';
 async function lkUnlock(e){e.preventDefault();const i=document.getElementById('lkin'),er=document.getElementById('lkerr'),pw=i.value;if(!pw)return false;
  if(Date.now()<WAITUNTIL){er.textContent='Too many attempts. Try again in '+Math.ceil((WAITUNTIL-Date.now())/1000)+' seconds.';return false}
  let ok=false;try{ok=await lockCheck(pw)}catch(x){}
- if(ok){FAILS=0;LOCKED=false;PLAY=true;render()}
+ if(ok){FAILS=0;LOCKED=false;PLAY=true;render();sySync(true)}
  else{FAILS++;i.value='';if(FAILS%5===0){WAITUNTIL=Date.now()+30000;er.textContent='Too many attempts. Try again in 30 seconds.'}else er.textContent='That passcode is not right.';if(i.getAttribute('inputmode')&&!document.getElementById('lkalt'))er.insertAdjacentHTML('afterend','<button class="ghost lkf" id="lkalt" onclick="lkAlt()">Use letters and numbers</button>');i.focus()}
  return false}
 function lkAlt(){const i=document.getElementById('lkin');if(!i)return;i.removeAttribute('inputmode');i.removeAttribute('pattern');const b=document.getElementById('lkalt');if(b)b.remove();i.blur();i.focus()}
