@@ -1,6 +1,6 @@
 """Build the YAK demo page from the current index.html.
 
-Usage: python3 tools/build-demo.py [output_dir]   (default: /tmp/yak-demo)
+Usage: python3 tools/build-demo.py [output_dir]   (default: ~/yak-demo)
 
 The demo is the real app with:
   - sample figures loaded fresh every time the page opens (nothing is kept),
@@ -12,7 +12,7 @@ after every change or feature that is pushed.
 import json, os, shutil, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = sys.argv[1] if len(sys.argv) > 1 else '/tmp/yak-demo'
+OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser('~/yak-demo')
 s = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
 ver = s.split('<meta name="version" content="')[1].split('"')[0]
 
