@@ -9,6 +9,7 @@ const out = { branch: process.env.BRANCH, name, ok: false, url: '', sha: process
 const scrub = t => { const a = process.env.CLOUDFLARE_ACCOUNT_ID, k = process.env.CLOUDFLARE_API_TOKEN; return [a, k].filter(Boolean).reduce((s, x) => s.split(x).join('***'), String(t)) };
 const run = c => { try { return execSync(c, { cwd: 'worker', encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }) } catch (e) { throw new Error(c + '\n' + (e.stdout || '') + (e.stderr || '')) } };
 const W = 'npx -y wrangler@4';
+if (!process.env.CLOUDFLARE_ACCOUNT_ID) delete process.env.CLOUDFLARE_ACCOUNT_ID; // empty means not set: wrangler then finds the account from the token
 try {
   const list = () => { const t = run(W + ' kv namespace list'); return JSON.parse(t.slice(t.indexOf('['))) };
   let ns = list().find(n => n.title === kv);
