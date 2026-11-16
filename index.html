@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK v4.2.2</title>
-<meta name="version" content="4.2.2">
+<title>YAK v4.3.0</title>
+<meta name="version" content="4.3.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624"><script>try{var t=localStorage.getItem("yak.theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -321,17 +321,23 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 #app.enter>:nth-child(2){animation-delay:.04s}#app.enter>:nth-child(3){animation-delay:.08s}#app.enter>:nth-child(4){animation-delay:.12s}#app.enter>:nth-child(5){animation-delay:.16s}#app.enter>:nth-child(n+6){animation-delay:.2s}
 @media(prefers-reduced-motion:reduce){#app.enter>*,.mpanel,.ring .rv.anim{animation:none!important}.sheet,.scrim,.bnav svg{transition:none!important}}
 @media(prefers-reduced-motion:reduce){.dseg,.ln,.ar,.pt{animation:none!important}.sdseg{transition:none}.mbtn,.mbtn svg,.mlist,.mlist>div,.mlist button{transition:none!important}}
+.hd{font-weight:700;font-size:.85em;white-space:nowrap}.hd.up{color:var(--good,#5b9a6a)}.hd.dn{color:var(--bad)}
+.hero .hsub,.hero .hd.up,.hero .hd.dn,.warn .hsub{color:inherit}.hero .hsub,.warn .hsub{opacity:.9}
+.hsub{display:block;font:600 12px var(--f);color:var(--mute);margin-top:4px;letter-spacing:0}
+.hdl{display:inline-block;margin-top:8px;font:700 12px var(--f);color:#fff;background:rgba(255,255,255,.1);border:0;border-radius:99px;padding:5px 11px;cursor:pointer}.hdl .hd.up{color:#8fd19e}.hdl .hd.dn{color:#ff9d94}.hdl::after{content:' ›';color:#d6d3ca}
+.hbr{fill:var(--acc);transform-box:fill-box;transform-origin:bottom}.hbr.neg{fill:var(--bad);transform-origin:top}.hbr.cur{opacity:.6}.hbar{cursor:pointer}.hbar.on .hbr{opacity:1;stroke:var(--ink);stroke-width:2}.hbr.anim{animation:hbup .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*35ms)}@keyframes hbup{from{transform:scaleY(0)}}
+.hsum td:last-child{white-space:nowrap}.hch{list-style:none;margin:0;padding:0}.hch li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}.hch li:last-child{border-bottom:0}.hch small{color:var(--mute);text-align:right;white-space:nowrap}
 </style></head><body>
-<header><h1 onclick="tab('dash')">YAK<span>.</span></h1><nav><button id="t-dash" onclick="tab('dash')">Home</button><button id="t-home" onclick="tab('home')">House</button><button id="t-me" onclick="tab('me')">Personal</button><button id="t-pay" onclick="tab('pay')">Payments</button><button id="t-fc" onclick="tab('fc')">Forecast</button><button id="t-sim" onclick="tab('sim')">Simulator</button><button id="t-log" onclick="tab('log')">Changes</button><button id="t-help" onclick="tab('help')">Instructions</button></nav><span class="hacts"><button class="hx" id="hx" onclick="doExport()" aria-label="Export your data"></button><button class="hx ic" onclick="moreOpen()" aria-label="More options"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></span></header>
+<header><h1 onclick="tab('dash')">YAK<span>.</span></h1><nav><button id="t-dash" onclick="tab('dash')">Home</button><button id="t-home" onclick="tab('home')">House</button><button id="t-me" onclick="tab('me')">Personal</button><button id="t-pay" onclick="tab('pay')">Payments</button><button id="t-fc" onclick="tab('fc')">Forecast</button><button id="t-hist" onclick="tab('hist')">History</button><button id="t-sim" onclick="tab('sim')">Simulator</button><button id="t-log" onclick="tab('log')">Changes</button><button id="t-help" onclick="tab('help')">Instructions</button></nav><span class="hacts"><button class="hx" id="hx" onclick="doExport()" aria-label="Export your data"></button><button class="hx ic" onclick="moreOpen()" aria-label="More options"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></span></header>
 <div class="lockscr" id="lock" hidden></div>
 <main id="app"><div class="card" style="margin:20px 0"><b>YAK needs a web browser to run.</b><p class="lbl">This preview cannot run the app. Open YAK in Safari, Chrome or Edge instead (or use the YAK link) and your saved data will load there.</p></div></main>
 <div class="bnav" id="bnav" role="navigation" aria-label="Sections"></div>
 <div class="scrim" id="scrim" hidden onclick="sheetClose()"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Details" hidden></div>
 <input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)">
 <script>
-const VERSION='4.2.2';
+const VERSION='4.3.0';
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
-const CHANGELOG=[{v:'4.2.2',d:'16 Nov 2026',n:'If you manage the bills and say on the Personal tab that the household bills are collected separately, YAK no longer counts your housemates\' shares as owed to you. Nobody owes you anything in that case, so the Payments tab, the Payments tile on Home (Payments overdue, still to come or up to date) and its owed and overdue figures are hidden, and Forecast takes the place of Payments in the bottom bar. If you have not answered the question yet, the Payments tab asks it instead of showing figures. Payments you have already recorded are kept, stay in your exports, and come back if you change your answer to Yes, from my account. The Instructions are updated to match. Saved data is unchanged.'},{v:'4.2.1',d:'16 Nov 2026',n:'Housemates who have imported a household pack but not yet added their income are now told what that means. Home puts Add your income at the top of the To do list, the Forecast and Simulator tabs wait for it instead of showing figures worked out from no income, and Personal, Forecast and Simulator show a note explaining that what you can save, your deductions, the forecast and scenarios will not be worked out until your income is added, with a button to add it. Saved data is unchanged.'},
+const CHANGELOG=[{v:'4.3.0',d:'16 Nov 2026',n:'Added monthly snapshots. YAK now keeps a snapshot of each month automatically, with nothing to do: your income, your share of the house bills, your personal bills, your spending and what you could save. The current month updates as you change your figures and is kept as it stands when the month ends, and months you did not open YAK in are carried over from the month before. A new History page (in More on a phone, and a History tab on wider screens) shows a bar chart of what you could save each month, this month against last month, your monthly average, your best month and the total since your first snapshot. Tap a month to compare it with the month before and see exactly what changed, such as a bill added, removed or changed in price. On Home, a small line under what you can save shows how this month compares with last month and opens History. Snapshots are saved in your data, so they are included in exports, and importing a file keeps any months that are only on this device. The Instructions are updated to match. Older data files open as before.'},{v:'4.2.2',d:'16 Nov 2026',n:'If you manage the bills and say on the Personal tab that the household bills are collected separately, YAK no longer counts your housemates\' shares as owed to you. Nobody owes you anything in that case, so the Payments tab, the Payments tile on Home (Payments overdue, still to come or up to date) and its owed and overdue figures are hidden, and Forecast takes the place of Payments in the bottom bar. If you have not answered the question yet, the Payments tab asks it instead of showing figures. Payments you have already recorded are kept, stay in your exports, and come back if you change your answer to Yes, from my account. The Instructions are updated to match. Saved data is unchanged.'},{v:'4.2.1',d:'16 Nov 2026',n:'Housemates who have imported a household pack but not yet added their income are now told what that means. Home puts Add your income at the top of the To do list, the Forecast and Simulator tabs wait for it instead of showing figures worked out from no income, and Personal, Forecast and Simulator show a note explaining that what you can save, your deductions, the forecast and scenarios will not be worked out until your income is added, with a button to add it. Saved data is unchanged.'},
 {v:'4.2.0',d:'16 Nov 2026',n:'Housemates can now pay their share by one direct debit to whoever manages the bills, instead of paying each bill separately. On the Personal tab, How you pay your share lets them choose a direct debit, set the amount and the day it leaves their account. Housemates who pay this way get their own Payments tab in the bottom bar (Forecast moves into More), where each month can be ticked as paid or given a part payment, like the manager\'s Payments tab. Home shows the next direct debit instead of the next bill, and both Home and Personal say how much is owed when a month has not been paid in full or has only been part paid. If the direct debit is less than their share, YAK shows the gap and counts it as owed. Their own figures now use the direct debit amount as their house cost. The housemate Home and House tabs also now use the same tidy list and tile style as the rest of YAK. Saved data is unchanged apart from the new direct debit details, which are included in the housemate\'s exports.'},
 {v:'4.1.3',d:'16 Nov 2026',n:'Lined up the buttons in the To do list on Home. Every action button is now the same size and sits in the same place on each row, with room kept for the dismiss cross so the buttons stay aligned whether or not a row has one. Saved data is unchanged.'},
 {v:'4.1.2',d:'16 Nov 2026',n:'Fixed Home showing a minus amount (your share of the house bills) as what you can save before you have added your income, for example straight after a housemate imports a household pack. Until your income is entered, Home, the Where your income goes chart and the Personal tab now ask you to add it instead. Salary is now called income everywhere in YAK (for example Monthly income and Where your income goes), so it suits any kind of pay. Saved data is unchanged.'},
@@ -453,11 +459,12 @@ function migrate(){let ch=false;const n=iso();
  if(!S.goal||typeof S.goal!=='object'){S.goal={a:0};ch=true}
  if(!S.dd||typeof S.dd!=='object'||typeof S.dd.m!=='object'||!S.dd.m){S.dd={on:false,a:0,d:1,start:null,m:{}};ch=true}
  if(!S.pay||typeof S.pay.m!=='object'||!S.pay.m||!Array.isArray(S.pay.mates)){S.pay={start:null,mates:[],m:{}};ch=true}
+ if(!S.snap||typeof S.snap!=='object'||Array.isArray(S.snap)){S.snap={};ch=true}
  if(S.me&&'adj' in S.me){delete S.me.adj;delete S.upd['me.adj'];ch=true}
  SCALARS.forEach(k=>{if(!S.upd[k]){S.upd[k]=n;ch=true}});
  [...S.home.bills,...S.me.bills].forEach(b=>{if(!b.u){b.u=n;ch=true}});
  return ch}
-function save(quiet){if(quiet!==true){S.lastChange=iso();M.dirty=true;saveMeta()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(quiet){if(quiet!==true){S.lastChange=iso();M.dirty=true;saveMeta()}snapTake();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function needsReview(){const ref=Math.max(Date.parse(S.lastChange)||0,Date.parse(S.reviewed)||0),t=new Date(ref);t.setMonth(t.getMonth()+3);return Date.now()>=t.getTime()}
 function reviewDone(){S.reviewed=iso();save(true);render()}
 function reviewBox(){if(!needsReview())return '';
@@ -503,7 +510,7 @@ function doImport(inp){
   MSG=null;render()}catch(e){MSG='Import failed: '+e.message;render()}inp.value=''};
  rd.onerror=()=>{MSG='That file could not be read.';render()};
  rd.readAsText(f)}
-function applyImport(){const p=PEND;if(!p)return;S=p.d;S.fc=S.fc||{};S.fcStart=S.fcStart||0;S.tab=S.tab||'dash';migrate();HH=p.hh?{pack:p.hh,imported:iso(),name:p.name,diff:[]}:null;saveHH();hhApply();logc({k:'sys',l:'Imported data from a file',x:p.name+(p.device?' (from '+p.device+(p.exported?', exported '+stamp(p.exported):'')+')':(p.exported?' (exported '+stamp(p.exported)+')':''))});save(true);
+function applyImport(){const p=PEND;if(!p)return;const sn0=S&&S.snap;S=p.d;S.snap=Object.assign({},sn0&&typeof sn0==='object'?sn0:{},S.snap&&typeof S.snap==='object'&&!Array.isArray(S.snap)?S.snap:{});S.fc=S.fc||{};S.fcStart=S.fcStart||0;S.tab=S.tab||'dash';migrate();HH=p.hh?{pack:p.hh,imported:iso(),name:p.name,diff:[]}:null;saveHH();hhApply();logc({k:'sys',l:'Imported data from a file',x:p.name+(p.device?' (from '+p.device+(p.exported?', exported '+stamp(p.exported):'')+')':(p.exported?' (exported '+stamp(p.exported)+')':''))});save(true);
  M.dirty=false;M.fresh=false;M.imported=iso();M.src={device:p.device,exported:p.exported};M.lastOpen=iso();ASK=false;PEND=null;saveMeta();render()}
 function freshDone(){M.fresh=false;M.lastOpen=iso();saveMeta();render()}
 function askNo(){ASK=false;M.lastOpen=iso();saveMeta();render()}
@@ -662,7 +669,7 @@ function add(w){if(HM()&&w==='home')return;const a=S[w].bills;const nb=w==='home
 function del(w,i){if(HM()&&w==='home')return;const b=S[w].bills[i];if(b)logc({k:'del',l:'Removed '+(w==='home'?'house bill':'personal bill')+' "'+b.n+'"',x:'Was '+gbp(+b.a||0)+(w==='home'&&b.d?', taken '+b.d:'')});S[w].bills.splice(i,1);save();render()}
 function ask(v){if(HM())return;if(S.me.fromAcct!==v)logc({k:'chg',p:'me.fromAcct',l:'Household bills paid from',f:'acct',o:S.me.fromAcct,n:v});S.me.fromAcct=v;save();render()}
 function reset(){RST=true;render();scrollTo(0,0)}
-function doReset(){RST=false;const lg=S.log||[];S=structuredClone(seed);S.log=lg;migrate();hhApply();logc({k:'sys',l:'Reset everything to the starting values'});save();render()}
+function doReset(){RST=false;const lg=S.log||[],sn=S.snap||{};S=structuredClone(seed);S.log=lg;S.snap=sn;migrate();hhApply();logc({k:'sys',l:'Reset everything to the starting values'});save();render()}
 function card(l,v,c){return `<div class="card ${c||''}"><div class="lbl">${l}</div><div class="big">${v}</div></div>`}
 function billRows(w){return S[w].bills.map((b,i)=>`<tr>
 <td><input class="nm" data-k="${w}.bills.${i}.n" value="${esc(b.n)}" onchange="set('${w}.bills.${i}.n',this.value)" aria-label="Bill name"></td>
@@ -990,6 +997,52 @@ function dash(c){
  <div class="glance2">${payTile(c)}${sh}${tcard('Personal deductions each month',gbp(c.mine),'me')}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?tcard('Household bills paid from','Not set yet','me'):'')}</div>
  <h2>Where your income goes</h2>${donutCard(c)}
  <div style="margin-top:16px" id="lkc">${LK.mode?lockCard():''}</div>`}
+/* ---------- v4.3 Monthly snapshots: S.snap = {'YYYY-MM': {i,h,b,s,v,hb,pb,f}} is kept in your data and exported with it.
+   YAK saves the current month automatically whenever your figures change, and each month freezes when it ends.
+   Months YAK was not opened in are carried over from the month before (f:1), because nothing could have changed. */
+const SNAPMAX=120;
+let HSO=null;
+function snapOf(c){const h=S.home,r=rd2;
+ const hb=c.dd?[['Direct debit to '+mgrN(),r(c.house)]]:[...(+h.rentTotal?[['Rent',r((+h.rentTotal)/c.p)]]:[]),...h.bills.map(b=>[String(b.n),r(b.t==='each'?+b.a||0:(+b.a||0)/c.p)])];
+ return{i:r(+S.me.salary||0),h:r(c.yes?c.share:c.house),b:r(c.mine),s:r(+S.me.spend||0),v:r(c.save),hb,pb:S.me.bills.map(b=>[String(b.n),r(+b.a||0)])}}
+function snapTake(){if(!S||!S.me||!(+S.me.salary))return false;if(!S.snap||typeof S.snap!=='object')S.snap={};
+ const N=S.snap,k=ymk(new Date()),ks=Object.keys(N).sort(),last=ks[ks.length-1];let ch=false;
+ if(last&&last<k){let g=ymk(kd(last,32));for(let n=0;g<k&&n<SNAPMAX;n++){N[g]=Object.assign(structuredClone(N[last]),{f:1});g=ymk(kd(g,32));ch=true}}
+ const cur=snapOf(calc());if(JSON.stringify(N[k])!==JSON.stringify(cur)){N[k]=cur;ch=true}
+ const all=Object.keys(N).sort();if(all.length>SNAPMAX){all.slice(0,all.length-SNAPMAX).forEach(x=>delete N[x]);ch=true}
+ return ch}
+const snapKeys=()=>Object.keys(S.snap||{}).sort();
+const mlong=k=>kd(k).toLocaleString('en-GB',{month:'long',year:'numeric'});
+const mname=k=>kd(k).toLocaleString('en-GB',{month:'long'});
+function snapDiff(a,b){const o=[],m=(L)=>{const x=new Map();(L||[]).forEach(([n,v])=>{const key=n.trim().toLowerCase();x.set(key,{n,v:(x.has(key)?x.get(key).v:0)+v})});return x};
+ [['hb','house'],['pb','personal']].forEach(([f])=>{const A=m(a[f]),B=m(b[f]);
+  B.forEach((y,key)=>{const x=A.get(key);if(!x){if(y.v)o.push({t:'add',n:y.n,v:y.v})}else if(Math.abs(x.v-y.v)>.004)o.push({t:'chg',n:y.n,o:x.v,v:y.v})});
+  A.forEach((x,key)=>{if(!B.has(key)&&x.v)o.push({t:'del',n:x.n,v:x.v})})});
+ [['i','Income'],['s','Spending allocated']].forEach(([f,l])=>{if(Math.abs((a[f]||0)-(b[f]||0))>.004)o.push({t:'chg',n:l,o:a[f]||0,v:b[f]||0})});
+ return o}
+const dlt=(d,good)=>Math.abs(d)<.005?'':`<span class="hd ${(d>0)===(good!==false)?'up':'dn'}">${d>0?'▲':'▼'} ${gbp(Math.abs(d))}</span>`;
+function heroDelta(){const ks=snapKeys(),k=ymk(new Date()),i=ks.indexOf(k);if(i<1)return '';const a=S.snap[ks[i-1]],b=S.snap[k],d=b.v-a.v;
+ return `<button class="hdl" onclick="tab('hist')">${Math.abs(d)<.005?'Same as '+mname(ks[i-1]):dlt(d)+' on '+mname(ks[i-1])}</button>`}
+function histChart(ks){const L=ks.slice(-12),W=Math.max(280,Math.min(900,document.documentElement.clientWidth-82)),H=W<480?190:230,P={l:W<480?46:56,r:10,t:12,b:28};
+ const vs=L.map(k=>S.snap[k].v);let lo=Math.min(0,...vs),hi=Math.max(0,...vs);if(hi-lo<1)hi=lo+100;
+ const tk=niceTicks(lo,hi),y0=tk[0],y1=tk[tk.length-1],iw=W-P.l-P.r,ih=H-P.t-P.b,Y=v=>P.t+ih*(1-(v-y0)/(y1-y0)),bw=iw/L.length,cur=ymk(new Date());
+ const grid=tk.map(v=>`<line class="gl" x1="${P.l}" x2="${W-P.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="ax" x="${P.l-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end">${axl(v)}</text>`).join('');
+ const bars=L.map((k,i)=>{const v=S.snap[k].v,x=P.l+i*bw+bw*.18,w=bw*.64,y=Math.min(Y(v),Y(0)),h=Math.max(1.5,Math.abs(Y(v)-Y(0)));
+  return `<g class="hbar${HSO===k?' on':''}" onclick="histTog('${k}',1)"><rect x="${(P.l+i*bw).toFixed(1)}" y="${P.t}" width="${bw.toFixed(1)}" height="${ih}" fill="transparent"/><rect class="hbr${PLAY&&!RM?' anim':''}${v<0?' neg':''}${k===cur?' cur':''}" style="--i:${i}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${Math.min(5,w/4).toFixed(1)}"/><title>${mlong(k)}: ${gbp(v)}</title></g>`}).join('');
+ const nth=L.length>8&&W<480?2:1,xl=L.map((k,i)=>(L.length-1-i)%nth===0?`<text class="ax" x="${(P.l+i*bw+bw/2).toFixed(1)}" y="${H-8}" text-anchor="middle">${shortM(k).slice(0,3)}</text>`:'').join('');
+ return `<div class="card" style="margin-bottom:16px"><b>What you could save each month</b><div class="lbl" style="margin-bottom:8px">Tap a bar to open that month.</div><div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart of monthly saving for the last ${L.length} months, from ${gbp(vs[0])} in ${mlong(L[0])} to ${gbp(vs[vs.length-1])} in ${mlong(L[L.length-1])}.">${grid}<line class="zl" x1="${P.l}" x2="${W-P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}"/>${bars}${xl}</svg></div></div>`}
+function histTog(k,fromChart){HSO=HSO===k&&!fromChart?null:k;render();const e=document.getElementById('h-'+k);if(e)e.scrollIntoView({block:fromChart?'center':'nearest',behavior:RM?'auto':'smooth'})}
+function hist(c){const ks=snapKeys(),cur=ymk(new Date());
+ if(!ks.length)return `<div class="card ask"><b>Your monthly history starts once your income is added</b><p class="lbl">YAK then keeps a snapshot of each month for you, with nothing to do.</p><div class="bar"><button class="btn" onclick="tab('me')">Add your income</button></div></div>`;
+ const S2=S.snap,v=k=>S2[k].v,n=ks.length,avg=sum(ks,v)/n,best=ks.reduce((a,k)=>v(k)>v(a)?k:a,ks[0]),tot=sum(ks,v),last=ks[n-1],prev=n>1?ks[n-2]:null;
+ const tiles=`<div class="kgrid">${card(last===cur?'This month':mname(last),gbp(v(last))+(prev?`<small class="hsub">${dlt(v(last)-v(prev))||'Same as '+mname(prev)}</small>`:''),v(last)>=0?'hero':'warn')}${card('Monthly average',gbp(avg)+`<small class="hsub">over ${n} month${n>1?'s':''}</small>`)}${card('Best month',gbp(v(best))+`<small class="hsub">${mlong(best)}</small>`)}${card('Total since '+shortM(ks[0]).replace(' ',' ’'),gbp(tot))}</div>`;
+ const intro=n<2?`<div class="card" style="margin-bottom:16px"><b>Your first snapshot is saved</b><p class="lbl" style="margin:6px 0 0">YAK keeps one for every month automatically. From next month you will see how your saving changes, and what changed to cause it.</p></div>`:histChart(ks);
+ const rows=ks.slice().reverse().map((k,j,R)=>{const s=S2[k],pk=R[j+1],p=pk?S2[pk]:null,D=p?snapDiff(p,s):[],open=HSO===k,rate=s.i?Math.round(s.v/s.i*100):0;
+  const sub=k===cur?'So far this month':s.f?'Carried over':p?(D.length?D.length+' change'+(D.length>1?'s':''):'No changes'):'First snapshot';
+  const line=(l,f,good)=>`<tr><td>${l}</td><td>${gbp(s[f])}${p?' '+dlt(s[f]-p[f],good):''}</td></tr>`;
+  const ch=D.map(d=>`<li><span>${esc(d.n)}</span><small>${d.t==='add'?'Added, '+gbp(d.v):d.t==='del'?'Removed, was '+gbp(d.v):gbp(d.o)+' → '+gbp(d.v)}</small></li>`).join('');
+  return `<button class="li${open?' open':''}" id="h-${k}" onclick="histTog('${k}')" aria-expanded="${open}"><span class="ic">${shortM(k).slice(0,3)}</span><span class="tx"><b>${mlong(k)}</b><small>${sub}</small></span><span class="am"${s.v<0?' style="color:var(--bad)"':''}>${gbp(s.v)}<small>${rate}% of income</small></span><span class="chev"></span></button>`+(open?`<div class="mpanel"><table class="sum hsum">${line('Income','i')}${line('House bills','h',false)}${line('Personal bills','b',false)}${line('Spending','s',false)}<tr class="tot"><td>Could save</td><td>${gbp(s.v)}${p?' '+dlt(s.v-p.v):''}</td></tr></table>${p?(D.length?`<div class="lbl" style="margin:12px 0 4px"><b>What changed since ${mname(pk)}</b></div><ul class="hch">${ch}</ul>`:'<p class="lbl" style="margin:10px 0 0">Nothing changed since '+mname(pk)+'.</p>'):'<p class="lbl" style="margin:10px 0 0">This is your first snapshot, so there is nothing to compare it with.</p>'}</div>`:'')}).join('');
+ return `<p class="lbl" style="max-width:640px;margin-top:-6px">YAK keeps a snapshot of each month automatically. The current month updates as you change your figures and is kept as it stands when the month ends.</p>${tiles}${intro}<h2>Month by month</h2><div class="list">${rows}</div>`}
 /* ---------- v3.2 Your name: stored in each person's own data (S.name) ---------- */
 const nm=()=>String(S.name||'').trim().slice(0,40);
 function nameSet(v){v=String(v||'').replace(/\s+/g,' ').trim().slice(0,40);const old=S.name||'';if(v===old)return;logc({k:'chg',p:'name',l:'Your name',f:'text',o:old,n:v});S.name=v;S.upd=S.upd||{};S.upd.name=iso();save();render()}
@@ -1121,6 +1174,9 @@ function hmHelp(){
  <p>Your own figures use the direct debit amount as your house cost. None of this is sent to anyone.</p>`)}
  ${sec('Personal: what you can save',`<p>Enter your monthly pay after tax, an amount you set aside for spending, and your own bills such as phone, gym or insurance. The <b>How it adds up</b> table walks through the sum line by line: your pay, less your own bills and your share of the household bills, less your spending, leaves what you can save.</p>
  <p>The question about whose account the household bills come out of is not asked in housemate mode. YAK takes off your share only.</p>`)}
+${sec('History: how each month compared',`<p>YAK keeps a snapshot of each month for you automatically, so there is nothing to do. It records your income, your share of the house bills, your personal bills, your spending and what you could save. The current month updates as you change your figures, and is kept as it stands when the month ends. Months you did not open YAK in are carried over from the month before, because nothing could have changed.</p>
+ <p>Open <b>History</b> (in More on a phone) to see a bar for each month, your monthly average and your best month. Tap a month to see how it compares with the month before and exactly what changed, such as a bill added or a price rise. On Home, a small line under what you can save shows how this month compares with last month.</p>
+ <div class="tip"><b>Good to know:</b> snapshots are part of your data, so they are included when you export and come back when you import. Importing a file never removes months that are only on this device.</div>`)}
  ${sec('Forecast and Simulator',`<p><b>Forecast</b> shows your savings month by month for the next 12 months. Use <b>Add deduction</b> under a month for anything outside your regular bills, such as a credit card payment, and <b>Repeat in later months</b> to copy it forward. If you already have savings, enter them at the top.</p>
  <p><b>Simulator</b> lets you try "what if" changes to your pay, bills and spending with sliders. Nothing in the Simulator is saved or changes your real figures.</p>`)}
  ${sec('Changes: a record of every edit',`<p>YAK keeps a log of every change you make to your own figures, and records when you import a household pack, with a note of what changed. <b>Summary</b> shows each item from its first value to its latest. <b>Every change</b> lists each edit in order, newest first.</p>`)}
@@ -1176,6 +1232,9 @@ function helpPage(){
  <li>Use Personal, Forecast and the Simulator as normal. A pack never changes your own figures.</li>
  <li>When you get an updated pack, import it the same way. YAK shows what changed and how your share moves before you apply it.</li></ol>
  <div class="tip"><b>Good to know:</b> YAK warns you before a pack from a different household or an older pack replaces the one you have. <b>Leave housemate mode</b> on Home or the House tab makes the House tab editable again. Your own exports include the pack, so moving to a new phone keeps it.</div>`)}
+${sec('History: how each month compared',`<p>YAK keeps a snapshot of each month for you automatically, so there is nothing to do. It records your income, your share of the house bills, your personal bills, your spending and what you could save. The current month updates as you change your figures, and is kept as it stands when the month ends. Months you did not open YAK in are carried over from the month before, because nothing could have changed.</p>
+ <p>Open <b>History</b> (in More on a phone) to see a bar for each month, your monthly average and your best month. Tap a month to see how it compares with the month before and exactly what changed, such as a bill added or a price rise. On Home, a small line under what you can save shows how this month compares with last month.</p>
+ <div class="tip"><b>Good to know:</b> snapshots are part of your data, so they are included when you export and come back when you import. Importing a file never removes months that are only on this device.</div>`)}
  ${sec('Forecast: the next 12 months',`<p>Each of the next 12 months starts from your monthly saving. For anything that is not in your regular bills, such as a credit card payment, use <b>Add deduction</b> under that month. <b>Repeat in later months</b> copies a deduction forward so you do not have to retype it.</p>
  <p>If you already have savings, enter them in the optional box at the top. The line graph shows your savings balance month by month. Touch or hover over the line to see each month.</p>`)}
  ${sec('Simulator: trying out "what if"',`<p>Want to know what would happen if you got a pay rise, cancelled a subscription or cut your spending? Move the sliders or type new amounts for pay, house bills, personal bills and spending. The charts and figures update straight away to show how much more (or less) you could save over anything from 6 months to 5 years.</p>
@@ -1254,6 +1313,7 @@ const IC={home:'<rect x="3" y="3" width="7.5" height="9" rx="2"/><rect x="13.5" 
  lock:'<rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>',
  upd:'<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>',
  rst:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+ hist:'<path d="M4 20.5h16"/><rect x="5.5" y="11" width="3" height="7" rx="1"/><rect x="10.5" y="6" width="3" height="12" rx="1"/><rect x="15.5" y="13" width="3" height="5" rx="1"/>',
  goal:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".9" fill="currentColor"/>'};
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
 const ini=n=>esc((String(n||'').trim()[0]||'?').toUpperCase());
@@ -1275,7 +1335,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')sheetClose()});
  document.addEventListener('touchend',()=>{if(y0===null)return;const el=s();y0=null;el.classList.remove('drag');if(dy>90)sheetClose();else el.style.transform='';dy=0})})();
 /* More */
 function moreOpen(){SH={k:'more'};MO=false;const L=lockInfo(),it=(t,ic,l,sub,cls)=>`<button class="${cls||''}" onclick="${t}">${ico(ic)}<span>${l}${sub?`<small>${sub}</small>`:''}</span></button>`;
- sheetOpen(`<h3>More</h3><div class="mlinks">${HM()&&!DDON()?'':it("sheetClose();tab('fc')",'fc','Forecast','Your savings over the next 12 months')}${it("sheetClose();tab('sim')",'sim','Simulator','Try what-if scenarios')}${it("sheetClose();tab('log')",'log','Changes','Everything you have changed')}${it("sheetClose();tab('help')",'help','Instructions','How YAK works')}</div>
+ sheetOpen(`<h3>More</h3><div class="mlinks">${HM()&&!DDON()?'':it("sheetClose();tab('fc')",'fc','Forecast','Your savings over the next 12 months')}${it("sheetClose();tab('hist')",'hist','History','How each month compared')}${it("sheetClose();tab('sim')",'sim','Simulator','Try what-if scenarios')}${it("sheetClose();tab('log')",'log','Changes','Everything you have changed')}${it("sheetClose();tab('help')",'help','Instructions','How YAK works')}</div>
  <div class="shd">Your data</div><div class="mlinks">${it("sheetClose();doExport()",'exp','Export data',M.dirty?'<b style="color:var(--acc)">Unexported changes</b>'+(M.last?'. Last exported '+stamp(M.last):''):M.last?'Last exported '+stamp(M.last):'Not exported yet')}${it("sheetClose();openImport()",'imp','Import latest data',srcText())}${it("nameSheet()",'me','Your name',nm()?esc(nm()):'Not set')}${it("goalSheet()",'goal','Savings goal',+S.goal.a?gbp(+S.goal.a):'Not set')}${lockOK()?it(L?"lkMore()":"lkGo('set')",'lock','Passcode lock',L?'On':'Off'):''}</div>
  <div class="shd">Appearance</div><div class="segc s3" id="thseg">${[['light','Light'],['dark','Dark'],['auto','Match phone']].map(x=>`<button type="button" data-t="${x[0]}" class="${themeGet()===x[0]?'on':''}" onclick="themeSet('${x[0]}')">${x[1]}</button>`).join('')}</div>
  <div class="shd">App</div><div class="mlinks">${it("sheetClose();checkUpdate()",'upd','Check for updates','YAK v'+VERSION)}${it("sheetClose();reset()",'rst','Reset to starting values','Export first if you want a backup','dz')}</div>`)}
@@ -1331,7 +1391,7 @@ function goalRing(c){const G=+S.goal.a||0;
 /* Home */
 function greet(){const h=new Date().getHours();return h<12?'Good morning':h<18?'Good afternoon':'Good evening'}
 function heroBox(c){const n=nm(),sal=+S.me.salary||0,neg=c.save<0;
- return `<section class="yhero"><div class="hm"><p class="hi">${greet()}${n?', '+esc(n):''}</p><div class="hl">${c.yes?'You will save each month once repaid':'You can save each month'}</div>${!sal?`<button class="hadd" onclick="tab('me')">Add your income</button><div class="hs">On the Personal tab, to see what you can save</div>`:`<div class="hv${neg?' neg':''}">${gbp(c.save)}</div><div class="hs">${neg?'Your outgoings are more than your income':`That is <b>${Math.round(c.save/sal*100)}%</b> of your income`}</div>`}</div>${goalRing(c)}</section>`}
+ return `<section class="yhero"><div class="hm"><p class="hi">${greet()}${n?', '+esc(n):''}</p><div class="hl">${c.yes?'You will save each month once repaid':'You can save each month'}</div>${!sal?`<button class="hadd" onclick="tab('me')">Add your income</button><div class="hs">On the Personal tab, to see what you can save</div>`:`<div class="hv${neg?' neg':''}">${gbp(c.save)}</div><div class="hs">${neg?'Your outgoings are more than your income':`That is <b>${Math.round(c.save/sal*100)}%</b> of your income`}</div>${heroDelta()}`}</div>${goalRing(c)}</section>`}
 function tcard(l,v,t){return `<button class="card tapc" onclick="tab('${t}')"><div class="lbl">${l}</div><div class="big">${v}</div></button>`}
 function todoItems(){const t=[];
  if(M.dirty){const age=M.last?Math.floor((Date.now()-Date.parse(M.last))/864e5):null;t.push({h:'Back up your changes',s:M.last?'Last exported '+(age<1?'today':age===1?'yesterday':age+' days ago')+'.':'You have not exported yet.',b:`<button class="btn sm" onclick="doExport()">Export</button>`,bad:age===null||age>=7})}
@@ -1441,8 +1501,8 @@ function hmBillList(c){const h=S.home;
  const rent=+h.rentTotal?row('Rent','Split '+c.p+' ways'+(h.rentDate?', taken '+esc(h.rentDate):''),(+h.rentTotal)/c.p,+h.rentTotal,ico('house')).replace('class="li ro"','class="li ro rent"'):'';
  return `<div class="list">${rows}${rent}<div class="li tot"><span class="tx"><b>Your share each month</b></span><span class="am">${gbp(c.share)}</span></div></div>`}
 /* ---------- Page names (the desktop tabs; phones use the bottom tab bar) ---------- */
-const TITLES={hmpay:'My Payments',home:'House Finances',hmhome:'Household Bills',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',sim:'Scenario Simulator',log:'Change Log',help:'How to use YAK'};
-const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes'],['help','Instructions']];
+const TITLES={hmpay:'My Payments',home:'House Finances',hmhome:'Household Bills',me:'Personal Finances',pay:'Housemate Payments',fc:'Savings Forecast',hist:'Monthly History',sim:'Scenario Simulator',log:'Change Log',help:'How to use YAK'};
+const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['hist','History'],['sim','Simulator'],['log','Changes'],['help','Instructions']];
 let MO=false;
 function mSync(){const b=document.getElementById('mbtn'),l=document.getElementById('mlist');if(!b||!l)return;b.setAttribute('aria-expanded',String(MO));l.classList.toggle('open',MO)}
 function mToggle(){MO=!MO;if(MO){document.getElementById('mitems').innerHTML=PAGES.filter(p=>p[0]!==S.tab&&!(PAYOFF()&&p[0]==='pay')).map((p,i)=>`<button style="--i:${i}" onclick="tab('${p[0]}')">${p[1]}</button>`).join('')}mSync()}
@@ -1453,11 +1513,12 @@ function render(){
  if(LOCKED){MO=false;sheetClose();document.getElementById('app').innerHTML='';showLock();return}
  document.getElementById('lock').hidden=true;LSHOWN='';
  if(PAYOFF()&&S.tab==='pay')S.tab='dash';
+ if(snapTake())save(true);
  const c=calc(),PN=HM()?0:paySync(c);if(DDON())ddSync(c);
  document.getElementById('t-pay').style.display=PAYOFF()?'none':'';
  PAGES.forEach(p=>{document.getElementById('t-'+p[0]).className=S.tab===p[0]?'on':''});
  document.getElementById('bnav').innerHTML=bnav();hxSync();
- document.getElementById('app').innerHTML=banner()+(TITLES[tkey()]?`<h2 class="ptitle">${S.tab==='me'&&nm()?esc(nm())+'\'s Personal Finances':TITLES[tkey()]}</h2>`:'')+(S.tab==='dash'?(HM()?hmDash(c):dash(c)):S.tab==='home'?(HM()?hmHouse(c):home(c)):S.tab==='pay'?(HM()?hmPayPage(c):payPage(c,PN)):S.tab==='fc'?(noInc()||fc(c)):S.tab==='sim'?(noInc()||simPage(c)):S.tab==='log'?logPage():S.tab==='help'?helpPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><span class="foot-acts"><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><button class="ghost" onclick="reset()">Reset to starting values</button><br><button class="ghost" style="color:var(--acc)" onclick="checkUpdate()">Check for updates</button></span> <small>${UPD}</small></p>
+ document.getElementById('app').innerHTML=banner()+(TITLES[tkey()]?`<h2 class="ptitle">${S.tab==='me'&&nm()?esc(nm())+'\'s Personal Finances':TITLES[tkey()]}</h2>`:'')+(S.tab==='dash'?(HM()?hmDash(c):dash(c)):S.tab==='home'?(HM()?hmHouse(c):home(c)):S.tab==='pay'?(HM()?hmPayPage(c):payPage(c,PN)):S.tab==='fc'?(noInc()||fc(c)):S.tab==='sim'?(noInc()||simPage(c)):S.tab==='hist'?(noInc()||hist(c)):S.tab==='log'?logPage():S.tab==='help'?helpPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><span class="foot-acts"><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><button class="ghost" onclick="reset()">Reset to starting values</button><br><button class="ghost" style="color:var(--acc)" onclick="checkUpdate()">Check for updates</button></span> <small>${UPD}</small></p>
  <details><summary><small>YAK v${VERSION}: version history</small></summary><table class="sum" style="margin-top:8px">${CHANGELOG.map(x=>`<tr><td><b>v${x.v}</b> <small>${x.d}</small></td><td style="text-align:left">${x.n}</td></tr>`).join('')}</table></details>`;
  if(S.tab==='sim')simDraw(PLAY);
  if(PLAY)countUp();
@@ -1465,7 +1526,7 @@ function render(){
  PLAY=false;
 }
 let LW=document.documentElement.clientWidth;
-addEventListener('resize',()=>{const w=document.documentElement.clientWidth;if(w!==LW){LW=w;if(S.tab==='fc'||S.tab==='sim')render()}});
+addEventListener('resize',()=>{const w=document.documentElement.clientWidth;if(w!==LW){LW=w;if(S.tab==='fc'||S.tab==='sim'||S.tab==='hist')render()}});
 if(migrate())save(true);
 render();
 autoCheckUpdate();
