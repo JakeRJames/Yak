@@ -1,13 +1,13 @@
 {
   "branch": "dev",
   "name": "yak-sync-dev",
-  "ok": false,
-  "url": "",
-  "sha": "40e30378bd374da2f0e158d1436d3fc5250fdec0",
-  "at": "2026-11-16T23:40:13.091Z",
-  "log": "\nFAILED: npx -y wrangler@4 kv namespace list\n\n\u001b[31m✘ \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mIn a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work. Please go to https://developers.cloudflare.com/fundamentals/api/get-started/create-token/ for instructions on how to create an api token, and assign its value to CLOUDFLARE_API_TOKEN.\u001b[0m\n\n  \n  To continue without logging in, rerun this command with `--temporary`. Wrangler will use a temporary account and print a claim URL.\n\n\n🪵  Logs were written to \"/home/runner/.config/.wrangler/logs/wrangler-2026-11-16_23-40-19_283.log\"\n",
+  "ok": true,
+  "url": "https://yak-sync-dev.jake-rjames.workers.dev",
+  "sha": "6e833cd9159704a4412ba6a835cf59c1cb202cb1",
+  "at": "2026-11-16T23:44:48.797Z",
+  "log": "To access your new KV Namespace in your Worker, add the following snippet to your configuration file:\n{\n  \"kv_namespaces\": [\n    {\n      \"binding\": \"yak_sync_dev_kv\",\n      \"id\": \"afb082efc9cd4452b63888dad850ad71\"\n    }\n  ]\n}\n\n ⛅️ wrangler 4.163.0\n────────────────────\n\nCloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md\n🌀 Building list of assets...\n✨ Read 6 files from the assets directory /home/runner/work/Yak/Yak/worker/site\n🌀 Starting asset upload...\n🌀 Found 6 new or modified static assets to upload. Proceeding with upload...\n+ /manifest.webmanifest\n+ /icon-192.png\n+ /sw.js\n+ /icon-512.png\n+ /apple-touch-icon.png\n+ /index.html\nUploaded 2 of 6 assets\nUploaded 4 of 6 assets\nUploaded 6 of 6 assets\n✨ Success! Uploaded 6 files (2.48 sec)\n\nTotal Upload: 2.09 KiB / gzip: 0.99 KiB\nYour Worker has access to the following bindings:\nBinding                                            Resource          \nenv.KV (afb082efc9cd4452b63888dad850ad71)          KV Namespace      \nenv.ASSETS                                         Assets            \n\nUploaded yak-sync-dev (6.18 sec)\nDeployed yak-sync-dev triggers (1.40 sec)\n  https://yak-sync-dev.jake-rjames.workers.dev\nCurrent Version ID: 54fa9fc7-5823-4eb0-8922-73923141fc4b\n",
   "secrets": {
-    "CLOUDFLARE_API_TOKEN": false,
+    "CLOUDFLARE_API_TOKEN": true,
     "CLOUDFLARE_ACCOUNT_ID": false,
     "asVariables": ""
   }
