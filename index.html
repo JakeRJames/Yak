@@ -323,7 +323,7 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 <script>
 const VERSION='4.1.2';
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
-const CHANGELOG=[{v:'4.1.2',d:'16 Nov 2026',n:'Fixed Home showing a minus amount (your share of the house bills) as what you can save before you have added a salary, for example straight after a housemate imports a household pack. Until a salary is entered, Home, the Where your salary goes chart and the Personal tab now ask you to add your salary instead. Saved data is unchanged.'},
+const CHANGELOG=[{v:'4.1.2',d:'16 Nov 2026',n:'Fixed Home showing a minus amount (your share of the house bills) as what you can save before you have added your income, for example straight after a housemate imports a household pack. Until your income is entered, Home, the Where your income goes chart and the Personal tab now ask you to add it instead. Salary is now called income everywhere in YAK (for example Monthly income and Where your income goes), so it suits any kind of pay. Saved data is unchanged.'},
 {v:'4.1.1',d:'16 Nov 2026',n:'The + in the Set a goal circle on Home now sits exactly in the centre of the circle. Saved data is unchanged.'},
 {v:'4.1.0',d:'16 Nov 2026',n:'Added an Appearance switch in More. Choose Light, Dark or Match phone (the default, which follows your phone or computer setting). The choice is saved on each device and is not included in exports. Saved data is unchanged.'},
 {v:'4.0.0',d:'16 Nov 2026',n:'A big refresh that makes YAK feel like a phone app. On phones the pages now sit in a tab bar at the bottom of the screen (Home, House, Personal, Payments and More), and More holds the Forecast, the Simulator, Changes, Instructions and your data options (export, import, your name, passcode lock, updates and reset). Home leads with a greeting and what you can save each month, and the reminders are gathered into one tidy To do list. Bills on the House and Personal tabs are a clean list: tap one to change it or remove it in a panel that slides up, and add new bills the same way. The Forecast shows the chart first, then a compact list of months that you tap to open and add deductions (tapping a point on the chart opens that month too). You can set a savings goal: Home shows your progress in a ring and the Forecast tells you when you will reach it, with the goal drawn on the chart. Numbers count up when a page opens, pages slide in gently, and tapping a slice of the salary chart twice takes you to that part of YAK. The Simulator results are more compact. An Export button with an orange dot when you have unexported changes now sits at the top of every page, and on a phone it opens the share sheet so you can save to Files in one step. YAK now works offline once it has been opened, can be installed as an app on Android and computers, carries its own font, and asks the browser to keep its saved data. Saved data is unchanged apart from the new optional savings goal, which is included in exports.'},
@@ -562,7 +562,7 @@ function calc(){
 }
 /* ---------- Change log: kept inside the data file so it is exported and imported with it ---------- */
 const LOGMAX=1000;
-const SLAB={'name':'Your name','home.people':'People in household','home.rentTotal':'Total household rent','home.rentDate':'Rent date taken','home.budget':'Monthly budget per person','home.months':'Months counted this year','me.salary':'Monthly salary','me.spend':'Monthly spend allocated','fcStart':'Savings you already have','goal.a':'Savings goal'};
+const SLAB={'name':'Your name','home.people':'People in household','home.rentTotal':'Total household rent','home.rentDate':'Rent date taken','home.budget':'Monthly budget per person','home.months':'Months counted this year','me.salary':'Monthly income','me.spend':'Monthly spend allocated','fcStart':'Savings you already have','goal.a':'Savings goal'};
 const SFMT={'name':'text','home.people':'num','home.months':'num','home.rentDate':'text'};
 const FN={n:'name',a:'amount',d:'date taken',t:'split'};
 function lgInfo(path){
@@ -662,23 +662,23 @@ function driftNote(c){const h=S.home,r2=x=>Math.round(x*100)/100;
  return Math.abs(r2(lines)-r2(c.share))>0.001?`<p><small>Each line is rounded to the nearest penny, so the lines add up to ${gbp(lines)} while the exact total is ${gbp(c.share)}.</small></p>`:''}
 function rentRow(){const h=S.home,p=Math.max(1,+h.people||1);
  return `<tr><td><input class="nm" value="Rent" disabled aria-label="Rent"></td><td><span class="mny"><span class="cur">£</span><input class="num" disabled value="${((+h.rentTotal||0)/p).toFixed(2)}" aria-label="Rent individual share"></span></td><td><small>Individual share of ${gbp(+h.rentTotal||0)} total rent${p>1?' (split '+p+' ways)':''}</small></td><td><input class="dt" data-k="home.rentDate" value="${esc(h.rentDate||'')}" onchange="set('home.rentDate',this.value)" aria-label="Rent date taken"></td><td><small>${dd(S.upd['home.rentTotal'])}</small></td><td></td></tr>`}
-/* ---------- Donut chart: how the salary is apportioned ---------- */
+/* ---------- Donut chart: how the income is apportioned ---------- */
 let DD=null;
 function splitData(c){const m=S.me;
  return [{n:'House bills (your share)',v:c.share,c:'#c15f3c'},{n:'Personal bills',v:c.mine,c:'#d9a23f'},{n:'Spending allocated',v:+m.spend||0,c:'#5f86a3'},{n:'Savings',v:Math.max(0,c.save),c:'#5b9a6a'}].filter(x=>x.v>0.004)}
 function donutCard(c){
  const it=splitData(c),tot=sum(it,x=>x.v),over=c.save<0;
- if(!it.length||!(+S.me.salary)){DD=null;return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your salary goes</b><small>${it.length?'Add your salary on the Personal tab':'Add your salary and bills'} and this chart will show how your money is split between house bills, personal bills, spending and savings.</small></div></div></div>`}
- const mid=over?`<small>Overspent by</small><b style="color:var(--bad)">${gbp(-c.save)}</b>`:`<small>Monthly salary</small><b>${gbp(+S.me.salary||0)}</b>`;
+ if(!it.length||!(+S.me.salary)){DD=null;return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your income goes</b><small>${it.length?'Add your income on the Personal tab':'Add your income and bills'} and this chart will show how your money is split between house bills, personal bills, spending and savings.</small></div></div></div>`}
+ const mid=over?`<small>Overspent by</small><b style="color:var(--bad)">${gbp(-c.save)}</b>`:`<small>Monthly income</small><b>${gbp(+S.me.salary||0)}</b>`;
  DD={it,tot,mid};
  let acc=0;
  const segs=it.map((x,i)=>{const len=x.v/tot*100,g=it.length>1?Math.min(.8,len*.5):0,l=Math.max(len-g,.01),o=-(acc+g/2);acc+=len;
   return `<circle class="dseg${PLAY?' anim':''}" id="ds${i}" cx="21" cy="21" r="15.9155" stroke="${x.c}" stroke-dasharray="${l.toFixed(3)} ${(100-l).toFixed(3)}" stroke-dashoffset="${o.toFixed(3)}" style="--i:${i}" onmouseenter="dHi(${i})" onmouseleave="dLo()" onclick="dTap(${i})"/>`}).join('');
  const leg=it.map((x,i)=>`<button class="dl" onmouseenter="dHi(${i})" onmouseleave="dLo()" onfocus="dHi(${i})" onblur="dLo()" onclick="dTap(${i})"><i style="background:${x.c}"></i><span>${esc(x.n)}</span><b>${gbp(x.v)}</b><small>${(x.v/tot*100).toFixed(1)}%</small></button>`).join('');
- return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Donut chart of how your monthly salary is split: ${esc(it.map(x=>x.n+' '+gbp(x.v)).join(', '))}"><circle class="dtrack" cx="21" cy="21" r="15.9155"/><g transform="rotate(-90 21 21)">${segs}</g></svg><div class="dmid" id="dmid">${mid}</div></div><div class="dleg">${leg}${over?'<small style="padding:6px 8px">Outgoings are more than your salary, so there is nothing left to save. Percentages are of total outgoings.</small>':''}</div></div></div>`}
+ return `<div class="card"><div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Donut chart of how your monthly income is split: ${esc(it.map(x=>x.n+' '+gbp(x.v)).join(', '))}"><circle class="dtrack" cx="21" cy="21" r="15.9155"/><g transform="rotate(-90 21 21)">${segs}</g></svg><div class="dmid" id="dmid">${mid}</div></div><div class="dleg">${leg}${over?'<small style="padding:6px 8px">Outgoings are more than your income, so there is nothing left to save. Percentages are of total outgoings.</small>':''}</div></div></div>`}
 function dHi(i){const d=DD;if(!d)return;
  d.it.forEach((x,j)=>{const e=document.getElementById('ds'+j);if(e)e.setAttribute('class','dseg '+(j===i?'on':'dim'))});
- const x=d.it[i],m=document.getElementById('dmid');if(m)m.innerHTML=`<small>${esc(x.n)}</small><b>${gbp(x.v)}</b><small>${(x.v/d.tot*100).toFixed(1)}% of ${d.mid.includes('Overspent')?'outgoings':'salary'}</small>`}
+ const x=d.it[i],m=document.getElementById('dmid');if(m)m.innerHTML=`<small>${esc(x.n)}</small><b>${gbp(x.v)}</b><small>${(x.v/d.tot*100).toFixed(1)}% of ${d.mid.includes('Overspent')?'outgoings':'income'}</small>`}
 function dLo(){DTI=-1;const d=DD;if(!d)return;
  d.it.forEach((x,j)=>{const e=document.getElementById('ds'+j);if(e)e.setAttribute('class','dseg')});
  const m=document.getElementById('dmid');if(m)m.innerHTML=d.mid}
@@ -697,14 +697,14 @@ function me(c){
  const q=HM()?`<div class="card" style="margin-bottom:16px"><small>Household bills: <b>your share from the household pack</b> (${gbp(c.share)} a month)</small></div>`:m.fromAcct===null?`<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Say yes if you pay them and the others pay you back. Say no if they are collected separately.</p><div class="bar"><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div></div>`:
  `<div class="card" style="margin-bottom:16px"><small>Household bills: <b>${c.yes?'paid from your account':'collected separately'}</b></small> <button class="ghost" style="color:var(--acc)" onclick="ask(null)">Change</button></div>`;
  const owed=c.yes?`<h2>What comes back</h2><div class="grid">${card('Owed back in total',gbp(c.back),'hero')}${card('Owed by each of '+others+' '+(others===1?'person':'people'),others?gbp(c.back/others):'£0.00')}${card('Net cost of home bills to you',gbp(c.share))}</div>`:'';
- return q+nameRow()+`<div class="card inp"><div class="flds">${fld('me.salary','Monthly salary (net)',{cur:1})}${fld('me.spend','Monthly spend allocated',{cur:1})}</div></div>
-<div class="grid">${(+m.salary?card(c.yes?'You will save each month once others repay you':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn'):card('You can save each month','Add your salary above'))}${card('Total deductions (lump sum out)',gbp(c.out))}</div>
-<h2>Where your salary goes</h2>${donutCard(c)}
+ return q+nameRow()+`<div class="card inp"><div class="flds">${fld('me.salary','Monthly income (net)',{cur:1})}${fld('me.spend','Monthly spend allocated',{cur:1})}</div></div>
+<div class="grid">${(+m.salary?card(c.yes?'You will save each month once others repay you':'You can save each month',gbp(c.save),c.save>=0?'hero':'warn'):card('You can save each month','Add your income above'))}${card('Total deductions (lump sum out)',gbp(c.out))}</div>
+<h2>Where your income goes</h2>${donutCard(c)}
 <h2>How it adds up</h2><table class="sum">
-<tr><td>Salary (net)</td><td>${gbp(m.salary)}</td></tr>
+<tr><td>Income (net)</td><td>${gbp(m.salary)}</td></tr>
 <tr><td>Personal bills</td><td>- ${gbp(c.mine)}</td></tr>
 <tr><td>Household bills ${c.yes?'(full amount from your account)':'(individual share)'}</td><td>- ${gbp(c.yes?c.total:c.share)}</td></tr>
-<tr><td>Salary minus bills</td><td>${gbp(c.left)}</td></tr>
+<tr><td>Income minus bills</td><td>${gbp(c.left)}</td></tr>
 ${c.yes?`<tr><td>Repaid by others</td><td>+ ${gbp(c.back)}</td></tr>`:''}
 <tr><td>Monthly spend allocated</td><td>- ${gbp(m.spend)}</td></tr>
 <tr class="tot"><td>${c.yes?'Savings once others have repaid you':'Savings after deductions'}</td><td>${gbp(c.save)}</td></tr></table>${owed}
@@ -828,7 +828,7 @@ let SIM=null,SLG=null,SDN=null;
 const rd2=x=>Math.round((+x||0)*100)/100;
 const sgn=d=>Math.abs(d)<.005?gbp(0):(d>0?'+':'-')+gbp(Math.abs(d));
 const SIMF=[
- {k:'salary',l:'Salary',sub:'Net, per month',good:1,max:5000,rd:500,st:10},
+ {k:'salary',l:'Income',sub:'Net, per month',good:1,max:5000,rd:500,st:10},
  {k:'house',l:'House bills (excluding rent)',sub:'Your individual share, per month',max:500,rd:100,st:5},
  {k:'personal',l:'Personal bills',sub:'Per month',max:500,rd:100,st:5},
  {k:'spend',l:'Spend deductions',sub:'Monthly spend allocated',max:1000,rd:100,st:5}];
@@ -910,7 +910,7 @@ function simHov(e){const g=SLG;if(!g)return;
  tp.innerHTML=`<b>${esc(g.lab(i))}</b><br>Scenario <b>${gbp(a)}</b><br>Current figures <b>${gbp(c)}</b><br><span style="color:${Math.abs(df)<.005?'#b8b5ad':df>0?'#8fd19e':'#ff9d94'}">${Math.abs(df)<.005?'No difference':(df>0?'▲ ':'▼ ')+gbp(Math.abs(df))+(df>0?' more':' less')}</span>`;
  tp.style.display='block';const w=tp.offsetWidth;tp.style.left=Math.max(4,Math.min(r.width-w-4,x/sx-w/2))+'px'}
 function simOut(){['sx','sd1','sd2','st'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
-/* Monthly line graph: savings left from each month's salary, using the Forecast deductions */
+/* Monthly line graph: savings left from each month's income, using the Forecast deductions */
 let SMG=null;
 function simMonthDraw(s,o,anim){
  const ms=months(),n=ms.length-1,ded=ms.map(m=>sum(S.fc[m.k]||[],x=>+x.a||0)),td=sum(ded,x=>x);
@@ -926,9 +926,9 @@ function simMonthDraw(s,o,anim){
  const nth=W<420?3:W<700?2:1,xl=ms.map((m,i)=>i%nth===0?`<text class="ax" x="${X(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${shortM(m.k)}</text>`:'').join('');
  const dots=A.map((v,i)=>`<circle class="pt${anim?' anim':''}" style="--i:${i}" cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${W<480?3.5:4.5}" fill="${v<0?'var(--bad)':'var(--acc)'}"/>`).join('');
  const dots2=C.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3" fill="var(--mute)" class="pt"/>`).join('');
- document.getElementById('simMonth').innerHTML=`<div><b>Monthly savings from your salary</b><div class="lbl">What is left of each month's salary after your costs and the deductions entered on the Forecast tab. This is per month, not a running total.</div></div>
+ document.getElementById('simMonth').innerHTML=`<div><b>Monthly savings from your income</b><div class="lbl">What is left of each month's income after your costs and the deductions entered on the Forecast tab. This is per month, not a running total.</div></div>
  <div class="lgd"><span><i style="border-color:var(--acc)"></i>Scenario</span><span><i style="border-color:var(--mute);border-top-style:dashed"></i>Current figures</span><span><i class="sw" style="background:${gain?'#5b9a6a':'var(--bad)'};opacity:.45"></i>${gain?'Extra saved each month':'Saved less each month'}</span></div>
- <div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line graph of savings each month from salary. Over the next 12 months the scenario saves between ${gbp(Math.min(...A))} and ${gbp(Math.max(...A))} a month, against ${gbp(Math.min(...C))} to ${gbp(Math.max(...C))} with your current figures." onpointermove="simMHov(event)" onpointerdown="simMHov(event)" onpointerleave="simMOut()">
+ <div class="cw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line graph of savings each month from income. Over the next 12 months the scenario saves between ${gbp(Math.min(...A))} and ${gbp(Math.max(...A))} a month, against ${gbp(Math.min(...C))} to ${gbp(Math.max(...C))} with your current figures." onpointermove="simMHov(event)" onpointerdown="simMHov(event)" onpointerleave="simMOut()">
  ${grid}<line class="zl" x1="${P.l}" x2="${W-P.r}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}"/>${xl}
  <path d="${gap}" fill="${gain?'#5b9a6a':'var(--bad)'}" opacity=".2"${anim?' style="animation:fade .8s ease-out .6s backwards"':''}/>
  <path d="${path(C)}" fill="none" stroke="var(--mute)" stroke-width="2" stroke-dasharray="6 5" stroke-linejoin="round" stroke-linecap="round"/>${dots2}
@@ -942,26 +942,26 @@ function simMHov(e){const g=SMG;if(!g)return;
  const ln=document.getElementById('mx'),d1=document.getElementById('md1'),tp=document.getElementById('mt');if(!ln||!tp)return;
  ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.style.display='';d1.setAttribute('cx',x);d1.setAttribute('cy',g.Y(a));d1.style.display='';
  const df=a-c;
- tp.innerHTML=`<b>${esc(g.ms[i].l)}</b><br>Scenario <b>${gbp(a)}</b>${g.sal>0?' <small>('+(a/g.sal*100).toFixed(1)+'% of salary)</small>':''}<br>Current figures <b>${gbp(c)}</b>`+(g.ded[i]?`<br><small>after ${gbp(g.ded[i])} of Forecast deductions</small>`:'')+`<br><span style="color:${Math.abs(df)<.005?'#b8b5ad':df>0?'#8fd19e':'#ff9d94'}">${Math.abs(df)<.005?'No difference':(df>0?'▲ ':'▼ ')+gbp(Math.abs(df))+(df>0?' more':' less')}</span>`;
+ tp.innerHTML=`<b>${esc(g.ms[i].l)}</b><br>Scenario <b>${gbp(a)}</b>${g.sal>0?' <small>('+(a/g.sal*100).toFixed(1)+'% of income)</small>':''}<br>Current figures <b>${gbp(c)}</b>`+(g.ded[i]?`<br><small>after ${gbp(g.ded[i])} of Forecast deductions</small>`:'')+`<br><span style="color:${Math.abs(df)<.005?'#b8b5ad':df>0?'#8fd19e':'#ff9d94'}">${Math.abs(df)<.005?'No difference':(df>0?'▲ ':'▼ ')+gbp(Math.abs(df))+(df>0?' more':' less')}</span>`;
  tp.style.display='block';const w=tp.offsetWidth;tp.style.left=Math.max(4,Math.min(r.width-w-4,x/sx-w/2))+'px'}
 function simMOut(){['mx','md1','mt'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
 function simDonutDraw(s,o,anim){
  const vals=x=>[x.rent,x.house,x.personal,x.spend,Math.max(0,x.save)],v=vals(s),w=vals(o),tot=sum(v,x=>x),over=s.save<0,host=document.getElementById('simDonut');
- if(tot<.005){SDN=null;host.innerHTML=`<div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your salary goes</b><small>Enter a salary and some bills on the other tabs, or type amounts above, and this chart will show how your money is apportioned.</small></div></div>`;return}
+ if(tot<.005){SDN=null;host.innerHTML=`<div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" aria-label="Empty chart"><circle class="dtrack" cx="21" cy="21" r="15.9155"/></svg><div class="dmid"><small>Nothing to show yet</small></div></div><div class="dleg"><b>Where your income goes</b><small>Enter an income and some bills on the other tabs, or type amounts above, and this chart will show how your money is apportioned.</small></div></div>`;return}
  if(!document.getElementById('ss0')){
   host.innerHTML=`<div class="dwrap"><div class="dc"><svg viewBox="0 0 42 42" role="img" id="ssvg"><circle class="dtrack" cx="21" cy="21" r="15.9155"/><g transform="rotate(-90 21 21)">${SDC.map((x,i)=>`<circle class="dseg sdseg${anim?' anim':''}" id="ss${i}" cx="21" cy="21" r="15.9155" stroke="${x.c}" style="--i:${i};stroke-dasharray:0 100;stroke-dashoffset:0" onmouseenter="sHi(${i})" onmouseleave="sLo()" onclick="sHi(${i})"/>`).join('')}</g></svg><div class="dmid" id="smid"></div></div><div class="dleg" id="sleg"></div></div>`}
- const mid=over?`<small>Overspent by</small><b style="color:var(--bad)">${gbp(-s.save)}</b>`:`<small>Monthly salary</small><b>${gbp(s.salary)}</b>`;
+ const mid=over?`<small>Overspent by</small><b style="color:var(--bad)">${gbp(-s.save)}</b>`:`<small>Monthly income</small><b>${gbp(s.salary)}</b>`;
  SDN={v,tot,mid,over};
  let acc=0;const nz=v.filter(x=>x>.004).length;
  v.forEach((x,i)=>{const len=x/tot*100,on=len>.004,g=nz>1&&on?Math.min(.8,len*.5):0,l=on?Math.max(len-g,.01):0,e=document.getElementById('ss'+i);
   if(e){e.style.strokeDasharray=l.toFixed(3)+' '+(100-l).toFixed(3);e.style.strokeDashoffset=(-(acc+g/2)).toFixed(3)}acc+=len});
  document.getElementById('smid').innerHTML=mid;
- document.getElementById('ssvg').setAttribute('aria-label','Donut chart of how your monthly salary would be apportioned: '+SDC.map((x,i)=>x.n+' '+gbp(v[i])).join(', '));
+ document.getElementById('ssvg').setAttribute('aria-label','Donut chart of how your monthly income would be apportioned: '+SDC.map((x,i)=>x.n+' '+gbp(v[i])).join(', '));
  document.getElementById('sleg').innerHTML=SDC.map((x,i)=>{const d=v[i]-w[i],good=i===4?d>0:d<0,t=Math.abs(d)<.005?'No change':sgn(d)+' vs now';
-  return `<button class="dl" onmouseenter="sHi(${i})" onmouseleave="sLo()" onfocus="sHi(${i})" onblur="sLo()" onclick="sHi(${i})"><i style="background:${x.c}"></i><span>${x.n}<small class="ut ${Math.abs(d)<.005?'':good?'pos':'neg'}">${t}</small></span><b>${gbp(v[i])}</b><small>${(v[i]/tot*100).toFixed(1)}%</small></button>`}).join('')+(over?'<small style="padding:6px 8px">Costs are more than the salary, so there is nothing left to save. Percentages are of total costs.</small>':'')}
+  return `<button class="dl" onmouseenter="sHi(${i})" onmouseleave="sLo()" onfocus="sHi(${i})" onblur="sLo()" onclick="sHi(${i})"><i style="background:${x.c}"></i><span>${x.n}<small class="ut ${Math.abs(d)<.005?'':good?'pos':'neg'}">${t}</small></span><b>${gbp(v[i])}</b><small>${(v[i]/tot*100).toFixed(1)}%</small></button>`}).join('')+(over?'<small style="padding:6px 8px">Costs are more than the income, so there is nothing left to save. Percentages are of total costs.</small>':'')}
 function sHi(i){const d=SDN;if(!d)return;
  SDC.forEach((x,j)=>{const e=document.getElementById('ss'+j);if(e){e.classList.toggle('on',j===i);e.classList.toggle('dim',j!==i)}});
- const m=document.getElementById('smid');if(m)m.innerHTML=`<small>${SDC[i].n}</small><b>${gbp(d.v[i])}</b><small>${(d.v[i]/d.tot*100).toFixed(1)}% of ${d.over?'costs':'salary'}</small>`}
+ const m=document.getElementById('smid');if(m)m.innerHTML=`<small>${SDC[i].n}</small><b>${gbp(d.v[i])}</b><small>${(d.v[i]/d.tot*100).toFixed(1)}% of ${d.over?'costs':'income'}</small>`}
 function sLo(){const d=SDN;if(!d)return;
  SDC.forEach((x,j)=>{const e=document.getElementById('ss'+j);if(e){e.classList.remove('on','dim')}});
  const m=document.getElementById('smid');if(m)m.innerHTML=d.mid}
@@ -974,7 +974,7 @@ function dash(c){
  const sh=c.p>1?tcard('Individual share each month',gbp(c.share),'home'):tcard('House bills each month',gbp(c.share),'home');
  return heroBox(c)+todoCard()+`<h2>At a glance</h2>
  <div class="glance2">${payTile(c)}${sh}${tcard('Personal deductions each month',gbp(c.mine),'me')}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?tcard('Household bills paid from','Not set yet','me'):'')}</div>
- <h2>Where your salary goes</h2>${donutCard(c)}
+ <h2>Where your income goes</h2>${donutCard(c)}
  <div style="margin-top:16px" id="lkc">${LK.mode?lockCard():''}</div>`}
 /* ---------- v3.2 Your name: stored in each person's own data (S.name) ---------- */
 const nm=()=>String(S.name||'').trim().slice(0,40);
@@ -1036,7 +1036,7 @@ function pkBox(){const P=PPK;if(!P)return '';const j=P.pack,can=`<button class="
  if(P.kind==='older')return `<div class="card review" style="margin-bottom:16px"><b>This household pack is older than the one you have.</b><p class="lbl" style="margin-bottom:0">${pkWhen(j)}. You have pack ${+HH.pack.seq||1}. Importing it would go back to older bills:</p>${dl2}<div class="bar">${go('Replace anyway')}${can}</div></div>`;
  if(P.kind==='other')return `<div class="card review" style="margin-bottom:16px"><b>This pack is from a different household.</b><p class="lbl">${pkWhen(j)}. Importing it replaces the bills from your current household. Your personal figures are kept.</p><div class="bar">${go('Replace household')}${can}</div></div>`;
  if(P.kind==='switch')return `<div class="card review" style="margin-bottom:16px"><b>Switch this device to housemate mode?</b><p class="lbl">This is a household pack (${pkWhen(j)}). Importing it replaces the house bills on this device with the ones in the pack and makes the House tab read only. Your personal figures, forecast and change log stay as they are.${P.mgr?' <b>This device has shared household packs before. If you manage the bills, do not import it here.</b>':''}</p><div class="bar">${go('Switch to housemate mode')}${can}</div></div>`;
- return `<div class="card ask"><b>Set up YAK with this household pack?</b><p class="lbl">${pkWhen(j)}. It holds the household bills, read only, so you can see your share. Add your own salary and bills on the Personal tab to use the rest of YAK.</p><div class="bar">${go('Use this pack')}${can}</div></div>`}
+ return `<div class="card ask"><b>Set up YAK with this household pack?</b><p class="lbl">${pkWhen(j)}. It holds the household bills, read only, so you can see your share. Add your own income and bills on the Personal tab to use the rest of YAK.</p><div class="bar">${go('Use this pack')}${can}</div></div>`}
 function pkApply(){const P=PPK;if(!P)return;const j=P.pack,was=HM(),lines=P.diff?P.diff.lines:[];
  HH={pack:j,imported:iso(),name:P.name,diff:P.kind==='update'||P.kind==='older'?lines:[]};saveHH();hhApply();
  logc({k:'sys',l:was?'Imported household pack '+(+j.seq||1):'Switched to housemate mode with household pack '+(+j.seq||1),x:P.name+((packBy(j)||j.device)?' (from '+(packBy(j)||j.device)+(j.exported?', made '+stamp(j.exported):'')+')':'')+(lines.length?'. '+lines.join('; '):'')});
@@ -1060,9 +1060,9 @@ function dueTable(c,L){
 function hmDash(c){const go=(t,h)=>`<button class="cta" onclick="tab('${t}')">${h}</button>`,L=dueList(c),nx=L.find(x=>x.next);
  return heroBox(c)+todoCard()+`${packCard()}
  <h2>At a glance</h2>
- <div class="glance">${card('My share this month',gbp(c.share),'hero')}<div class="card"><div class="lbl">Next bill due</div><div class="big">${nx?esc(nx.n):'No dates set'}</div>${nx?`<small>${whenTxt(nx.next)} · your share ${gbp(nx.mine)}</small>`:''}</div>${+S.me.salary?card('You can save each month',gbp(c.save),c.save>=0?'':'warn'):`<button class="card" style="text-align:left;font:inherit;color:inherit;cursor:pointer" onclick="tab('me')"><div class="lbl">You can save each month</div><div class="big" style="font-size:20px">Add your salary</div><small>On the Personal tab, to see what you can save</small></button>`}${card('Personal deductions each month',gbp(c.mine))}</div>
+ <div class="glance">${card('My share this month',gbp(c.share),'hero')}<div class="card"><div class="lbl">Next bill due</div><div class="big">${nx?esc(nx.n):'No dates set'}</div>${nx?`<small>${whenTxt(nx.next)} · your share ${gbp(nx.mine)}</small>`:''}</div>${+S.me.salary?card('You can save each month',gbp(c.save),c.save>=0?'':'warn'):`<button class="card" style="text-align:left;font:inherit;color:inherit;cursor:pointer" onclick="tab('me')"><div class="lbl">You can save each month</div><div class="big" style="font-size:20px">Add your income</div><small>On the Personal tab, to see what you can save</small></button>`}${card('Personal deductions each month',gbp(c.mine))}</div>
  <h2>Household bills</h2>${dueTable(c,L)}
- <h2>Where your salary goes</h2>${donutCard(c)}
+ <h2>Where your income goes</h2>${donutCard(c)}
  <div style="margin-top:16px" id="lkc">${LK.mode?lockCard():''}</div>`}
 function hmHouse(c){const h=S.home,b=+h.budget||0,ok=c.share<=b;
  return `${packCard()}
@@ -1089,10 +1089,10 @@ function hmHelp(){
  </ol><p>Anything you type is saved straight away on this device. There is no Save button.</p>`)}
  ${sec('Home: your summary',`<ul><li><b>My share this month:</b> what you pay towards the household bills each month.</li>
  <li><b>Next bill due:</b> the next bill to be taken, with its date and your share of it.</li>
- <li><b>You can save each month:</b> your pay less your share, your own bills and your spending. It says <b>Add your salary</b> until you have entered your pay on the Personal tab.</li>
+ <li><b>You can save each month:</b> your pay less your share, your own bills and your spending. It says <b>Add your income</b> until you have entered your pay on the Personal tab.</li>
  <li><b>Household bills:</b> every bill in date order with your share and the full bill. Rent is included. The line under it, <b>Split between 3 people in total, including you</b>, shows how many people the bills are divided between. That number counts everyone in the house, you included.</li>
  <li><b>Household pack box:</b> which pack you have, who it is from, when they made it, and buttons to import a new one or leave housemate mode.</li>
- <li><b>Where your salary goes:</b> a ring chart of your share, your bills, your spending and your savings. Touch or hover over a slice to see its amount.</li></ul>`)}
+ <li><b>Where your income goes:</b> a ring chart of your share, your bills, your spending and your savings. Touch or hover over a slice to see its amount.</li></ul>`)}
  ${sec('House: the household bills',`<p>This tab shows the full list of household bills from your pack. Each bill shows <b>your share</b>, the <b>full bill</b> and the day it is taken. Rent is shown the same way.</p>
  <ul><li><b>Split between everyone:</b> the amount is divided equally between the people in the house.</li>
  <li><b>Each person pays this:</b> everyone pays the full amount, for example a TV licence that is charged per person.</li></ul>
@@ -1277,7 +1277,7 @@ function billList(w,c){const ro=HM()&&w==='home',B=S[w].bills,h=S.home;
  const tot=w==='home'?`<div class="li tot"><span class="tx"><b>Your share each month</b></span><span class="am">${gbp(c.share)}</span></div>`:`<div class="li tot"><span class="tx"><b>Personal deductions</b></span><span class="am">${gbp(c.mine)}</span></div>`;
  return `<div class="list">${rows}${rent}${tot}</div>${ro?'':`<button class="addrow" onclick="billSheet('${w}',-1)">+ ${w==='home'?'Add a bill':'Add an expense'}</button>`}`}
 function billSheet(w,i){if(HM()&&w==='home')return;const isNew=i<0,b=isNew?{n:'',a:0,d:'',t:'split'}:S[w].bills[i];if(!b)return;SH={k:'bill',w,i,t:b.t==='each'?'each':'split'};
- sheetOpen(`<h3>${isNew?(w==='home'?'New house bill':'New personal expense'):esc(b.n)}</h3><p class="lbl" style="margin:0">${w==='home'?'A household bill, shared as you choose below.':'Comes out of your own salary each month.'}</p>
+ sheetOpen(`<h3>${isNew?(w==='home'?'New house bill':'New personal expense'):esc(b.n)}</h3><p class="lbl" style="margin:0">${w==='home'?'A household bill, shared as you choose below.':'Comes out of your own income each month.'}</p>
  <form onsubmit="event.preventDefault();billSave()">
  <label class="sf"><span>Name</span><input id="bs-n" value="${esc(b.n)}" placeholder="${w==='home'?'For example, Water':'For example, Netflix'}" maxlength="60" autocomplete="off"></label>
  <label class="sf"><span>Monthly amount</span><span class="mny"><span class="cur">£</span><input id="bs-a" class="num" type="number" inputmode="decimal" step="any" value="${isNew?'':b.a}" placeholder="0.00"></span></label>
@@ -1314,7 +1314,7 @@ function goalRing(c){const G=+S.goal.a||0;
 /* Home */
 function greet(){const h=new Date().getHours();return h<12?'Good morning':h<18?'Good afternoon':'Good evening'}
 function heroBox(c){const n=nm(),sal=+S.me.salary||0,neg=c.save<0;
- return `<section class="yhero"><div class="hm"><p class="hi">${greet()}${n?', '+esc(n):''}</p><div class="hl">${c.yes?'You will save each month once repaid':'You can save each month'}</div>${!sal?`<button class="hadd" onclick="tab('me')">Add your salary</button><div class="hs">On the Personal tab, to see what you can save</div>`:`<div class="hv${neg?' neg':''}">${gbp(c.save)}</div><div class="hs">${neg?'Your outgoings are more than your salary':`That is <b>${Math.round(c.save/sal*100)}%</b> of your salary`}</div>`}</div>${goalRing(c)}</section>`}
+ return `<section class="yhero"><div class="hm"><p class="hi">${greet()}${n?', '+esc(n):''}</p><div class="hl">${c.yes?'You will save each month once repaid':'You can save each month'}</div>${!sal?`<button class="hadd" onclick="tab('me')">Add your income</button><div class="hs">On the Personal tab, to see what you can save</div>`:`<div class="hv${neg?' neg':''}">${gbp(c.save)}</div><div class="hs">${neg?'Your outgoings are more than your income':`That is <b>${Math.round(c.save/sal*100)}%</b> of your income`}</div>`}</div>${goalRing(c)}</section>`}
 function tcard(l,v,t){return `<button class="card tapc" onclick="tab('${t}')"><div class="lbl">${l}</div><div class="big">${v}</div></button>`}
 function todoItems(){const t=[];
  if(M.dirty){const age=M.last?Math.floor((Date.now()-Date.parse(M.last))/864e5):null;t.push({h:'Back up your changes',s:M.last?'Last exported '+(age<1?'today':age===1?'yesterday':age+' days ago')+'.':'You have not exported yet.',b:`<button class="btn sm" onclick="doExport()">Export</button>`,bad:age===null||age>=7})}
