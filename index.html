@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK v4.2.1</title>
-<meta name="version" content="4.2.1">
+<title>YAK v4.2.2</title>
+<meta name="version" content="4.2.2">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624"><script>try{var t=localStorage.getItem("yak.theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -329,9 +329,9 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 <div class="scrim" id="scrim" hidden onclick="sheetClose()"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Details" hidden></div>
 <input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)">
 <script>
-const VERSION='4.2.1';
+const VERSION='4.2.2';
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first.
-const CHANGELOG=[{v:'4.2.1',d:'16 Nov 2026',n:'Housemates who have imported a household pack but not yet added their income are now told what that means. Home puts Add your income at the top of the To do list, the Forecast and Simulator tabs wait for it instead of showing figures worked out from no income, and Personal, Forecast and Simulator show a note explaining that what you can save, your deductions, the forecast and scenarios will not be worked out until your income is added, with a button to add it. Saved data is unchanged.'},
+const CHANGELOG=[{v:'4.2.2',d:'16 Nov 2026',n:'If you manage the bills and say on the Personal tab that the household bills are collected separately, YAK no longer counts your housemates\' shares as owed to you. Nobody owes you anything in that case, so the Payments tab, the Payments tile on Home (Payments overdue, still to come or up to date) and its owed and overdue figures are hidden, and Forecast takes the place of Payments in the bottom bar. If you have not answered the question yet, the Payments tab asks it instead of showing figures. Payments you have already recorded are kept, stay in your exports, and come back if you change your answer to Yes, from my account. The Instructions are updated to match. Saved data is unchanged.'},{v:'4.2.1',d:'16 Nov 2026',n:'Housemates who have imported a household pack but not yet added their income are now told what that means. Home puts Add your income at the top of the To do list, the Forecast and Simulator tabs wait for it instead of showing figures worked out from no income, and Personal, Forecast and Simulator show a note explaining that what you can save, your deductions, the forecast and scenarios will not be worked out until your income is added, with a button to add it. Saved data is unchanged.'},
 {v:'4.2.0',d:'16 Nov 2026',n:'Housemates can now pay their share by one direct debit to whoever manages the bills, instead of paying each bill separately. On the Personal tab, How you pay your share lets them choose a direct debit, set the amount and the day it leaves their account. Housemates who pay this way get their own Payments tab in the bottom bar (Forecast moves into More), where each month can be ticked as paid or given a part payment, like the manager\'s Payments tab. Home shows the next direct debit instead of the next bill, and both Home and Personal say how much is owed when a month has not been paid in full or has only been part paid. If the direct debit is less than their share, YAK shows the gap and counts it as owed. Their own figures now use the direct debit amount as their house cost. The housemate Home and House tabs also now use the same tidy list and tile style as the rest of YAK. Saved data is unchanged apart from the new direct debit details, which are included in the housemate\'s exports.'},
 {v:'4.1.3',d:'16 Nov 2026',n:'Lined up the buttons in the To do list on Home. Every action button is now the same size and sits in the same place on each row, with room kept for the dismiss cross so the buttons stay aligned whether or not a row has one. Saved data is unchanged.'},
 {v:'4.1.2',d:'16 Nov 2026',n:'Fixed Home showing a minus amount (your share of the house bills) as what you can save before you have added your income, for example straight after a housemate imports a household pack. Until your income is entered, Home, the Where your income goes chart and the Personal tab now ask you to add it instead. Salary is now called income everywhere in YAK (for example Monthly income and Where your income goes), so it suits any kind of pay. Saved data is unchanged.'},
@@ -760,6 +760,7 @@ function payBack(){const k=ymk(kd(S.pay.start||ymk(new Date()),0));S.pay.start=k
 function payDrop(){const ms=payMonths();if(ms.length<2)return;const k=ms[ms.length-1];delete S.pay.m[k];S.pay.start=ms[ms.length-2];logc({k:'del',l:'Removed a month from Payments',x:pml(k)});save();render()}
 function payPage(c,N){
  if(!N)return `<div class="card ask"><b>No housemates yet</b><p class="lbl">Payments tracks what the other people in your household owe you each month. Set People in household to 2 or more on the House tab and they will appear here.</p><button class="btn" onclick="tab('home')">Go to House</button></div>`;
+ if(S.me.fromAcct===null)return `<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Payments tracks what your housemates pay you back. Say yes if you pay the bills and the others pay you back. Say no if they are collected separately: Payments is then not needed and is hidden.</p><div class="bar"><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div></div>`;
  const ms=payMonths(),cur=ms[0],first=ms[ms.length-1],now=c.p-1,GG='class="grid gg" style="grid-template-columns:repeat(auto-fill,minmax(290px,1fr))"';
  const T=Array.from({length:N},()=>({due:0,paid:0,out:0,ov:0,sts:[],cs:null}));
  let cOut=0,cPaid=0,cTot=0,cSt='none';
@@ -783,7 +784,7 @@ function payPage(c,N){
   <div class="hmr"><span><b>Payment day</b><small class="ut">Day of each month they pay by</small></span><span class="mny st pd"><input class="num" type="number" inputmode="numeric" min="1" max="31" data-k="pay.mates.${i}.d" value="${m.d}" onchange="set('pay.mates.${i}.d',this.value,1)" aria-label="Payment day of the month for ${esc(mn(i))}"><button type="button" class="sb l" onclick="stp('pay.mates.${i}.d',-1)" aria-label="Earlier payment day for ${esc(mn(i))}"${m.d<=1?' disabled':''}>−</button><button type="button" class="sb r" onclick="stp('pay.mates.${i}.d',1)" aria-label="Later payment day for ${esc(mn(i))}"${m.d>=31?' disabled':''}>+</button></span></div>
   <small>Paid ${gbp(t.paid)} of ${gbp(t.due)} owed since ${pml(first)}${i>=now?'. No longer in the household':''}</small></div>`}).join('');
  const kc=(l,v,sub,cls)=>`<div class="card ${cls||''}"><div class="lbl">${l}</div><div class="big">${v}</div><small class="ut">${sub}</small></div>`;
- return `<p class="lbl" style="max-width:680px">Track what your housemates pay you each month. Each housemate owes the individual share from the House tab, currently <b>${gbp(rd2(c.share))}</b> a month. Tick Paid in full or type the amount received. Once a month is over it keeps the share that applied at the time.${c.yes?'':' On the Personal tab, household bills are '+(S.me.fromAcct===null?'not yet set as paid from your account':'set as collected separately')+'; Payments still tracks each housemate\'s share.'}</p>
+ return `<p class="lbl" style="max-width:680px">Track what your housemates pay you each month. Each housemate owes the individual share from the House tab, currently <b>${gbp(rd2(c.share))}</b> a month. Tick Paid in full or type the amount received. Once a month is over it keeps the share that applied at the time.</p>
  <div class="grid">${kc('Outstanding for '+mname,gbp(cOut),'of '+gbp(cTot)+' owed this month',cSt==='over'?'warn':'hero')}${kc('Received for '+mname,gbp(cPaid),cSt==='paid'?'Everyone has paid in full':cSt==='none'?'Nothing owed this month':gbp(cOut)+' still to come')}${kc('Owed to you in total',gbp(allOut),'Across '+ms.length+(ms.length===1?' month':' months'))}${kc('Overdue',gbp(allOv),allOv>.005?'Past the payment day and not paid in full':'Nothing is overdue',allOv>.005?'warn':'')}</div>
  <h2>Housemates</h2><div ${GG}>${mates}</div>
  <h2>Month by month</h2><div ${GG}>${cards}</div>
@@ -978,7 +979,7 @@ function sHi(i){const d=SDN;if(!d)return;
 function sLo(){const d=SDN;if(!d)return;
  SDC.forEach((x,j)=>{const e=document.getElementById('ss'+j);if(e){e.classList.remove('on','dim')}});
  const m=document.getElementById('smid');if(m)m.innerHTML=d.mid}
-function payTile(c){if(c.p<2)return '';
+function payTile(c){if(c.p<2||S.me.fromAcct!=='yes')return '';
  let ov=0,out=0;payMonths().forEach(k=>{for(let i=0;i<nOf(k,c);i++){const s=pst(k,i,c);out+=s.out;if(s.st==='over')ov+=s.out}});
  if(ov>.005)return card('Payments overdue',gbp(ov),'warn gpay');
  if(out>.005)return card('Payments · '+gbp(out)+' still to come','Nothing overdue','gpay');
@@ -1156,9 +1157,9 @@ function helpPage(){
  ${sec('Personal: what you can save',`<p>Enter your monthly pay after tax, an amount you set aside for spending, and your own bills such as phone, gym or insurance.</p>
  <p>The first question matters: <b>do all the household bills come out of your account?</b></p>
  <ul><li><b>Yes:</b> you pay the full household bills and the others pay you back. YAK takes the full amount off, then adds back what the others owe, and shows how much each person owes you.</li>
- <li><b>No:</b> the bills are collected separately, so YAK only takes off your own share.</li></ul>
+ <li><b>No:</b> the bills are collected separately, so YAK only takes off your own share. The Payments tab is hidden, as nobody owes you anything.</li></ul>
  <p>The <b>How it adds up</b> table walks through the sum line by line, so you can see how the saving figure is reached. You can change your answer at any time.</p>`)}
- ${sec('Payments: who has paid you',`<p>This tab appears once the household has two or more people. It is for tracking what your housemates pay you.</p>
+ ${sec('Payments: who has paid you',`<p>This tab appears once the household has two or more people and the household bills come out of your account. It is for tracking what your housemates pay you back. If you say on the Personal tab that the bills are collected separately, nobody owes you anything, so Payments is hidden (Forecast takes its place in the bottom bar). Payments you have already recorded are kept and come back if you change your answer.</p>
  <ul><li>Each month has a card showing how much is owed and how much has been received.</li>
  <li>For each housemate, either tick <b>Paid in full</b> or type the amount you received. <b>All paid in full</b> ticks everyone at once.</li>
  <li>Give each housemate a name and the day of the month they should pay by. A red <b>Overdue</b> label appears if that day passes without full payment, and a green <b>Paid</b> label shows when they are up to date.</li>
@@ -1257,7 +1258,7 @@ const IC={home:'<rect x="3" y="3" width="7.5" height="9" rx="2"/><rect x="13.5" 
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
 const ini=n=>esc((String(n||'').trim()[0]||'?').toUpperCase());
 /* bottom tab bar (phones) and the header Export button */
-const bnItems=()=>[['dash','Home','home'],['home','House','house'],['me','Personal','me'],HM()&&!DDON()?['fc','Forecast','fc']:['pay','Payments','pay'],['more','More','more']];
+const bnItems=()=>[['dash','Home','home'],['home','House','house'],['me','Personal','me'],PAYOFF()?['fc','Forecast','fc']:['pay','Payments','pay'],['more','More','more']];
 function bnav(){const BN=bnItems(),cur=BN.some(b=>b[0]===S.tab)?S.tab:'more';return BN.map(b=>`<button class="${cur===b[0]?'on':''}" onclick="${b[0]==='more'?'moreOpen()':`tab('${b[0]}')`}"${cur===b[0]?' aria-current="page"':''}>${ico(b[2])}<span>${b[0]==='more'&&cur==='more'?(PAGES.find(p=>p[0]===S.tab)||[,'More'])[1]:b[1]}</span></button>`).join('')}
 function hxSync(){const h=document.getElementById('hx');if(!h)return;h.className='hx'+(M.dirty?' dirty':'');h.title=M.dirty?'You have changes that are not exported yet':M.last?'Last exported '+stamp(M.last):'Not exported yet';h.innerHTML=ico('exp')+'<span>Export</span>'}
 /* bottom sheet */
@@ -1365,6 +1366,7 @@ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persisted(
    S.dd = {on, a: monthly amount, d: day of the month, start:'YYYY-MM', m:{'YYYY-MM':{due, p, t}}} is the housemate's own data and is exported with it.
    Each month they owe their share from the pack. Once a month is over it keeps the share it had (due). */
 const DDON=()=>HM()&&!!(S.dd&&S.dd.on);
+const PAYOFF=()=>HM()?!DDON():!!(S.me&&S.me.fromAcct==='no');
 const mgrN=()=>(HH&&packBy(HH.pack))||'your housemate';
 const tkey=()=>HM()&&S.tab==='home'?'hmhome':HM()&&S.tab==='pay'?'hmpay':S.tab;
 const ord=n=>n+(n%10===1&&n!==11?'st':n%10===2&&n!==12?'nd':n%10===3&&n!==13?'rd':'th');
@@ -1443,16 +1445,16 @@ const TITLES={hmpay:'My Payments',home:'House Finances',hmhome:'Household Bills'
 const PAGES=[['dash','Home'],['home','House'],['me','Personal'],['pay','Payments'],['fc','Forecast'],['sim','Simulator'],['log','Changes'],['help','Instructions']];
 let MO=false;
 function mSync(){const b=document.getElementById('mbtn'),l=document.getElementById('mlist');if(!b||!l)return;b.setAttribute('aria-expanded',String(MO));l.classList.toggle('open',MO)}
-function mToggle(){MO=!MO;if(MO){document.getElementById('mitems').innerHTML=PAGES.filter(p=>p[0]!==S.tab&&!(HM()&&p[0]==='pay')).map((p,i)=>`<button style="--i:${i}" onclick="tab('${p[0]}')">${p[1]}</button>`).join('')}mSync()}
+function mToggle(){MO=!MO;if(MO){document.getElementById('mitems').innerHTML=PAGES.filter(p=>p[0]!==S.tab&&!(PAYOFF()&&p[0]==='pay')).map((p,i)=>`<button style="--i:${i}" onclick="tab('${p[0]}')">${p[1]}</button>`).join('')}mSync()}
 document.addEventListener('click',e=>{if(MO&&!e.target.closest('#mbtn,#mlist')){MO=false;mSync()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&MO){MO=false;mSync();const b=document.getElementById('mbtn');if(b)b.focus()}});
 function render(){
  QR=false;
  if(LOCKED){MO=false;sheetClose();document.getElementById('app').innerHTML='';showLock();return}
  document.getElementById('lock').hidden=true;LSHOWN='';
- if(HM()&&!DDON()&&S.tab==='pay')S.tab='dash';
+ if(PAYOFF()&&S.tab==='pay')S.tab='dash';
  const c=calc(),PN=HM()?0:paySync(c);if(DDON())ddSync(c);
- document.getElementById('t-pay').style.display=HM()&&!DDON()?'none':'';
+ document.getElementById('t-pay').style.display=PAYOFF()?'none':'';
  PAGES.forEach(p=>{document.getElementById('t-'+p[0]).className=S.tab===p[0]?'on':''});
  document.getElementById('bnav').innerHTML=bnav();hxSync();
  document.getElementById('app').innerHTML=banner()+(TITLES[tkey()]?`<h2 class="ptitle">${S.tab==='me'&&nm()?esc(nm())+'\'s Personal Finances':TITLES[tkey()]}</h2>`:'')+(S.tab==='dash'?(HM()?hmDash(c):dash(c)):S.tab==='home'?(HM()?hmHouse(c):home(c)):S.tab==='pay'?(HM()?hmPayPage(c):payPage(c,PN)):S.tab==='fc'?(noInc()||fc(c)):S.tab==='sim'?(noInc()||simPage(c)):S.tab==='log'?logPage():S.tab==='help'?helpPage():me(c))+`<p style="margin-top:30px"><small>Saved automatically in this browser. </small><span class="foot-acts"><button class="ghost" style="color:var(--acc)" onclick="openImport()">Import latest data</button><button class="ghost" onclick="reset()">Reset to starting values</button><br><button class="ghost" style="color:var(--acc)" onclick="checkUpdate()">Check for updates</button></span> <small>${UPD}</small></p>

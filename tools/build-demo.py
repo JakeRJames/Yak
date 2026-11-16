@@ -25,7 +25,7 @@ bills = [{"n": "Gas & Electricity", "a": 140, "d": "8th", "t": "split", "u": now
          {"n": "TV Licence", "a": 14.5, "d": "1st", "t": "split", "u": now}]
 data = {"tab": "dash", "fc": {"2027-01": [{"n": "Credit card", "a": 600, "u": now}]}, "fcStart": 4200, "goal": {"a": 0},
         "home": {"people": 3, "budget": 800, "months": 0, "rentTotal": 1950, "rentDate": "15th", "bills": bills},
-        "me": {"salary": 3400, "spend": 450, "fromAcct": "no",
+        "me": {"salary": 3400, "spend": 450, "fromAcct": "yes",
                "bills": [{"n": n, "a": a, "u": now} for n, a in [("Phone Bill (Combined)", 32), ("Apple Music", 11), ("Gym Membership", 35), ("Car", 260), ("Car Insurance", 75), ("Fuel", 150), ("Personal Trainer", 160), ("iCloud Storage", 3)]]},
         "lastChange": old, "reviewed": old, "upd": {}, "log": [],
         "pay": {"start": "2026-10", "mates": [{"n": "Sam", "d": 1}, {"n": "Alex", "d": 1}],
@@ -88,6 +88,8 @@ const T={
   ['New on this device?',()=>{M.fresh=true}],
   ['No income entered yet',()=>{S.me.salary=0}],
   ['Personal: where do bills come from?',()=>{S.tab='me';S.me.fromAcct=null}],
+  ['Payments: question not answered yet',()=>{S.tab='pay';S.me.fromAcct=null}],
+  ['Bills collected separately (no Payments)',()=>{S.me.fromAcct='no'}],
   ['House bills changed since last pack',()=>{S.tab='home';S.hh={id:'demo',seq:2,last:new Date(Date.now()-3*day).toISOString(),sig:'old'}}],
   ['A housemate sends you a pack',()=>{PPK=pk(1)}],
   ...common]},
