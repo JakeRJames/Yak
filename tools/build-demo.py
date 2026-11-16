@@ -122,6 +122,10 @@ lab();
 
 assert s.count('<script>\nconst VERSION') == 1 and s.rstrip().endswith('</body></html>')
 s = s.replace('<script>\nconst VERSION', seed).rstrip()[:-len('</body></html>')] + tour
+h1 = '<h1 onclick="tab(\'dash\')">YAK<span>.</span></h1>'
+assert s.count(h1) == 1
+s = s.replace(h1, h1 + '<span class="demopill" title="This is a demo with sample figures, not your live YAK">Demo</span>')
+s = s.replace('</style></head>', 'header .demopill{align-self:center;margin-left:-14px;font:800 11px var(--f);letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--dot);border-radius:99px;padding:4px 10px;line-height:1.2}@media(max-width:640px){header .demopill{margin-left:0}}</style></head>', 1)
 s = s.replace('<title>YAK v%s</title>' % ver, '<title>YAK demo (v%s)</title>' % ver)
 os.makedirs(OUT, exist_ok=True)
 open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8').write(s)
