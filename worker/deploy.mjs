@@ -24,6 +24,18 @@ try {
   writeFileSync('worker/wrangler.toml', toml);
   const d = run(W + ' deploy'); out.log += d;
   const u = d.match(/https:\/\/[\w.-]+\.workers\.dev/); out.url = u ? u[0] : ''; out.ok = !!u;
+  if (out.ok) { // check the deployed Worker really works: store, read back, refuse the wrong token
+    const hx = n => [...crypto.getRandomValues(new Uint8Array(n))].map(x => x.toString(16).padStart(2, '0')).join('');
+    const id = hx(16), tok = hx(32), url = out.url + '/h/' + id, chk = {};
+    await new Promise(r => setTimeout(r, 4000));
+    const go = (m, t, b) => fetch(url, { method: m, body: b, headers: t ? { Authorization: 'Bearer ' + t } : {} });
+    chk.ping = (await (await fetch(out.url + '/ping')).json()).ok === true;
+    chk.store = (await go('PUT', tok, 'selftest_' + id)).status === 200;
+    const g = await go('GET'); chk.read = g.status === 200 && (await g.json()).d === 'selftest_' + id;
+    chk.refuseOthers = (await go('PUT', hx(32), 'x')).status === 403;
+    if (!live) chk.app = (await (await fetch(out.url + '/')).text()).includes('<meta name="release"');
+    out.selftest = chk; out.ok = Object.values(chk).every(Boolean);
+  }
 } catch (e) { out.log += '\nFAILED: ' + e.message }
 out.log = scrub(out.log).split('\n').slice(-40).join('\n');
 writeFileSync(process.env.STATUS_FILE || 'status.json', JSON.stringify(out, null, 2));
