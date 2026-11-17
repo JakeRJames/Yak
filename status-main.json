@@ -3,9 +3,9 @@
   "name": "yak-sync",
   "ok": true,
   "url": "https://yak-sync.jake-rjames.workers.dev",
-  "sha": "0d727c72dada7983b41dec75cc21e0fed5fae50f",
-  "at": "2026-11-17T00:22:43.278Z",
-  "log": "\n ⛅️ wrangler 4.163.0\n────────────────────\n\nCloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md\nTotal Upload: 2.09 KiB / gzip: 0.99 KiB\nYour Worker has access to the following bindings:\nBinding                                        Resource          \nenv.KV (ed61b56281b344298eaa2e84759f6158)      KV Namespace      \n\nUploaded yak-sync (1.69 sec)\nDeployed yak-sync triggers (0.41 sec)\n  https://yak-sync.jake-rjames.workers.dev\nCurrent Version ID: 77d0ca8e-21f4-4997-8019-09b218d07d21\n",
+  "sha": "ab995c9fe9982777f08c6972ae9d9322b75ff363",
+  "at": "2026-11-17T23:30:20.678Z",
+  "log": "\n ⛅️ wrangler 4.164.0\n────────────────────\n\nCloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md\nTotal Upload: 11.14 KiB / gzip: 3.86 KiB\nYour Worker has access to the following bindings:\nBinding                                        Resource          \nenv.KV (ed61b56281b344298eaa2e84759f6158)      KV Namespace      \n\nUploaded yak-sync (3.14 sec)\nDeployed yak-sync triggers (1.08 sec)\n  https://yak-sync.jake-rjames.workers.dev\n  schedule: 0 18 * * *\n  schedule: 0 19 * * *\nCurrent Version ID: b3f48518-722e-46c8-ab4b-bf0d1c9db40f\n",
   "secrets": {
     "CLOUDFLARE_API_TOKEN": true,
     "CLOUDFLARE_ACCOUNT_ID": false,
@@ -15,6 +15,8 @@
     "ping": true,
     "store": true,
     "read": true,
-    "refuseOthers": true
+    "refuseOthers": true,
+    "reminderKey": true,
+    "refuseBadReminder": true
   }
 }
