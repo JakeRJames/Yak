@@ -3,9 +3,9 @@
   "name": "yak-sync",
   "ok": true,
   "url": "https://yak-sync.jake-rjames.workers.dev",
-  "sha": "5d5017627e7029795340f14d4d7d1d37c72afcaf",
-  "at": "2026-11-17T00:07:34.019Z",
-  "log": "\n ⛅️ wrangler 4.163.0\n────────────────────\nResource location: remote \n\n🌀 Creating namespace with title \"yak-sync-kv\"\n✨ Success!\nTo access your new KV Namespace in your Worker, add the following snippet to your configuration file:\n{\n  \"kv_namespaces\": [\n    {\n      \"binding\": \"yak_sync_kv\",\n      \"id\": \"ed61b56281b344298eaa2e84759f6158\"\n    }\n  ]\n}\n\n ⛅️ wrangler 4.163.0\n────────────────────\n\nCloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md\nTotal Upload: 2.09 KiB / gzip: 0.99 KiB\nYour Worker has access to the following bindings:\nBinding                                        Resource          \nenv.KV (ed61b56281b344298eaa2e84759f6158)      KV Namespace      \n\nUploaded yak-sync (2.69 sec)\nDeployed yak-sync triggers (1.74 sec)\n  https://yak-sync.jake-rjames.workers.dev\nCurrent Version ID: 3aaf8bc3-20ed-44d7-8b07-d1fbb74bdb83\n",
+  "sha": "0d727c72dada7983b41dec75cc21e0fed5fae50f",
+  "at": "2026-11-17T00:22:43.278Z",
+  "log": "\n ⛅️ wrangler 4.163.0\n────────────────────\n\nCloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md\nTotal Upload: 2.09 KiB / gzip: 0.99 KiB\nYour Worker has access to the following bindings:\nBinding                                        Resource          \nenv.KV (ed61b56281b344298eaa2e84759f6158)      KV Namespace      \n\nUploaded yak-sync (1.69 sec)\nDeployed yak-sync triggers (0.41 sec)\n  https://yak-sync.jake-rjames.workers.dev\nCurrent Version ID: 77d0ca8e-21f4-4997-8019-09b218d07d21\n",
   "secrets": {
     "CLOUDFLARE_API_TOKEN": true,
     "CLOUDFLARE_ACCOUNT_ID": false,
