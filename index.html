@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK – Ethereal 1.0.1</title>
-<meta name="version" content="5.0.1">
-<meta name="release" content="Ethereal 1.0.1">
+<title>YAK – Ethereal 1.1.0</title>
+<meta name="version" content="5.1.0">
+<meta name="release" content="Ethereal 1.1.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624"><script>try{var t=localStorage.getItem("yak.theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -337,9 +337,10 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 <div class="scrim" id="scrim" hidden onclick="sheetClose()"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Details" hidden></div>
 <input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)">
 <script>
-const VERSION='5.0.1',REL='Ethereal 1.0.1'; // VERSION is the number YAK uses to check for updates and stamp files. REL is the release name people see: dev builds are Ethereal 0.1.0, main starts at Ethereal 1.0.0, then 1.0.1 for fixes and 1.1.0 for features.
+const VERSION='5.1.0',REL='Ethereal 1.1.0'; // VERSION is the number YAK uses to check for updates and stamp files. REL is the release name people see: dev builds are Ethereal 0.1.0, main starts at Ethereal 1.0.0, then 1.0.1 for fixes and 1.1.0 for features.
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first, with at most three short bullet points (n).
 const CHANGELOG=[
+{v:'5.1.0',r:'Ethereal 1.1.0',d:'17 Nov 2026',n:['Bill reminders: a notification at 7pm the evening before a bill or direct debit is due','Managers hear when a housemate has not paid; housemates hear when the house bills change','Messages are written on your phone; the sharing service only knows the dates']},
 {v:'5.0.1',r:'Ethereal 1.0.1',d:'17 Nov 2026',n:['Version history is now short bullet points, at most three per release']},
 {v:'5.0.0',r:'Ethereal 1.0.0',d:'17 Nov 2026',n:['Live sharing: invite housemates once and they always see the latest house bills, read only','Bills are encrypted on your phone; a Sync paused note shows if the service is unreachable','Exports carry sharing, imports never switch it off, and pack files still work']},
 {v:'4.3.2',d:'16 Nov 2026',n:['Warns before an import would lose changes you have not exported']},
@@ -485,7 +486,7 @@ function migrate(){let ch=false;const n=iso();
  SCALARS.forEach(k=>{if(!S.upd[k]){S.upd[k]=n;ch=true}});
  [...S.home.bills,...S.me.bills].forEach(b=>{if(!b.u){b.u=n;ch=true}});
  return ch}
-function save(quiet){if(quiet!==true){S.lastChange=iso();M.dirty=true;saveMeta()}snapTake();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}syQueue()}
+function save(quiet){if(quiet!==true){S.lastChange=iso();M.dirty=true;saveMeta()}snapTake();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}syQueue();rmQueue()}
 function needsReview(){const ref=Math.max(Date.parse(S.lastChange)||0,Date.parse(S.reviewed)||0),t=new Date(ref);t.setMonth(t.getMonth()+3);return Date.now()>=t.getTime()}
 function reviewDone(){S.reviewed=iso();save(true);render()}
 function reviewBox(){if(!needsReview())return '';
@@ -1216,6 +1217,10 @@ ${sec('History: how each month compared',`<p>YAK keeps a snapshot of each month 
  ${sec('Forecast and Simulator',`<p><b>Forecast</b> shows your savings month by month for the next 12 months. Use <b>Add deduction</b> under a month for anything outside your regular bills, such as a credit card payment, and <b>Repeat in later months</b> to copy it forward. If you already have savings, enter them at the top.</p>
  <p><b>Simulator</b> lets you try "what if" changes to your pay, bills and spending with sliders. Nothing in the Simulator is saved or changes your real figures.</p>`)}
  ${sec('Changes: a record of every edit',`<p>YAK keeps a log of every change you make to your own figures, and records when you import a household pack or a live update arrives, with a note of what changed. <b>Summary</b> shows each item from its first value to its latest. <b>Every change</b> lists each edit in order, newest first.</p>`)}
+ ${sec('Bill reminders',`<p>YAK can send a notification at <b>7pm the evening before</b> something is due. Turn it on from <b>More</b>, then <b>Bill reminders</b>, or from the To do list on Home. On iPhone, YAK has to be on your Home Screen for this to work.</p>
+ <ul><li><b>Bills due tomorrow</b>, with your share. If you pay by one direct debit, you get a reminder the evening before it leaves instead.</li>
+ <li><b>House bills changed:</b> with live sharing, a notification when whoever manages the bills changes them, showing what changed and your new share.</li></ul>
+ <p>The message is written on your phone. The sharing service only knows which evenings to send a reminder, never the bills or amounts. Reminders are set for each phone, so turn them on again on a new one.</p>`)}
  ${sec('Passcode lock (optional)',`<p>You can ask YAK to show a login screen when it opens. Turn it on from <b>More</b>, then <b>Passcode lock</b>. YAK then locks itself as soon as you leave the app. The version is shown at the bottom of the login screen.</p>
  <ul><li>The passcode belongs to that device only and is not included in exports.</li>
  <li>It keeps casual snoopers out, but it does not scramble your data.</li>
@@ -1287,6 +1292,10 @@ ${sec('History: how each month compared',`<p>YAK keeps a snapshot of each month 
  <div class="tip"><b>Nothing here is saved.</b> The Simulator never changes your real figures. Press <b>Reset to current values</b> to start again.</div>`)}
  ${sec('Changes: a record of every edit',`<p>YAK keeps a log of every change you make to a value, bill or date: what it was, what it became, and when. It also records exports, imports and turning on live sharing. <b>Summary</b> shows each item once, from its first value to its latest. <b>Every change</b> lists each edit in order, newest first.</p>
  <p>It is useful for spotting where a mistake crept in. The log travels inside your exported file, and keeps the latest 1,000 entries.</p>`)}
+ ${sec('Bill reminders',`<p>YAK can send a notification at <b>7pm the evening before</b> something is due. Turn it on from <b>More</b>, then <b>Bill reminders</b>, or from the To do list on Home. On iPhone, YAK has to be on your Home Screen for this to work.</p>
+ <ul><li><b>Bills due tomorrow</b>, such as <b>Water is due tomorrow, £16.40</b>. It shows the full bill if the bills come out of your account, and your share if they are collected separately. Bills and rent with a date are included; dates such as <b>N/A</b> are skipped, and a bill on the 31st is taken on the last day of shorter months.</li>
+ <li><b>Housemate payments:</b> if the bills come out of your account, a nudge the day after a housemate's payment was due, if you have not marked it as paid.</li></ul>
+ <p>The message is written on your phone. The sharing service only knows which evenings to send a reminder, never the bills or amounts. Reminders are set for each phone, so turn them on again on a new one. Housemates turn them on in their own YAK.</p>`)}
  ${sec('Passcode lock (optional)',`<p>You can ask YAK to show a login screen when it opens. Turn it on from <b>More</b>, then <b>Passcode lock</b>. YAK then locks itself as soon as you leave the app or switch to another tab or app.</p>
  <ul><li>The passcode belongs to that device only. It is not included in exports, so each device has its own.</li>
  <li>It keeps casual snoopers out, but it does not scramble your data.</li>
@@ -1369,6 +1378,66 @@ async function syPull(force){if(!HH||!HH.sync||SYBUSY||window.YAKDEMO)return;if(
   saveHH();sySet('ok')}
  catch(e){SYBUSY=false;sySet('paused')}}
 function sySync(force){if(LOCKED)return;if(HH&&HH.sync)syPull(force);else if(S.sync&&!HM())syPush()}
+/* ================= Ethereal 1.1: bill reminders =================
+   Web Push at 7pm the evening before. This page builds a small copy of what reminders need (rmMirror) and hands it to the
+   service worker (sw.js), which works out the evenings and sends only those dates to the sync service. The service's nudge
+   says only which kind of reminder it is; sw.js writes the words and amounts on the phone.
+   yak.remind = {on, x} is this device's choice (x: To do card dismissed). It is never exported. */
+const RMK='yak.remind';
+const rmGet=()=>{try{return JSON.parse(localStorage.getItem(RMK))||{}}catch(e){return {}}};
+const rmPut=o=>{try{localStorage.setItem(RMK,JSON.stringify(o))}catch(e){}};
+const SWHOST=location.protocol==='https:'&&/github\.io$|\.workers\.dev$/.test(location.hostname);
+const RMOK=()=>!!window.YAKDEMO||SWHOST&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+const RMIOS=()=>SWHOST&&!window.YAKDEMO&&/iPhone|iPad/.test(navigator.userAgent)&&!navigator.standalone&&!('PushManager' in window); // Safari, not the Home Screen app
+const RMDEV=/\.workers\.dev$/.test(location.hostname);
+const rmOn=()=>window.YAKDEMO?!!rmGet().on:RMOK()&&!!rmGet().on&&Notification.permission==='granted';
+const rmPerm=()=>window.YAKDEMO?(rmGet().on?'granted':'default'):Notification.permission;
+let RMT=0,OPENT=null;
+function rmQueue(){if(!rmOn()||window.YAKDEMO)return;clearTimeout(RMT);RMT=setTimeout(()=>rmSend(),3000)}
+const ymdS=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+function rmMirror(){const c=calc(),h=S.home,n=new Date(),t0=new Date(n.getFullYear(),n.getMonth(),n.getDate()),today=ymdS(t0),ex=[],mk=i=>ymk(new Date(t0.getFullYear(),t0.getMonth()+i,1)),eve=(d,o)=>ymdS(new Date(d.getFullYear(),d.getMonth(),d.getDate()+o));
+ if(DDON()&&+S.dd.a>0)for(let i=0;i<5;i++){const d=eve(ddDate(mk(i)),-1);if(d>=today)ex.push({d,k:'dd',t:'Direct debit tomorrow',b:gbp(+S.dd.a)+' to '+mgrN()+' leaves your account tomorrow.'})}
+ if(!HM()&&S.me.fromAcct==='yes'&&c.p>1)for(let i=0;i<5;i++){const k=mk(i),mon=kd(k).toLocaleString('en-GB',{month:'long'});
+  for(let j=0;j<nOf(k,c);j++){const s=pst(k,j,c);if(s.out<.005)continue;const d=eve(s.dt,1);if(d>=today)ex.push({d,k:'pay',n:mn(j),a:s.out,mon,t:mn(j)+' has not paid for '+mon,b:gbp(s.out)+' was due on '+sdm(s.dt)+'.'})}}
+ return{v:1,role:HM()?'hm':'mgr',full:!HM()&&S.me.fromAcct==='yes',skipDue:DDON(),extra:ex,sync:HH&&HH.sync?{id:HH.sync.id,k:HH.sync.k}:null,
+  home:{bills:h.bills.map(b=>({n:b.n,a:+b.a||0,t:b.t,d:b.d||''})),rentTotal:+h.rentTotal||0,rentDate:h.rentDate||'',people:Math.max(1,+h.people||1)}}}
+const swReady=()=>Promise.race([navigator.serviceWorker.ready,new Promise(ok=>setTimeout(()=>ok(null),8000))]);
+async function swAsk(msg){const reg=await swReady();if(!reg||!reg.active)return{ok:false};const ch=new MessageChannel();
+ return new Promise(ok=>{const t=setTimeout(()=>ok({ok:false,why:'timeout'}),15000);ch.port1.onmessage=e=>{clearTimeout(t);ok(e.data||{ok:false})};reg.active.postMessage(msg,[ch.port2])})}
+async function rmSend(force){if(!rmOn()||window.YAKDEMO)return{ok:false};try{return await swAsk({type:'yak-remind',m:rmMirror(),force:!!force})}catch(e){return{ok:false}}}
+async function rmSub(){const reg=await swReady();return reg?reg.pushManager.getSubscription():null}
+async function rmTest(k){const sub=await rmSub();if(!sub)return false;try{const r=await fetch(SYNC_URL+'/p/test',{method:'POST',body:JSON.stringify({sub:sub.toJSON(),k}),headers:{'Content-Type':'application/json'}});return r.ok}catch(e){return false}}
+async function rmTurnOn(){if(!RMOK())return rmSheet();
+ if(window.YAKDEMO){rmPut({on:true});sheetClose();say('Bill reminders are on. In this demo no notifications are sent: open Bill reminders in More to see what they look like.');scrollTo(0,0);return}
+ let p=Notification.permission;if(p==='default')p=await Notification.requestPermission(); // must be the first thing after the tap, for iPhone
+ if(p!=='granted'){sheetClose();say('Notifications are switched off for YAK. To get bill reminders, allow them in your phone\'s Settings, under Notifications, then YAK.');scrollTo(0,0);return}
+ try{const reg=await swReady();if(!reg)throw new Error('no worker');let sub=await reg.pushManager.getSubscription();
+  if(!sub){const r=await fetch(SYNC_URL+'/p/key',{cache:'no-store'});if(!r.ok)throw new Error('key');sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:ub64u((await r.json()).k)})}
+  rmPut({on:true});const r=await rmSend(true);if(!r||!r.ok)throw new Error('save');
+  rmTest('hello');logc({k:'sys',l:'Turned on bill reminders on this device'});save(true);sheetClose();
+  say('Bill reminders are on. YAK sends a notification at 7pm the evening before'+(DDON()?' your direct debit leaves.':' a bill is due.'));scrollTo(0,0)}
+ catch(e){rmPut({});sheetClose();say('YAK could not turn on bill reminders. Check your connection and try again.');scrollTo(0,0)}}
+async function rmTurnOff(){rmPut({x:true});if(!window.YAKDEMO)try{await swAsk({type:'yak-remind-off'})}catch(e){}logc({k:'sys',l:'Turned off bill reminders on this device'});save(true);sheetClose();say('Bill reminders are off on this device.');scrollTo(0,0)}
+function rmPreview(){const c=calc(),full=!HM()&&S.me.fromAcct==='yes',L=dueList(c).filter(x=>x.next&&(full?x.full:x.mine)>.004),o=[],m=rmMirror();
+ if(DDON()&&+S.dd.a>0)o.push(['Direct debit tomorrow',gbp(+S.dd.a)+' to '+esc(mgrN())+' leaves your account tomorrow.']);else if(L.length)o.push([esc(L[0].n)+' is due tomorrow',gbp(full?L[0].full:L[0].mine)+(full||c.p<2?'':', your share')]);
+ const py=m.extra.find(x=>x.k==='pay');if(py)o.push([esc(py.t),esc(py.b)]);
+ if(HH&&HH.sync)o.push(['House bills changed by '+esc(mgrN()),'Water +£6.00. Your share '+gbp(c.share)+' → '+gbp(c.share+2)+' a month.']);
+ return o.length?'<div class="shd">What they look like</div>'+o.map(x=>`<div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;margin:6px 0"><img src="icon-192.png" alt="" style="width:30px;height:30px;border-radius:8px;flex:none" onerror="this.remove()"><span><b style="font-size:14px">${x[0]}</b><br><small>${x[1]}</small></span></div>`).join(''):''}
+function rmHide(){const o=rmGet();o.x=true;rmPut(o);render()}
+function rmWhat(){const c=calc(),o=[];
+ if(DDON())o.push('The evening before your direct debit to '+esc(mgrN())+' leaves');else o.push('Bills due the next day, with '+(!HM()&&S.me.fromAcct==='yes'?'the amount':'your share'));
+ if(!HM()&&S.me.fromAcct==='yes'&&c.p>1)o.push('A nudge the day after a housemate\'s payment was due, if it is not marked as paid');
+ if(HH&&HH.sync)o.push('When '+esc(mgrN())+' changes the house bills, with what changed');
+ return '<ul style="margin:8px 0 0;padding-left:20px">'+o.map(x=>'<li>'+x+'</li>').join('')+'</ul>'}
+function rmSheet(){SH={k:'rm'};const on=rmOn(),den=RMOK()&&rmPerm()==='denied';
+ if(RMIOS())return sheetOpen(`<h3>Bill reminders</h3><p class="lbl" style="margin:0">iPhone only sends notifications to apps on your Home Screen. In Safari, tap the Share button, then <b>Add to Home Screen</b>, and open YAK from there. If you set YAK up here in Safari first, export your data and import it in the Home Screen app.</p>`);
+ if(!RMOK())return sheetOpen(`<h3>Bill reminders</h3><p class="lbl" style="margin:0">This browser cannot show notifications from YAK.</p>`);
+ const dev=RMDEV&&on?`<div class="shd">Test build only: send one now</div><div class="bar" style="flex-wrap:wrap">${[['due','Bills due'],['pay','Payments'],['dd','Direct debit'],['chg','House change']].map(x=>`<button class="btn sm out" onclick="rmTest('${x[0]}')">${x[1]}</button>`).join('')}</div>`:'';
+ sheetOpen(`<h3>Bill reminders</h3><p class="lbl" style="margin:0">${on?'On for this phone. At 7pm the evening before, YAK sends:':'A notification at 7pm the evening before, for:'}</p>${rmWhat()}
+ ${window.YAKDEMO&&on?rmPreview():''}<p class="lbl" style="margin:12px 0 0"><small>The message is written on this phone. The sharing service only knows the dates, never the bills or amounts.</small></p>
+ ${den?`<p class="lbl" style="margin:12px 0 0"><b>Notifications are switched off for YAK.</b> Allow them in your phone's Settings, under Notifications, then YAK.</p>`:`<div class="bar" style="margin-top:14px">${on?`<button class="btn out" onclick="rmTurnOff()">Turn off</button>`:`<button class="btn" onclick="rmTurnOn()">Turn on reminders</button>`}</div>`}${dev}`)}
+if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{const d=e.data||{};if(d.type==='yak-open'&&d.tab){if(LOCKED)OPENT=d.tab;else tab(d.tab)}});
+(()=>{const m=(location.hash||'').match(/open=(\w+)/);if(m){OPENT=m[1];try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}})();
 /* invite */
 function syLink(){return location.origin+location.pathname+'#join='+S.sync.id+'.'+S.sync.k}
 async function syInvite(){if(HM())return;if(!lockOK()){say('Live sharing is not available in this browser.');return}
@@ -1452,6 +1521,7 @@ const IC={home:'<rect x="3" y="3" width="7.5" height="9" rx="2"/><rect x="13.5" 
  rst:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
  hist:'<path d="M4 20.5h16"/><rect x="5.5" y="11" width="3" height="7" rx="1"/><rect x="10.5" y="6" width="3" height="12" rx="1"/><rect x="15.5" y="13" width="3" height="5" rx="1"/>',
  share:'<circle cx="8" cy="8.5" r="3.2"/><path d="M2.5 19c.9-3 2.9-4.4 5.5-4.4s4.6 1.4 5.5 4.4"/><circle cx="17" cy="9.5" r="2.6"/><path d="M15.2 14.9c2.8-.6 5.2.7 6.3 3.6"/>',
+ bell:'<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2H4.5z"/><path d="M10 21h4"/>',
  goal:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".9" fill="currentColor"/>'};
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
 const ini=n=>esc((String(n||'').trim()[0]||'?').toUpperCase());
@@ -1476,7 +1546,7 @@ function moreOpen(){SH={k:'more'};MO=false;const L=lockInfo(),it=(t,ic,l,sub,cls
  sheetOpen(`<h3>More</h3><div class="mlinks">${HM()&&!DDON()?'':it("sheetClose();tab('fc')",'fc','Forecast','Your savings over the next 12 months')}${it("sheetClose();tab('hist')",'hist','History','How each month compared')}${it("sheetClose();tab('sim')",'sim','Simulator','Try what-if scenarios')}${it("sheetClose();tab('log')",'log','Changes','Everything you have changed')}${it("sheetClose();tab('help')",'help','Instructions','How YAK works')}</div>
  <div class="shd">Your data</div><div class="mlinks">${it("sheetClose();doExport()",'exp','Export data',M.dirty?'<b style="color:var(--acc)">Unexported changes</b>'+(M.last?'. Last exported '+stamp(M.last):''):M.last?'Last exported '+stamp(M.last):'Not exported yet')}${it("sheetClose();openImport()",'imp','Import latest data',srcText())}${it("syMore()",'share','Household sharing',HH&&HH.sync?'Live'+(packBy(HH.pack)?' from '+esc(packBy(HH.pack)):''):S.sync&&!HM()?'Live sharing is on':HM()?'Join with an invite link':'Invite housemates or join a household')}${it("nameSheet()",'me','Your name',nm()?esc(nm()):'Not set')}${it("goalSheet()",'goal','Savings goal',+S.goal.a?gbp(+S.goal.a):'Not set')}${lockOK()?it(L?"lkMore()":"lkGo('set')",'lock','Passcode lock',L?'On':'Off'):''}</div>
  <div class="shd">Appearance</div><div class="segc s3" id="thseg">${[['light','Light'],['dark','Dark'],['auto','Match phone']].map(x=>`<button type="button" data-t="${x[0]}" class="${themeGet()===x[0]?'on':''}" onclick="themeSet('${x[0]}')">${x[1]}</button>`).join('')}</div>
- <div class="shd">App</div><div class="mlinks">${it("sheetClose();checkUpdate()",'upd','Check for updates',REL)}${it("sheetClose();reset()",'rst','Reset to starting values','Export first if you want a backup','dz')}</div>`)}
+ <div class="shd">App</div><div class="mlinks">${RMOK()||RMIOS()?it("rmSheet()",'bell','Bill reminders',rmOn()?'On, 7pm the evening before':RMIOS()?'Needs YAK on your Home Screen':'Off'):''}${it("sheetClose();checkUpdate()",'upd','Check for updates',REL)}${it("sheetClose();reset()",'rst','Reset to starting values','Export first if you want a backup','dz')}</div>`)}
 function lkGo(m){sheetClose();if(S.tab!=='dash'){S.tab='dash';PLAY=true;ENTER=true;save(true)}lkMode(m);setTimeout(()=>{const c=document.getElementById('lkc');if(c)c.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});const i=document.getElementById(m==='set'?'lk-p1':'lk-cur');if(i)setTimeout(()=>i.focus({preventScroll:true}),350)},60)}
 function lkMore(){sheetOpen(`<h3>Passcode lock is on</h3><p class="lbl" style="margin:0">YAK asks for your passcode when it opens and whenever you leave the app. It keeps casual access out but does not encrypt your data.</p><div class="mlinks" style="margin-top:12px"><button onclick="sheetClose();lockNow()">${ico('lock')}<span>Lock now</span></button><button onclick="lkGo('change')">${ico('upd')}<span>Change passcode</span></button><button class="dz" onclick="lkGo('off')">${ico('rst')}<span>Turn off</span></button></div>`)}
 lkHintSet=function(){lkGo('set')};
@@ -1537,6 +1607,7 @@ function todoItems(){const t=[];
  if(lockOK()&&!lockInfo()&&!S.hideLockHint&&!LK.mode&&!M.fresh&&!PEND)t.push({h:'Passcode lock is off',s:'Anyone who opens YAK here can see your figures.',b:`<button class="btn sm" onclick="lkGo('set')">Set one</button>`,x:'lkHintOff()'});
  if(HM()&&!(+S.me.salary)&&!M.fresh&&!PPK&&!PEND)t.unshift({h:'Add your income',s:'Until you do, YAK cannot work out what you can save, your forecast or scenarios.',b:`<button class="btn sm" onclick="incGo()">Add</button>`});
  if(DDON()){const o=ddOwed(calc()),g=ddGap(calc());if(o.ov>.005)t.unshift({h:'You owe '+esc(mgrN())+' '+gbp(o.ov),s:o.lines.join('. ')+'.',b:`<button class="btn sm" onclick="tab('pay')">Payments</button>`,bad:true});if(g<-.005)t.push({h:'Direct debit is '+gbp(-g)+' short',s:'Your share is '+gbp(calc().share)+' a month.',b:`<button class="btn sm" onclick="ddSheet()">Change</button>`})}
+ if(RMOK()&&!rmGet().on&&!rmGet().x&&rmPerm()==='default'&&!M.fresh&&!PPK&&!PEND&&!LEAVE&&(DDON()||S.home.bills.some(b=>+b.a&&dayOf(b.d))||(+S.home.rentTotal&&dayOf(S.home.rentDate))))t.push({h:'Get bill reminders',s:'A notification at 7pm the evening before '+(DDON()?'your direct debit leaves.':'a bill is due.'),b:`<button class="btn sm" onclick="rmTurnOn()">Turn on</button>`,x:'rmHide()'});
  if(!nm()&&!S.hideName&&!M.fresh&&!PPK&&!PEND&&!LEAVE)t.push({h:'Add your name',s:'So YAK can greet you'+(HM()?'':' and housemates can see who packs are from')+'.',b:`<button class="btn sm" onclick="nameSheet()">Add</button>`,x:'S.hideName=true;save(true);render()'});
  return t}
 function todoCard(){const t=todoItems();if(!t.length)return '';const bad=t.find(x=>x.bad);
@@ -1558,7 +1629,7 @@ function themeSet(t){try{if(t==='auto')localStorage.removeItem('yak.theme');else
  document.querySelectorAll('#thseg button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));render()}
 themeMeta();try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',themeMeta)}catch(e){}
 /* offline app and storage that the browser should keep */
-if('serviceWorker' in navigator&&location.protocol==='https:'&&/github\.io$/.test(location.hostname))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+if('serviceWorker' in navigator&&SWHOST)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persisted().then(p=>{if(!p)return navigator.storage.persist()}).catch(()=>{})}catch(e){}
 /* ---------- v4.2 Housemate direct debit: one payment to whoever manages the bills ----------
    S.dd = {on, a: monthly amount, d: day of the month, start:'YYYY-MM', m:{'YYYY-MM':{due, p, t}}} is the housemate's own data and is exported with it.
@@ -1663,6 +1734,7 @@ function render(){
  const ap=document.getElementById('app');if(ENTER&&!RM){ap.classList.remove('enter');void ap.offsetWidth;ap.classList.add('enter');clearTimeout(ENT);ENT=setTimeout(()=>ap.classList.remove('enter'),700)}ENTER=false;
  PLAY=false;
  if(JOINP){const h=JOINP;JOINP=null;setTimeout(()=>syJoin(h),0)}
+ if(OPENT&&!LOCKED){const t=OPENT;OPENT=null;setTimeout(()=>tab(t),0)}
 }
 let LW=document.documentElement.clientWidth;
 addEventListener('resize',()=>{const w=document.documentElement.clientWidth;if(w!==LW){LW=w;if(S.tab==='fc'||S.tab==='sim'||S.tab==='hist')render()}});
@@ -1670,6 +1742,7 @@ if(migrate())save(true);
 render();
 autoCheckUpdate();
 sySync(true);
+setTimeout(()=>rmSend(),4000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)autoCheckUpdate()});
 addEventListener('pageshow',e=>{if(e.persisted)autoCheckUpdate()});
 </script></body></html>
