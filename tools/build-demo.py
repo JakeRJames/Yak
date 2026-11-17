@@ -46,7 +46,7 @@ pack = {"app": "YAK", "type": "household-pack", "format": 1, "household": "demo-
         "home": {"people": 3, "rentTotal": 1950, "rentDate": "15th", "budget": 800,
                  "bills": [{k: v for k, v in b.items() if k != 'u'} for b in bills]}}
 
-seed = ('<script>window.YAKDEMO=1;try{["yak.lock","yak.household","yak.theme","yak.sync"].forEach(k=>localStorage.removeItem(k));'
+seed = ('<script>window.YAKDEMO=1;try{["yak.lock","yak.household","yak.theme","yak.sync","yak.remind"].forEach(k=>localStorage.removeItem(k));'
         'localStorage.setItem("budgit.v1",%s);localStorage.setItem("budgit.meta",%s)}catch(e){}</script>\n<script>\nconst VERSION'
         % (json.dumps(json.dumps(data)), json.dumps(json.dumps(meta))))
 
@@ -67,7 +67,7 @@ let UT='mgr',MGR=null;
 const hmOff=()=>{if(HM()){HH=null;saveHH();if(MGR)S.home=structuredClone(MGR)}S.me=structuredClone(BASE)};
 const hmOn=()=>{if(!HM())MGR=structuredClone(S.home);const j=structuredClone(PACK);j.exported=new Date(Date.now()-2*day).toISOString();HH={pack:j,imported:new Date().toISOString(),name:'yak-household-pack.json',diff:[]};saveHH();S.me=structuredClone(BASE);hhApply()};
 const ddDemo=m=>{const cur=ymk(new Date()),k1=ymk(kd(cur,0)),k2=ymk(kd(k1,0)),due=rd2(calc().share);S.dd={on:true,a:m==='short'?750:due,d:1,start:k2,m:{}};S.dd.m[k2]={due,p:m==='short'?750:due};S.dd.m[k1]={due,p:m==='owe'?500:m==='short'?750:due};S.dd.m[cur]={p:m==='ok'?due:m==='short'?750:0}};
-const clr=()=>{S.snap=structuredClone(SNAP0);S.fc=structuredClone(FC0);HSO=null;S.dd={on:false,a:0,d:1,start:null,m:{}};M.fresh=false;ASK=false;PEND=null;RST=false;NEWV='';MSG=null;PPK=null;LEAVE=false;LK={mode:null,err:''};TDO=false;sheetClose();delete S.hh;delete S.sync;SYS='';S.tab='dash';try{localStorage.removeItem('yak.lock')}catch(e){};UT==='hm'?hmOn():hmOff()};
+const clr=()=>{S.snap=structuredClone(SNAP0);S.fc=structuredClone(FC0);HSO=null;S.dd={on:false,a:0,d:1,start:null,m:{}};M.fresh=false;ASK=false;PEND=null;RST=false;NEWV='';MSG=null;PPK=null;LEAVE=false;LK={mode:null,err:''};TDO=false;sheetClose();delete S.hh;delete S.sync;SYS='';S.tab='dash';try{localStorage.removeItem('yak.lock');localStorage.removeItem('yak.remind')}catch(e){};UT==='hm'?hmOn():hmOff()};
 const imp=(older,loc)=>({d:structuredClone(S),name:'yak-data.json',device:'Mac',exported:new Date(Date.now()-(older?5:0)*day).toISOString(),fl:Date.now()-(older?5:0)*day,ll:Date.now()-(older?0:day),older,loc:!!loc,hh:HM()?HH.pack:null});
 const pk=seq=>{const j=structuredClone(PACK);j.seq=seq;j.exported=new Date().toISOString();if(seq>1){j.home.bills[0].a=155;j.home.bills.push({n:'Window cleaner',a:15,d:'1st',t:'split'})}return pkPend(j,'yak-household-pack.json')};
 const live=()=>({id:'d'.repeat(32),k:'A'.repeat(43),w:'e'.repeat(64),sig:homeSig(),at:new Date(Date.now()-36e5).toISOString(),inv:'x'}),hsy=()=>({id:'d'.repeat(32),k:'A'.repeat(43),at:new Date().toISOString()});
@@ -111,6 +111,9 @@ const T={
   ['Live sharing: on',()=>{S.tab='home';S.sync=live()}],
   ['Live sharing: sync paused',()=>{S.tab='home';S.sync=live();SYS='paused'}],
   ['Household sharing (More)',()=>{},()=>syMore()],
+  ['Bill reminders: turn on',()=>{},()=>rmSheet()],
+  ['Bill reminders: on (example messages)',()=>{S.sync=live();try{localStorage.setItem('yak.remind','{"on":true}')}catch(e){}},()=>rmSheet()],
+  ['Bill reminders on To do',()=>{TDO=true}],
   ['A housemate sends you a pack',()=>{PPK=pk(1)}],
   ...common]},
  hm:{note:'A housemate sees the house bills read only, live by invite link or from a pack file, and keeps their own figures.',items:[
@@ -136,6 +139,9 @@ const T={
   ['Live sharing: joined, bills live',()=>{S.tab='home';HH.sync=hsy()}],
   ['Live sharing: bills just updated',()=>{HH.sync=hsy();const P=pk(2);HH.pack=P.pack;HH.diff=P.diff.lines;hhApply();MSG='Household bills updated by Jake: '+P.diff.lines.join(' · ')+'.';S.tab='home'}],
   ['Live sharing: sync paused',()=>{S.tab='home';HH.sync=hsy();SYS='paused'}],
+  ['Bill reminders: turn on',()=>{HH.sync=hsy()},()=>rmSheet()],
+  ['Bill reminders: on (example messages)',()=>{HH.sync=hsy();try{localStorage.setItem('yak.remind','{"on":true}')}catch(e){}},()=>rmSheet()],
+  ['Bill reminders: direct debit payer',()=>{ddDemo('ok');try{localStorage.setItem('yak.remind','{"on":true}')}catch(e){}},()=>rmSheet()],
   ['A new pack arrives (changes shown)',()=>{PPK=pk(2)}],
   ['Leave housemate mode?',()=>{LEAVE=true}],
   ...common]}};

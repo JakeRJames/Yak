@@ -15,7 +15,7 @@ try {
   let ns = list().find(n => n.title === kv);
   if (!ns) { out.log += run(W + ' kv namespace create ' + kv); ns = list().find(n => n.title === kv || n.title.endsWith(kv)) }
   if (!ns) throw new Error('Could not create the storage namespace ' + kv);
-  let toml = `name = "${name}"\nmain = "worker.js"\ncompatibility_date = "2025-10-01"\nworkers_dev = true\n\n[[kv_namespaces]]\nbinding = "KV"\nid = "${ns.id}"\n`;
+  let toml = `name = "${name}"\nmain = "worker.js"\ncompatibility_date = "2025-10-01"\nworkers_dev = true\n\n[[kv_namespaces]]\nbinding = "KV"\nid = "${ns.id}"\n\n[triggers]\ncrons = ["0 18 * * *", "0 19 * * *"]\n`; // bill reminders at 7pm UK time (whichever of the two is 7pm)
   if (!live) {
     rmSync('worker/site', { recursive: true, force: true }); mkdirSync('worker/site');
     for (const f of ['index.html', 'sw.js', 'manifest.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']) copyFileSync(f, 'worker/site/' + f);
@@ -33,6 +33,8 @@ try {
     chk.store = (await go('PUT', tok, 'selftest_' + id)).status === 200;
     const g = await go('GET'); chk.read = g.status === 200 && (await g.json()).d === 'selftest_' + id;
     chk.refuseOthers = (await go('PUT', hx(32), 'x')).status === 403;
+    chk.reminderKey = /^[A-Za-z0-9_-]{87}$/.test((await (await fetch(out.url + '/p/key')).json()).k || ''); // also makes the key the first time
+    chk.refuseBadReminder = (await fetch(out.url + '/p', { method: 'POST', body: JSON.stringify({ sub: { endpoint: 'https://example.com/x', keys: {} } }) })).status === 400;
     if (!live) chk.app = (await (await fetch(out.url + '/')).text()).includes('<meta name="release"');
     out.selftest = chk; out.ok = Object.values(chk).every(Boolean);
   }
