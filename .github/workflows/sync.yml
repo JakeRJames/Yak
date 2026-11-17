@@ -1,0 +1,38 @@
+name: Deploy YAK sync
+on:
+  push:
+    branches: [dev, main]
+    paths: ['worker/**', '.github/workflows/sync.yml', 'index.html', 'sw.js', 'manifest.webmanifest']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: sync-${{ github.ref_name }}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deploy the Worker
+        run: node worker/deploy.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.YAK }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BRANCH: ${{ github.ref_name }}
+          AS_VARS: ${{ vars.CLOUDFLARE_API_TOKEN != '' && 'token ' || '' }}${{ vars.CLOUDFLARE_ACCOUNT_ID != '' && 'account' || '' }}
+          STATUS_FILE: ${{ runner.temp }}/status.json
+      - name: Record the result (deploy-status branch)
+        if: always()
+        run: |
+          set -e
+          cd "$RUNNER_TEMP"
+          git clone -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" st
+          cd st
+          git checkout -q deploy-status 2>/dev/null || { git checkout -q --orphan deploy-status; git rm -rfq . ; }
+          cp ../status.json "status-${{ github.ref_name }}.json" 2>/dev/null || echo '{"ok":false,"log":"deploy step did not run"}' > "status-${{ github.ref_name }}.json"
+          git add -A
+          git -c user.name="yak-bot" -c user.email="yak-bot@users.noreply.github.com" commit -qm "Deploy status for ${{ github.ref_name }}" || exit 0
+          git push -q origin deploy-status

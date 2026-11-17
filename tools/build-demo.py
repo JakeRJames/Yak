@@ -46,7 +46,7 @@ pack = {"app": "YAK", "type": "household-pack", "format": 1, "household": "demo-
         "home": {"people": 3, "rentTotal": 1950, "rentDate": "15th", "budget": 800,
                  "bills": [{k: v for k, v in b.items() if k != 'u'} for b in bills]}}
 
-seed = ('<script>try{["yak.lock","yak.household","yak.theme"].forEach(k=>localStorage.removeItem(k));'
+seed = ('<script>window.YAKDEMO=1;try{["yak.lock","yak.household","yak.theme","yak.sync"].forEach(k=>localStorage.removeItem(k));'
         'localStorage.setItem("budgit.v1",%s);localStorage.setItem("budgit.meta",%s)}catch(e){}</script>\n<script>\nconst VERSION'
         % (json.dumps(json.dumps(data)), json.dumps(json.dumps(meta))))
 
@@ -67,9 +67,10 @@ let UT='mgr',MGR=null;
 const hmOff=()=>{if(HM()){HH=null;saveHH();if(MGR)S.home=structuredClone(MGR)}S.me=structuredClone(BASE)};
 const hmOn=()=>{if(!HM())MGR=structuredClone(S.home);const j=structuredClone(PACK);j.exported=new Date(Date.now()-2*day).toISOString();HH={pack:j,imported:new Date().toISOString(),name:'yak-household-pack.json',diff:[]};saveHH();S.me=structuredClone(BASE);hhApply()};
 const ddDemo=m=>{const cur=ymk(new Date()),k1=ymk(kd(cur,0)),k2=ymk(kd(k1,0)),due=rd2(calc().share);S.dd={on:true,a:m==='short'?750:due,d:1,start:k2,m:{}};S.dd.m[k2]={due,p:m==='short'?750:due};S.dd.m[k1]={due,p:m==='owe'?500:m==='short'?750:due};S.dd.m[cur]={p:m==='ok'?due:m==='short'?750:0}};
-const clr=()=>{S.snap=structuredClone(SNAP0);S.fc=structuredClone(FC0);HSO=null;S.dd={on:false,a:0,d:1,start:null,m:{}};M.fresh=false;ASK=false;PEND=null;RST=false;NEWV='';MSG=null;PPK=null;LEAVE=false;LK={mode:null,err:''};TDO=false;sheetClose();delete S.hh;S.tab='dash';try{localStorage.removeItem('yak.lock')}catch(e){};UT==='hm'?hmOn():hmOff()};
+const clr=()=>{S.snap=structuredClone(SNAP0);S.fc=structuredClone(FC0);HSO=null;S.dd={on:false,a:0,d:1,start:null,m:{}};M.fresh=false;ASK=false;PEND=null;RST=false;NEWV='';MSG=null;PPK=null;LEAVE=false;LK={mode:null,err:''};TDO=false;sheetClose();delete S.hh;delete S.sync;SYS='';S.tab='dash';try{localStorage.removeItem('yak.lock')}catch(e){};UT==='hm'?hmOn():hmOff()};
 const imp=(older,loc)=>({d:structuredClone(S),name:'yak-data.json',device:'Mac',exported:new Date(Date.now()-(older?5:0)*day).toISOString(),fl:Date.now()-(older?5:0)*day,ll:Date.now()-(older?0:day),older,loc:!!loc,hh:HM()?HH.pack:null});
 const pk=seq=>{const j=structuredClone(PACK);j.seq=seq;j.exported=new Date().toISOString();if(seq>1){j.home.bills[0].a=155;j.home.bills.push({n:'Window cleaner',a:15,d:'1st',t:'split'})}return pkPend(j,'yak-household-pack.json')};
+const live=()=>({id:'d'.repeat(32),k:'A'.repeat(43),w:'e'.repeat(64),sig:homeSig(),at:new Date(Date.now()-36e5).toISOString(),inv:'x'}),hsy=()=>({id:'d'.repeat(32),k:'A'.repeat(43),at:new Date().toISOString()});
 const common=[
  ['Used YAK on another device since?',()=>{M.lastOpen=new Date(Date.now()-2*day).toISOString();ASK=true}],
  ['Import: file is older than this device',()=>{PEND=imp(true)}],
@@ -83,7 +84,7 @@ const common=[
  ['Set a passcode',()=>{LK={mode:'set',err:''}},()=>{const c=document.getElementById('lkc');if(c)c.scrollIntoView({block:'center'})}],
  ['Lock screen (passcode 1234)',async()=>{await lockSet('1234');LOCKED=true}]];
 const T={
- mgr:{note:'You manage the house bills and share packs with housemates.',items:[
+ mgr:{note:'You manage the house bills and share them with housemates, live or as pack files.',items:[
   ['Home with To do (4 reminders)',()=>{TDO=true}],
   ['House',()=>{S.tab='home'}],
   ['Edit a bill',()=>{S.tab='home'},()=>billSheet('home',1)],
@@ -106,9 +107,13 @@ const T={
   ['Payments: question not answered yet',()=>{S.tab='pay';S.me.fromAcct=null}],
   ['Bills collected separately (no Payments)',()=>{S.me.fromAcct='no'}],
   ['House bills changed since last pack',()=>{S.tab='home';S.hh={id:'demo',seq:2,last:new Date(Date.now()-3*day).toISOString(),sig:'old'}}],
+  ['Live sharing: invite housemates',()=>{S.tab='home'},()=>syInvite()],
+  ['Live sharing: on',()=>{S.tab='home';S.sync=live()}],
+  ['Live sharing: sync paused',()=>{S.tab='home';S.sync=live();SYS='paused'}],
+  ['Household sharing (More)',()=>{},()=>syMore()],
   ['A housemate sends you a pack',()=>{PPK=pk(1)}],
   ...common]},
- hm:{note:'A housemate gets a read-only pack of the house bills from the manager and keeps their own figures.',items:[
+ hm:{note:'A housemate sees the house bills read only, live by invite link or from a pack file, and keeps their own figures.',items:[
   ['Home with To do',()=>{TDO=true}],
   ['House (read only)',()=>{S.tab='home'}],
   ['Personal',()=>{S.tab='me'}],
@@ -126,6 +131,11 @@ const T={
   ['Direct debit: short of your share',()=>{ddDemo('short');S.tab='me'}],
   ['Direct debit: edit a month',()=>{ddDemo('owe');S.tab='pay'},()=>ddMonthSheet(ymk(kd(ymk(new Date()),0)))],
   ['Direct debit: all paid up',()=>{ddDemo('ok')}],
+  ['Live sharing: join with an invite link',()=>{},()=>joinSheet()],
+  ['Live sharing: joining a household',()=>{hmOff();PPK=pk(1);PPK.sync=hsy()}],
+  ['Live sharing: joined, bills live',()=>{S.tab='home';HH.sync=hsy()}],
+  ['Live sharing: bills just updated',()=>{HH.sync=hsy();const P=pk(2);HH.pack=P.pack;HH.diff=P.diff.lines;hhApply();MSG='Household bills updated by Jake: '+P.diff.lines.join(' · ')+'.';S.tab='home'}],
+  ['Live sharing: sync paused',()=>{S.tab='home';HH.sync=hsy();SYS='paused'}],
   ['A new pack arrives (changes shown)',()=>{PPK=pk(2)}],
   ['Leave housemate mode?',()=>{LEAVE=true}],
   ...common]}};
@@ -145,7 +155,10 @@ h1 = '<h1 onclick="tab(\'dash\')">YAK<span>.</span></h1>'
 assert s.count(h1) == 1
 s = s.replace(h1, h1 + '<span class="demopill" title="This is a demo with sample figures, not your live YAK">Demo</span>')
 s = s.replace('</style></head>', 'header .demopill{align-self:center;margin-left:-14px;font:800 11px var(--f);letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--dot);border-radius:99px;padding:4px 10px;line-height:1.2}@media(max-width:640px){header .demopill{margin-left:0}}</style></head>', 1)
-s = s.replace('<title>YAK v%s</title>' % ver, '<title>YAK demo (v%s)</title>' % ver)
+import re
+rel = re.search(r'<meta name="release" content="([^"]+)"', s)
+s, n = re.subn(r'<title>[^<]*</title>', '<title>YAK demo (%s)</title>' % (rel.group(1) if rel else 'v' + ver), s, count=1)
+assert n == 1
 os.makedirs(OUT, exist_ok=True)
 open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8').write(s)
 for f in ('apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest'):
