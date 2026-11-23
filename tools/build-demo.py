@@ -26,7 +26,7 @@ bills = [{"n": "Gas & Electricity", "a": 140, "d": "8th", "t": "split", "u": now
 data = {"tab": "dash", "fc": {"2027-01": [{"n": "Credit card", "a": 600, "u": now}]}, "fcStart": 4200, "goal": {"a": 0},
         "home": {"people": 3, "budget": 800, "months": 0, "rentTotal": 1950, "rentDate": "15th", "bills": bills},
         "me": {"salary": 3400, "spend": 450, "fromAcct": "yes",
-               "bills": [{"n": n, "a": a, "u": now} for n, a in [("Phone Bill (Combined)", 32), ("Apple Music", 11), ("Gym Membership", 35), ("Car", 260), ("Car Insurance", 75), ("Fuel", 150), ("Personal Trainer", 160), ("iCloud Storage", 3)]]},
+               "bills": [dict({"n": n, "a": a, "u": now}, **({"d": d} if d else {})) for n, a, d in [("Phone Bill (Combined)", 32, "12th"), ("Apple Music", 11, "3rd"), ("Gym Membership", 35, "1st"), ("Car", 260, "20th"), ("Car Insurance", 75, "26th"), ("Fuel", 150, ""), ("Personal Trainer", 160, "30th"), ("iCloud Storage", 3, "18th")]]},
         "lastChange": old, "reviewed": old, "upd": {}, "log": [],
         "pay": {"start": "2026-10", "mates": [{"n": "Sam", "d": 1}, {"n": "Alex", "d": 1}],
                 "m": {"2026-10": {"due": 779.17, "n": 2, "p": [779.17, 779.17]}, "2026-11": {"p": [779.17, 0]}}}}
@@ -92,6 +92,9 @@ const T={
   ['Rent',()=>{S.tab='home'},()=>rentSheet()],
   ['Personal',()=>{S.tab='me'}],
   ['Payments',()=>{S.tab='pay'}],
+  ['Payments: a bill leaving today',()=>{S.tab='pay';S.home.bills[1].d=ord(new Date().getDate())}],
+  ['Payments: all bills paid this month',()=>{S.tab='pay';if(new Date().getDate()<2)return;[...S.home.bills,...S.me.bills].forEach(b=>{if(b.d)b.d=ord(1)});S.home.rentDate=ord(1)}],
+  ['Payments: no bill dates yet',()=>{S.tab='pay';[...S.home.bills,...S.me.bills].forEach(b=>{b.d=''});S.home.rentDate=''}],
   ['Forecast',()=>{S.tab='fc'}],
   ['History',()=>{S.tab='hist'}],
   ['History: a month opened',()=>{S.tab='hist';HSO=ymk(new Date())}],
