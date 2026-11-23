@@ -110,7 +110,8 @@ select{padding-right:32px;text-align-last:center;cursor:pointer;background-image
 .pd{width:128px;flex:none}.pd input{padding:0 36px;height:38px}
 /* this month's bills */
 .obar{display:flex;height:8px;border-radius:99px;background:color-mix(in srgb,var(--bg) 30%,transparent);overflow:hidden;margin:12px 0 2px}.obar i{background:var(--bg)}.obar u{background:var(--bg);opacity:.5}
-.ost{margin-top:10px}.ost>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid color-mix(in srgb,var(--bg) 25%,transparent)}.ost span{min-width:0}.ost small{display:block;font-size:13px;font-weight:700;opacity:1}.ost em{display:block;font-style:normal;font-size:12.5px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ost b{font-size:18px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ost{margin-top:10px}.ost>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid color-mix(in srgb,var(--bg) 25%,transparent)}.ost span{min-width:0}.ost small{display:block;font-size:13px;font-weight:700;opacity:1}.ost em{display:block;font-style:normal;font-size:12.5px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ost b{font-size:18px;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}.ost b i{display:block;font-style:normal;font-size:12.5px;font-weight:600;opacity:.85}
+.li.pers .ic{background:var(--okbg);color:var(--okink)}.pseg{margin:0 0 14px}
 .li.paid .tx b,.li.paid .am{color:var(--mute);font-weight:600}.li .tx small.now{color:var(--acc);font-weight:700}
 .ask{border:2px solid var(--acc);margin-bottom:16px}
 .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:2px}.bar .btn{border:1.5px solid transparent}.bar .btn.out{border-color:var(--acc)}
@@ -798,7 +799,12 @@ function payAll(k){const c=calc(),ss=Array.from({length:nOf(k,c)},(_,i)=>pst(k,i
  ss.forEach((s,i)=>{if(s.st==='none')return;if(all)ch=paySet(k,i,0)||ch;else if(s.st!=='paid')ch=paySet(k,i,s.due)||ch});if(ch)save();render()}
 function payBack(){const k=ymk(kd(S.pay.start||ymk(new Date()),0));S.pay.start=k;logc({k:'add',l:'Added a month to Payments',x:pml(k)});save();render()}
 function payDrop(){const ms=payMonths();if(ms.length<2)return;const k=ms[ms.length-1];delete S.pay.m[k];S.pay.start=ms[ms.length-2];logc({k:'del',l:'Removed a month from Payments',x:pml(k)});save();render()}
-function payPage(c,N){return outCard(c)+(N||S.me.fromAcct===null?'<h2>Housemate payments</h2>':'')+payPageMates(c,N)}
+let PSEG='bills';
+function pseg(v){if(PSEG===v)return;PSEG=v;ENTER=true;render();scrollTo(0,0)}
+function payPage(c,N){const m=N&&S.me.fromAcct!==null,cur=m?PSEG:'bills';
+ const seg=m?`<div class="segc pseg" role="tablist">${[['bills','Bills'],['mates','Housemates']].map(x=>`<button type="button" role="tab" class="${cur===x[0]?'on':''}" aria-selected="${cur===x[0]}" onclick="pseg('${x[0]}')">${x[1]}</button>`).join('')}</div>`:'';
+ if(!m&&S.me.fromAcct===null)return outCard(c)+'<h2>Housemate payments</h2>'+payPageMates(c,N);
+ return seg+(cur==='mates'?payPageMates(c,N):outCard(c))}
 function payPageMates(c,N){
  if(!N)return `<div class="card ask"><b>No housemates yet</b><p class="lbl">Payments tracks what the other people in your household owe you each month. Set People in household to 2 or more on the House tab and they will appear here.</p><button class="btn" onclick="tab('home')">Go to House</button></div>`;
  if(S.me.fromAcct===null)return `<div class="card ask"><b>Do all the household bills come out of your account?</b><p class="lbl">Payments tracks what your housemates pay you back. Say yes if you pay the bills and the others pay you back. Say no if they are collected separately: Payments is then not needed and is hidden.</p><div class="bar"><button class="btn" onclick="ask('yes')">Yes, from my account</button><button class="btn" onclick="ask('no')">No, collected separately</button></div></div>`;
@@ -825,8 +831,9 @@ function payPageMates(c,N){
   <div class="hmr"><span><b>Payment day</b><small class="ut">Day of each month they pay by</small></span><span class="mny st pd"><input class="num" type="number" inputmode="numeric" min="1" max="31" data-k="pay.mates.${i}.d" value="${m.d}" onchange="set('pay.mates.${i}.d',this.value,1)" aria-label="Payment day of the month for ${esc(mn(i))}"><button type="button" class="sb l" onclick="stp('pay.mates.${i}.d',-1)" aria-label="Earlier payment day for ${esc(mn(i))}"${m.d<=1?' disabled':''}>−</button><button type="button" class="sb r" onclick="stp('pay.mates.${i}.d',1)" aria-label="Later payment day for ${esc(mn(i))}"${m.d>=31?' disabled':''}>+</button></span></div>
   <small>Paid ${gbp(t.paid)} of ${gbp(t.due)} owed since ${pml(first)}${i>=now?'. No longer in the household':''}</small></div>`}).join('');
  const kc=(l,v,sub,cls)=>`<div class="card ${cls||''}"><div class="lbl">${l}</div><div class="big">${v}</div><small class="ut">${sub}</small></div>`;
- return `<p class="lbl" style="max-width:680px">Track what your housemates pay you each month. Each housemate owes the individual share from the House tab, currently <b>${gbp(rd2(c.share))}</b> a month. Tick Paid in full or type the amount received. Once a month is over it keeps the share that applied at the time.</p>
- <div class="grid">${kc('Outstanding for '+mname,gbp(cOut),'of '+gbp(cTot)+' owed this month',cSt==='over'?'warn':'hero')}${kc('Received for '+mname,gbp(cPaid),cSt==='paid'?'Everyone has paid in full':cSt==='none'?'Nothing owed this month':gbp(cOut)+' still to come')}${kc('Owed to you in total',gbp(allOut),'Across '+ms.length+(ms.length===1?' month':' months'))}${kc('Overdue',gbp(allOv),allOv>.005?'Past the payment day and not paid in full':'Nothing is overdue',allOv>.005?'warn':'')}</div>
+ const ovN=T.map((t,i)=>t.ov>.005?esc(mn(i)):'').filter(Boolean);
+ return `<div class="card ${allOv>.005?'warn':allOut>.005?'hero':'good'}"><div class="lbl">${allOut>.005?'Owed to you':'All paid up'}</div><div class="big">${gbp(allOut)}</div><small>${allOv>.005?gbp(allOv)+' overdue · '+ovN.join(', '):allOut>.005?'Nothing overdue':'Everyone is up to date'}</small></div>
+ <div class="glance2" style="margin-top:10px">${kc('Received for '+mname,gbp(cPaid),'of '+gbp(cTot)+(cSt==='paid'?', all paid':''))}${kc('Still to come',gbp(cOut),cSt==='none'?'Nothing owed this month':'for '+mname,cSt==='over'?'warn':'')}</div>
  <h2>Housemates</h2><div ${GG}>${mates}</div>
  <h2>Month by month</h2><div ${GG}>${cards}</div>
  <p style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><button class="btn out" onclick="payBack()">Add an earlier month</button><small>Earlier months start from today's share of ${gbp(rd2(c.share))}.</small></p>`}
@@ -844,17 +851,18 @@ function outCard(c){const o=outList(c),D=o.filter(x=>x.day),U=o.filter(x=>!x.day
  const tot=rd2(sum(D,x=>x.a)),paid=rd2(sum(P,x=>x.a)),tA=rd2(sum(T,x=>x.a)),left=rd2(tot-paid-tA),pc=x=>tot>0?Math.min(100,x/tot*100):0;
  let nx=null;if(F.length){const g=F.filter(x=>x.day===F[0].day);nx={g,dt:F[0].dt}}
  else if(D.length){const n1=new Date(now.getFullYear(),now.getMonth()+1,1),L2=new Date(n1.getFullYear(),n1.getMonth()+1,0).getDate(),m=Math.min(...D.map(x=>x.dy)),g=D.filter(x=>x.dy===m);nx={g,dt:new Date(n1.getFullYear(),n1.getMonth(),Math.min(m,L2))}}
- const st=(l,v,e)=>`<div><span><small>${l}</small>${e?`<em>${e}</em>`:''}</span><b>${v}</b></div>`;
+ const st=(l,e,v,w)=>`<div><span><small>${l}</small><em>${e}</em></span><b>${v}${w?`<i>${w}</i>`:''}</b></div>`;
  const done=D.length&&!T.length&&!F.length;
- const hero=D.length?`<div class="card ${done?'good':'hero'}"><div class="lbl">${done?'All paid for '+mname:'Left to pay in '+mname}</div><div class="big">${gbp(left)}</div><small>${T.length?'After today\'s '+gbp(tA)+'. ':''}${gbp(tot)} due from your account this month</small>
+ const hero=D.length?`<div class="card ${done?'good':'hero'}"><div class="lbl">${done?'All paid for '+mname:'Left to pay in '+mname}</div><div class="big">${gbp(left)}</div><small>of ${gbp(tot)} this month</small>
  ${done?'':`<div class="obar" role="img" aria-label="${gbp(paid)} of ${gbp(tot)} paid"><i style="width:${pc(paid)}%"></i><u style="width:${pc(tA)}%"></u></div>`}
- <div class="ost">${st('Paid so far',gbp(paid),P.length+' of '+D.length+' payments')}${T.length?st('Leaving today',gbp(tA),esc(onames(T))):''}${nx?st('Next payment',gbp(sum(nx.g,x=>x.a)),esc(onames(nx.g))+', '+whenTxt(nx.dt)):''}</div></div>`
+ <div class="ost">${st('Paid so far',P.length+' of '+D.length+' payments',gbp(paid))}${T.length?st('Leaving today',esc(onames(T)),gbp(tA)):''}${nx?st('Next payment',esc(onames(nx.g)),gbp(sum(nx.g,x=>x.a)),whenTxt(nx.dt)):''}</div></div>`
   :`<div class="card ask"><b>Add dates to see this month's bills</b><p class="lbl">Give each bill the day it is taken and YAK tracks what has left your account and what is still to come.</p></div>`;
  const tap=x=>x.w==='rent'?'rentSheet()':`billSheet('${x.w}',${x.i})`;
- const row=x=>`<button class="li${x.st==='paid'?' paid':''}" onclick="${tap(x)}"><span class="ic">${x.w==='rent'?ico('house'):ini(x.n)}</span><span class="tx"><b>${esc(x.n)}</b>${x.st==='today'?'<small class="now">Leaving today</small>':`<small>${x.st==='paid'?'Paid '+sdm(x.dt):x.st==='due'?'Due '+fdd(x.dt):'No date taken'}${x.w==='me'?' · personal':''}</small>`}</span><span class="am">${gbp(x.a)}</span><span class="chev"></span></button>`;
- const fold=D.length?`<details class="fold"><summary>Every bill this month<small style="font-weight:500;margin-left:auto;margin-right:12px">${P.length} paid, ${T.length+F.length} to come</small></summary><div class="list" style="border:0;border-top:1px solid var(--line);border-radius:0">${D.map(row).join('')}</div></details>`:'';
- const un=U.length?`<p style="margin-top:10px"><small>${esc(onames(U))} ${U.length===1?'has':'have'} no date taken, so ${U.length===1?'it is':'they are'} not counted (${gbp(sum(U,x=>x.a))} a month). Tap a bill on House or Personal to add a date.</small></p>`:'';
- return `<h2 style="margin-top:0">This month's bills</h2>${hero}${fold}${un}`}
+ const row=x=>`<button class="li${x.st==='paid'||x.st==='nod'?' paid':''}${x.w==='me'?' pers':''}" onclick="${tap(x)}"><span class="ic">${x.w==='rent'?ico('house'):ini(x.n)}</span><span class="tx"><b>${esc(x.n)}</b>${x.st==='today'?'<small class="now">Leaving today</small>':`<small>${x.st==='paid'?'Paid '+sdm(x.dt):x.st==='due'?'Due '+fdd(x.dt):'No date, tap to add one'}</small>`}</span><span class="am">${gbp(x.a)}</span><span class="chev"></span></button>`;
+ const up=[...T,...F,...U];
+ const list=up.length?`<h2>${F.length||T.length?'Still to come':'No date yet'}</h2><div class="list">${up.map(row).join('')}</div>`:'';
+ const fold=P.length?`<details class="fold"><summary>Paid this month<small style="font-weight:500;margin-left:auto;margin-right:12px">${P.length} · ${gbp(paid)}</small></summary><div class="list" style="border:0;border-top:1px solid var(--line);border-radius:0">${P.slice().reverse().map(row).join('')}</div></details>`:'';
+ return hero+list+fold}
 /* ---------- Line graph: savings balance month by month ---------- */
 let FCG=null;
 function shortM(k){return new Date(+k.slice(0,4),+k.slice(5)-1,1).toLocaleString('en-GB',{month:'short'})+' '+k.slice(2,4)}
