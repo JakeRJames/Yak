@@ -85,6 +85,7 @@ const common=[
  ['Lock screen (passcode 1234)',async()=>{await lockSet('1234');LOCKED=true}]];
 const T={
  mgr:{note:'You manage the house bills and share them with housemates, live or as pack files.',items:[
+  ['Welcome tour (first time)',()=>{M.fresh=true},()=>tourStart()],
   ['Home with To do (4 reminders)',()=>{TDO=true}],
   ['House',()=>{S.tab='home'}],
   ['Edit a bill',()=>{S.tab='home'},()=>billSheet('home',1)],
@@ -121,6 +122,7 @@ const T={
   ['A housemate sends you a pack',()=>{PPK=pk(1)}],
   ...common]},
  hm:{note:'A housemate sees the house bills read only, live by invite link or from a pack file, and keeps their own figures.',items:[
+  ['Welcome tour (after joining)',()=>{},()=>tourStart()],
   ['Home with To do',()=>{TDO=true}],
   ['House (read only)',()=>{S.tab='home'}],
   ['Personal',()=>{S.tab='me'}],
