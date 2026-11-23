@@ -1,7 +1,7 @@
 // YAK offline support and bill reminders (restored in Ethereal 1.4.0 after 1.3.0 shipped this file empty).
 // The page is fetched fresh whenever there is a connection,
 // and the last copy is used when there is not. Saved data lives in the browser, not here.
-const CACHE = 'yak-v5.4.0';
+const CACHE = 'yak-v5.5.0';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {

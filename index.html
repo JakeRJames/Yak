@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK – Ethereal 1.4.0</title>
+<title>YAK – Ethereal 1.5.0</title>
 <meta name="version" content="5.4.0">
-<meta name="release" content="Ethereal 1.4.0">
+<meta name="release" content="Ethereal 1.5.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624"><script>try{var t=localStorage.getItem("yak.theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -288,6 +288,12 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
 .ring .rc{font-size:11.5px;line-height:1.3;color:#b8b5ad;text-align:center;white-space:nowrap}
 .ring.add .rt{stroke:rgba(255,255,255,.2)}.ring .plus{width:24px;height:24px;background:linear-gradient(var(--dot),var(--dot)) center/24px 3px no-repeat,linear-gradient(var(--dot),var(--dot)) center/3px 24px no-repeat;border-radius:2px}.ring.add .rc{color:#d6d3ca;font-weight:600}
 .ring:active{transform:scale(.96)}
+/* this month strip */
+.mstrip{display:block;width:100%;text-align:left;margin:0 0 16px;padding:13px 14px}
+.mstrip .ms1{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.mstrip .ms1 b{font-size:20px;letter-spacing:-.3px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mstrip .obar{background:var(--line);margin:10px 0 8px}.mstrip .obar i{background:var(--acc)}.mstrip .obar u{background:var(--acc);opacity:.45}
+.mstrip>small{display:block;font-size:13px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mstrip>small b{color:var(--ink,inherit);font-weight:700}
+.mstrip.good>small{margin-top:6px}
 /* to do */
 .todo{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
 .todo>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;font-weight:700;-webkit-tap-highlight-color:transparent}
@@ -356,9 +362,10 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 <div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-label="Welcome tour"></div>
 <input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)">
 <script>
-const VERSION='5.4.0',REL='Ethereal 1.4.0'; // VERSION is the number YAK uses to check for updates and stamp files. REL is the release name people see: dev builds are Ethereal 0.1.0, main starts at Ethereal 1.0.0, then 1.0.1 for fixes and 1.1.0 for features.
+const VERSION='5.5.0',REL='Ethereal 1.5.0'; // VERSION is the number YAK uses to check for updates and stamp files. REL is the release name people see: dev builds are Ethereal 0.1.0, main starts at Ethereal 1.0.0, then 1.0.1 for fixes and 1.1.0 for features.
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first, with at most three short bullet points (n).
 const CHANGELOG=[
+{v:'5.5.0',r:'Ethereal 1.5.0',d:'23 Nov 2026',n:['New This month strip on Home: what is left to pay and the next bill leaving','At a glance now only shows what the chart below does not, so no figure appears twice','House bills and Personal bills are called the same thing everywhere']},
 {v:'5.4.0',r:'Ethereal 1.4.0',d:'23 Nov 2026',n:['Fixed offline use and bill reminder notifications, which stopped working in 1.3.0','New Test notifications in More sends one to this phone straight away']},
 {v:'5.3.0',r:'Ethereal 1.3.0',d:'23 Nov 2026',n:['A short welcome tour the first time YAK opens, highlighting each tab as it goes','Housemates get their own version after joining','Take the tour again any time from More']},
 {v:'5.2.0',r:'Ethereal 1.2.0',d:'23 Nov 2026',n:['Payments shows this month\'s bills: total due, paid so far, left to pay and the next payment','Updates by itself from each bill\'s date taken, with a Leaving today note on the day','Personal bills can now have a date taken too']},
@@ -862,13 +869,16 @@ function outList(c){const h=S.home,p=c.p,full=c.yes,now=new Date(),k=ymk(now),L=
  o.forEach(x=>{x.a=rd2(x.a);x.dy=dayOf(x.d);x.day=x.dy?Math.min(x.dy,L):null;x.dt=x.day?kd(k,x.day):null;x.st=!x.day?'nod':x.day<td?'paid':x.day===td?'today':'due'});
  return o.sort((a,b)=>(a.day||99)-(b.day||99))}
 const onames=a=>a.length===1?a[0].n:a.length===2?a[0].n+' and '+a[1].n:a[0].n+' and '+(a.length-1)+' more';
-function outCard(c){const o=outList(c),D=o.filter(x=>x.day),U=o.filter(x=>!x.day);if(!o.length)return '';
+/* outSum (Ethereal 1.5): this month's sums, shared by the Payments tab and the This month strip on Home */
+function outSum(c){const o=outList(c),D=o.filter(x=>x.day),U=o.filter(x=>!x.day);
  const now=new Date(),mname=now.toLocaleString('en-GB',{month:'long'}),P=D.filter(x=>x.st==='paid'),T=D.filter(x=>x.st==='today'),F=D.filter(x=>x.st==='due');
  const tot=rd2(sum(D,x=>x.a)),paid=rd2(sum(P,x=>x.a)),tA=rd2(sum(T,x=>x.a)),left=rd2(tot-paid-tA),pc=x=>tot>0?Math.min(100,x/tot*100):0;
  let nx=null;if(F.length){const g=F.filter(x=>x.day===F[0].day);nx={g,dt:F[0].dt}}
  else if(D.length){const n1=new Date(now.getFullYear(),now.getMonth()+1,1),L2=new Date(n1.getFullYear(),n1.getMonth()+1,0).getDate(),m=Math.min(...D.map(x=>x.dy)),g=D.filter(x=>x.dy===m);nx={g,dt:new Date(n1.getFullYear(),n1.getMonth(),Math.min(m,L2))}}
- const st=(l,e,v,w)=>`<div><span><small>${l}</small><em>${e}</em></span><b>${v}${w?`<i>${w}</i>`:''}</b></div>`;
  const done=D.length&&!T.length&&!F.length;
+ return {o,D,U,P,T,F,mname,tot,paid,tA,left,pc,nx,done}}
+function outCard(c){const {o,D,U,P,T,F,mname,tot,paid,tA,left,pc,nx,done}=outSum(c);if(!o.length)return '';
+ const st=(l,e,v,w)=>`<div><span><small>${l}</small><em>${e}</em></span><b>${v}${w?`<i>${w}</i>`:''}</b></div>`;
  const hero=D.length?`<div class="card ${done?'good':'hero'}"><div class="lbl">${done?'All paid for '+mname:'Left to pay in '+mname}</div><div class="big">${gbp(left)}</div><small>of ${gbp(tot)} this month</small>
  ${done?'':`<div class="obar" role="img" aria-label="${gbp(paid)} of ${gbp(tot)} paid"><i style="width:${pc(paid)}%"></i><u style="width:${pc(tA)}%"></u></div>`}
  <div class="ost">${st('Paid so far',P.length+' of '+D.length+' payments',gbp(paid))}${T.length?st('Leaving today',esc(onames(T)),gbp(tA)):''}${nx?st('Next payment',esc(onames(nx.g)),gbp(sum(nx.g,x=>x.a)),whenTxt(nx.dt)):''}</div></div>`
@@ -1074,10 +1084,15 @@ function payTile(c){if(c.p<2||S.me.fromAcct!=='yes')return '';
  if(ov>.005)return card('Payments overdue',gbp(ov),'warn gpay');
  if(out>.005)return card('Payments · '+gbp(out)+' still to come','Nothing overdue','gpay');
  return `<div class="card good gpay"><div class="lbl">Payments</div><div class="big">Payments up to date</div></div>`}
-function dash(c){
- const sh=c.p>1?tcard('Individual share each month',gbp(c.share),'home'):tcard('House bills each month',gbp(c.share),'home');
- return heroBox(c)+todoCard()+`<h2>At a glance</h2>
- <div class="glance2">${payTile(c)}${sh}${tcard('Personal deductions each month',gbp(c.mine),'me')}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?tcard('Household bills paid from','Not set yet','me'):'')}</div>
+/* This month strip (Ethereal 1.5): left to pay and the next bill leaving, from bill dates. Tap opens Payments. Hidden until a bill has a date. */
+function monthStrip(c){const m=outSum(c);if(!m.D.length)return '';
+ const nt=m.T.length?'Leaving today: <b>'+esc(onames(m.T))+'</b> · '+gbp(m.tA):m.nx?'Next: <b>'+esc(onames(m.nx.g))+'</b> · '+whenTxt(m.nx.dt)+' · '+gbp(sum(m.nx.g,x=>x.a)):'';
+ return `<h2>This month</h2><button class="card tapc mstrip${m.done?' good':''}" onclick="tab('pay')"><div class="ms1"><span class="lbl">${m.done?'All paid for '+m.mname:'Left to pay in '+m.mname}</span><b>${gbp(m.left)}</b></div>${m.done?'':`<div class="obar" role="img" aria-label="${gbp(m.paid)} of ${gbp(m.tot)} paid"><i style="width:${m.pc(m.paid)}%"></i><u style="width:${m.pc(m.tA)}%"></u></div>`}<small>${nt}</small></button>`}
+/* House bills and Personal bills tiles only show on Home while the chart is empty (no income yet), as the chart key shows them otherwise */
+const shTile=c=>tcard(c.p>1?'House bills (your share)':'House bills',gbp(c.share),'home');
+const glanceBox=t=>t.trim()?`<h2>At a glance</h2><div class="glance2">${t}</div>`:'';
+function dash(c){const inc=+S.me.salary>0;
+ return heroBox(c)+todoCard()+monthStrip(c)+glanceBox(`${payTile(c)}${inc?'':shTile(c)+tcard('Personal bills',gbp(c.mine),'me')}${c.yes?card('Owed back to you each month',gbp(c.back)):(S.me.fromAcct===null?tcard('Household bills paid from','Not set yet','me'):'')}`)+`
  <h2>Where your income goes</h2>${donutCard(c)}
  <div style="margin-top:16px" id="lkc">${LK.mode?lockCard():''}</div>`}
 /* ---------- v4.3 Monthly snapshots: S.snap = {'YYYY-MM': {i,h,b,s,v,d,hb,pb,fd,f}}
@@ -1218,7 +1233,7 @@ function dueTable(c,L){
 function hmDash(c){const go=(t,h)=>`<button class="cta" onclick="tab('${t}')">${h}</button>`,L=dueList(c),nx=L.find(x=>x.next);
  return heroBox(c)+todoCard()+`${packCard()}
  <h2>At a glance</h2>
- <div class="glance2">${DDON()?ddTile(c):''}${DDON()?(()=>{const n=ddNext();return `<button class="card tapc" onclick="tab('pay')"><div class="lbl">Next direct debit</div><div class="big">${whenTxt(n)}</div><small>${gbp(+S.dd.a||0)} to ${esc(mgrN())}</small></button>`})():`<button class="card tapc" onclick="tab('home')"><div class="lbl">Next bill due</div><div class="big">${nx?esc(nx.n):'No dates set'}</div>${nx?`<small>${whenTxt(nx.next)}, your share ${gbp(nx.mine)}</small>`:''}</button>`}${tcard('My share each month',gbp(c.share),'home')}${tcard('Personal deductions each month',gbp(c.mine),'me')}</div>
+ <div class="glance2">${DDON()?ddTile(c):''}${DDON()?(()=>{const n=ddNext();return `<button class="card tapc" onclick="tab('pay')"><div class="lbl">Next direct debit</div><div class="big">${whenTxt(n)}</div><small>${gbp(+S.dd.a||0)} to ${esc(mgrN())}</small></button>`})():`<button class="card tapc" onclick="tab('home')"><div class="lbl">Next bill due</div><div class="big">${nx?esc(nx.n):'No dates set'}</div>${nx?`<small>${whenTxt(nx.next)}, your share ${gbp(nx.mine)}</small>`:''}</button>`}${+S.me.salary>0?'':shTile(c)+tcard('Personal bills',gbp(c.mine),'me')}</div>
  ${DDON()?'':`<h2>Household bills</h2>${dueTable(c,L)}`}
  <h2>Where your income goes</h2>${donutCard(c)}
  <div style="margin-top:16px" id="lkc">${LK.mode?lockCard():''}</div>`}
@@ -1683,7 +1698,7 @@ function billList(w,c){const ro=HM()&&w==='home',B=S[w].bills,h=S.home;
   sub=w==='home'?[b.t==='each'?'Each person pays':c.p>1?'Split '+c.p+' ways':'Split between everyone',b.d?'taken '+esc(b.d):''].filter(Boolean).join(', '):b.d?'Taken '+esc(b.d):'Updated '+dd(b.u);
   return `<button class="li${a?'':' zero'}" onclick="billSheet('${w}',${i})"><span class="ic">${ini(b.n)}</span><span class="tx"><b>${esc(b.n)}</b><small>${sub}</small></span><span class="am">${gbp(a)}${w==='home'&&c.p>1?`<small>${gbp(each)} each</small>`:''}</span><span class="chev"></span></button>`}).join('');
  const rent=w==='home'?`<button class="li rent" onclick="rentSheet()"><span class="ic">${ico('house')}</span><span class="tx"><b>Rent</b><small>${c.p>1?'Split '+c.p+' ways':'Your rent'}${h.rentDate?', taken '+esc(h.rentDate):''}</small></span><span class="am">${gbp(+h.rentTotal||0)}${c.p>1?`<small>${gbp((+h.rentTotal||0)/c.p)} each</small>`:''}</span><span class="chev"></span></button>`:'';
- const tot=w==='home'?`<div class="li tot"><span class="tx"><b>Your share each month</b></span><span class="am">${gbp(c.share)}</span></div>`:`<div class="li tot"><span class="tx"><b>Personal deductions</b></span><span class="am">${gbp(c.mine)}</span></div>`;
+ const tot=w==='home'?`<div class="li tot"><span class="tx"><b>Your share each month</b></span><span class="am">${gbp(c.share)}</span></div>`:`<div class="li tot"><span class="tx"><b>Personal bills each month</b></span><span class="am">${gbp(c.mine)}</span></div>`;
  return `<div class="list">${rows}${rent}${tot}</div>${ro?'':`<button class="addrow" onclick="billSheet('${w}',-1)">+ ${w==='home'?'Add a bill':'Add an expense'}</button>`}`}
 function billSheet(w,i){if(HM()&&w==='home')return;const isNew=i<0,b=isNew?{n:'',a:0,d:'',t:'split'}:S[w].bills[i];if(!b)return;SH={k:'bill',w,i,t:b.t==='each'?'each':'split'};
  sheetOpen(`<h3>${isNew?(w==='home'?'New house bill':'New personal expense'):esc(b.n)}</h3><p class="lbl" style="margin:0">${w==='home'?'A household bill, shared as you choose below.':'Comes out of your own income each month.'}</p>
