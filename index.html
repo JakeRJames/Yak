@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK – Ethereal 1.3.0</title>
-<meta name="version" content="5.3.0">
-<meta name="release" content="Ethereal 1.3.0">
+<title>YAK – Ethereal 1.4.0</title>
+<meta name="version" content="5.4.0">
+<meta name="release" content="Ethereal 1.4.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624"><script>try{var t=localStorage.getItem("yak.theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -356,9 +356,10 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 <div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-label="Welcome tour"></div>
 <input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)">
 <script>
-const VERSION='5.3.0',REL='Ethereal 1.3.0'; // VERSION is the number YAK uses to check for updates and stamp files. REL is the release name people see: dev builds are Ethereal 0.1.0, main starts at Ethereal 1.0.0, then 1.0.1 for fixes and 1.1.0 for features.
+const VERSION='5.4.0',REL='Ethereal 1.4.0'; // VERSION is the number YAK uses to check for updates and stamp files. REL is the release name people see: dev builds are Ethereal 0.1.0, main starts at Ethereal 1.0.0, then 1.0.1 for fixes and 1.1.0 for features.
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first, with at most three short bullet points (n).
 const CHANGELOG=[
+{v:'5.4.0',r:'Ethereal 1.4.0',d:'23 Nov 2026',n:['Fixed offline use and bill reminder notifications, which stopped working in 1.3.0','New Test notifications in More sends one to this phone straight away']},
 {v:'5.3.0',r:'Ethereal 1.3.0',d:'23 Nov 2026',n:['A short welcome tour the first time YAK opens, highlighting each tab as it goes','Housemates get their own version after joining','Take the tour again any time from More']},
 {v:'5.2.0',r:'Ethereal 1.2.0',d:'23 Nov 2026',n:['Payments shows this month\'s bills: total due, paid so far, left to pay and the next payment','Updates by itself from each bill\'s date taken, with a Leaving today note on the day','Personal bills can now have a date taken too']},
 {v:'5.1.0',r:'Ethereal 1.1.0',d:'17 Nov 2026',n:['Bill reminders: a notification at 7pm the evening before a bill or direct debit is due','Managers hear when a housemate has not paid; housemates hear when the house bills change','Messages are written on your phone; the sharing service only knows the dates']},
@@ -1467,6 +1468,20 @@ async function swAsk(msg){const reg=await swReady();if(!reg||!reg.active)return{
 async function rmSend(force){if(!rmOn()||window.YAKDEMO)return{ok:false};try{return await swAsk({type:'yak-remind',m:rmMirror(),force:!!force})}catch(e){return{ok:false}}}
 async function rmSub(){const reg=await swReady();return reg?reg.pushManager.getSubscription():null}
 async function rmTest(k){const sub=await rmSub();if(!sub)return false;try{const r=await fetch(SYNC_URL+'/p/test',{method:'POST',body:JSON.stringify({sub:sub.toJSON(),k}),headers:{'Content-Type':'application/json'}});return r.ok}catch(e){return false}}
+// Test notifications (Ethereal 1.4): checks the background file (sw.js) is the working one, refreshes this phone's reminder dates, then asks the service for one test nudge
+async function rmTestNow(){const tell=t=>{say(t);scrollTo(0,0)};
+ if(window.YAKDEMO)return tell('Test sent. In this demo no notifications are sent; on your phone one arrives within a few seconds, saying notifications from YAK are working.');
+ if(!RMOK()||!rmOn())return rmSheet();
+ if(rmPerm()==='denied')return tell('Notifications are switched off for YAK. Allow them in your phone\'s Settings, under Notifications, then YAK.');
+ const sw=await Promise.race([swAsk({type:'yak-ping'}).catch(()=>({})),new Promise(ok=>setTimeout(()=>ok({}),4000))]); // an old or empty helper never answers
+ if(!sw||!sw.ok){try{const r=await navigator.serviceWorker.getRegistration();if(r)r.update()}catch(e){}return tell('YAK is updating its notification helper. Close YAK fully, open it again, then try the test once more.')}
+ await rmSend(true);const sub=await rmSub();if(!sub)return tell('This phone is not signed up for notifications any more. Open Bill reminders in More, turn them off and on again, then try the test.');
+ let st=0;try{const r=await fetch(SYNC_URL+'/p/test',{method:'POST',body:JSON.stringify({sub:sub.toJSON(),k:'test'}),headers:{'Content-Type':'application/json'}});st=r.status;if(r.ok){const j=await r.json().catch(()=>({}));if(j.ok===false)st=j.status||502}}catch(e){}
+ logc({k:'sys',l:'Sent a test notification',x:st>=200&&st<300?'Sent':'Not sent ('+(st||'offline')+')'});save(true);
+ if(st>=200&&st<300)return tell('Test sent. A notification should arrive within a few seconds. If it does not, check YAK is allowed to send notifications in your phone\'s Settings.');
+ if(st===429)return tell('A test was sent less than a minute ago. Wait a moment and try again.');
+ if(st===404)return tell('This phone\'s reminders were not found by the service. Open Bill reminders in More, turn them off and on again, then try the test.');
+ tell('The test could not be sent. YAK cannot reach the sharing service right now, so try again in a little while.')}
 async function rmTurnOn(){if(!RMOK())return rmSheet();
  if(window.YAKDEMO){rmPut({on:true});sheetClose();say('Bill reminders are on. In this demo no notifications are sent: open Bill reminders in More to see what they look like.');scrollTo(0,0);return}
  let p=Notification.permission;if(p==='default')p=await Notification.requestPermission(); // must be the first thing after the tap, for iPhone
@@ -1655,7 +1670,7 @@ function moreOpen(){SH={k:'more'};MO=false;const L=lockInfo(),it=(t,ic,l,sub,cls
  sheetOpen(`<h3>More</h3><div class="mlinks">${HM()&&!DDON()?'':it("sheetClose();tab('fc')",'fc','Forecast','Your savings over the next 12 months')}${it("sheetClose();tab('hist')",'hist','History','How each month compared')}${it("sheetClose();tab('sim')",'sim','Simulator','Try what-if scenarios')}${it("sheetClose();tab('log')",'log','Changes','Everything you have changed')}${it("sheetClose();tab('help')",'help','Instructions','How YAK works')}${it("tourStart()",'goal','Take the tour','A quick look round YAK')}</div>
  <div class="shd">Your data</div><div class="mlinks">${it("sheetClose();doExport()",'exp','Export data',M.dirty?'<b style="color:var(--acc)">Unexported changes</b>'+(M.last?'. Last exported '+stamp(M.last):''):M.last?'Last exported '+stamp(M.last):'Not exported yet')}${it("sheetClose();openImport()",'imp','Import latest data',srcText())}${it("syMore()",'share','Household sharing',HH&&HH.sync?'Live'+(packBy(HH.pack)?' from '+esc(packBy(HH.pack)):''):S.sync&&!HM()?'Live sharing is on':HM()?'Join with an invite link':'Invite housemates or join a household')}${it("nameSheet()",'me','Your name',nm()?esc(nm()):'Not set')}${it("goalSheet()",'goal','Savings goal',+S.goal.a?gbp(+S.goal.a):'Not set')}${lockOK()?it(L?"lkMore()":"lkGo('set')",'lock','Passcode lock',L?'On':'Off'):''}</div>
  <div class="shd">Appearance</div><div class="segc s3" id="thseg">${[['light','Light'],['dark','Dark'],['auto','Match phone']].map(x=>`<button type="button" data-t="${x[0]}" class="${themeGet()===x[0]?'on':''}" onclick="themeSet('${x[0]}')">${x[1]}</button>`).join('')}</div>
- <div class="shd">App</div><div class="mlinks">${RMOK()||RMIOS()?it("rmSheet()",'bell','Bill reminders',rmOn()?'On, 7pm the evening before':RMIOS()?'Needs YAK on your Home Screen':'Off'):''}${it("sheetClose();checkUpdate()",'upd','Check for updates',REL)}${it("sheetClose();reset()",'rst','Reset to starting values','Export first if you want a backup','dz')}</div>`)}
+ <div class="shd">App</div><div class="mlinks">${RMOK()||RMIOS()?it("rmSheet()",'bell','Bill reminders',rmOn()?'On, 7pm the evening before':RMIOS()?'Needs YAK on your Home Screen':'Off'):''}${RMOK()||RMIOS()?it("sheetClose();rmTestNow()",'bell','Test notifications','Send one to this phone now'):''}${it("sheetClose();checkUpdate()",'upd','Check for updates',REL)}${it("sheetClose();reset()",'rst','Reset to starting values','Export first if you want a backup','dz')}</div>`)}
 function lkGo(m){sheetClose();if(S.tab!=='dash'){S.tab='dash';PLAY=true;ENTER=true;save(true)}lkMode(m);setTimeout(()=>{const c=document.getElementById('lkc');if(c)c.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});const i=document.getElementById(m==='set'?'lk-p1':'lk-cur');if(i)setTimeout(()=>i.focus({preventScroll:true}),350)},60)}
 function lkMore(){sheetOpen(`<h3>Passcode lock is on</h3><p class="lbl" style="margin:0">YAK asks for your passcode when it opens and whenever you leave the app. It keeps casual access out but does not encrypt your data.</p><div class="mlinks" style="margin-top:12px"><button onclick="sheetClose();lockNow()">${ico('lock')}<span>Lock now</span></button><button onclick="lkGo('change')">${ico('upd')}<span>Change passcode</span></button><button class="dz" onclick="lkGo('off')">${ico('rst')}<span>Turn off</span></button></div>`)}
 lkHintSet=function(){lkGo('set')};

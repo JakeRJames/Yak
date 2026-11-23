@@ -17,7 +17,7 @@ const CORS = {
 };
 const MAX = 200000; // characters; a household is a few hundred
 const KINDS = ['due', 'pay', 'dd'];
-const TESTK = ['hello', 'due', 'pay', 'dd', 'chg'];
+const TESTK = ['hello', 'test', 'due', 'pay', 'dd', 'chg'];
 // Only real push services, so this can never be used to send requests anywhere else
 const PUSH_HOSTS = /^(web\.push\.apple\.com|fcm\.googleapis\.com|updates\.push\.services\.mozilla\.com|[\w-]+\.notify\.windows\.com|push\.services\.mozilla\.com)$/;
 const SUBJECT = 'https://jakerjames.github.io/Yak/';
@@ -125,7 +125,7 @@ async function remTest(req, env, dev) {
   if (!b || !okSub(b.sub)) return json({ error: 'bad subscription' }, 400);
   const id = (await sha(b.sub.endpoint)).slice(0, 32), rec = await env.KV.get('p:' + id, 'json');
   if (!rec) return json({ error: 'reminders are off' }, 404);
-  const k = dev && TESTK.includes(b.k) ? b.k : 'hello';
+  const k = TESTK.includes(b.k) && (dev || b.k === 'test') ? b.k : 'hello'; // live: only the plain test messages
   if (!dev) { // at most one test a minute on the live service
     if (await env.KV.get('pt:' + id)) return json({ error: 'wait' }, 429);
     await env.KV.put('pt:' + id, '1', { expirationTtl: 60 });
