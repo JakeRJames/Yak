@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YAK – Ethereal 1.2.0</title>
-<meta name="version" content="5.2.0">
-<meta name="release" content="Ethereal 1.2.0">
+<title>YAK – Ethereal 1.3.0</title>
+<meta name="version" content="5.3.0">
+<meta name="release" content="Ethereal 1.3.0">
 <meta name="apple-mobile-web-app-title" content="YAK"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#262624"><script>try{var t=localStorage.getItem("yak.theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -326,6 +326,19 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 @keyframes enter{from{opacity:0;transform:translateY(10px)}}
 #app.enter>*{animation:enter .38s cubic-bezier(.3,.7,.2,1) backwards}
 #app.enter>:nth-child(2){animation-delay:.04s}#app.enter>:nth-child(3){animation-delay:.08s}#app.enter>:nth-child(4){animation-delay:.12s}#app.enter>:nth-child(5){animation-delay:.16s}#app.enter>:nth-child(n+6){animation-delay:.2s}
+/* first-time tour */
+.tour{position:fixed;inset:0;z-index:80;touch-action:none}.tour .tdim{position:absolute;inset:0;background:rgba(20,20,19,.62);transition:opacity .3s}.tour.spot .tdim{opacity:0}
+.tour .tring{position:fixed;border-radius:16px;box-shadow:0 0 0 3px var(--dot),0 0 0 9999px rgba(20,20,19,.62);opacity:0;transition:left .35s cubic-bezier(.2,.8,.2,1),top .35s cubic-bezier(.2,.8,.2,1),width .35s,height .35s,opacity .25s;pointer-events:none}.tour.spot .tring{opacity:1}
+.tour .tcard{position:fixed;left:50%;width:min(420px,calc(100% - 32px));transform:translateX(-50%);background:var(--card);color:var(--ink);border-radius:22px;padding:22px 22px 18px;box-shadow:0 18px 50px rgba(0,0,0,.32);transition:top .35s cubic-bezier(.2,.8,.2,1),bottom .35s cubic-bezier(.2,.8,.2,1)}
+.tour .tcard.mid{top:50%;transform:translate(-50%,-50%)}.tour .tcard.top{top:calc(18px + env(safe-area-inset-top,0px))}.tour .tcard.bot{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.tour .tico{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;background:var(--accbg);color:var(--acc);margin-bottom:14px}.tour .tico svg{width:28px;height:28px}
+.tour .tlogo{font:800 34px var(--f);letter-spacing:-1px;margin-bottom:6px}.tour .tlogo span{color:var(--dot)}
+.tour h3{font:800 22px/1.15 var(--f);letter-spacing:-.4px;margin:0 0 8px}.tour p{margin:0;color:var(--mute);font-size:15.5px;line-height:1.5}
+.tour .tft{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px}.tour .tdots{display:flex;gap:6px}.tour .tdots i{width:7px;height:7px;border-radius:9px;background:var(--line);transition:width .25s,background .25s}.tour .tdots i.on{width:20px;background:var(--acc)}
+.tour .tbtns{display:flex;gap:8px}.tour .tbtns .btn{min-height:44px}.tour .tskip{font:600 14px var(--f);background:none;border:0;color:var(--mute);padding:10px 4px;cursor:pointer}
+.tour .tcol{display:grid;gap:8px;margin-top:20px}.tour .tcol .btn{width:100%;min-height:48px;justify-content:center}
+.tour .tin{animation:tin .32s cubic-bezier(.2,.8,.2,1)}@keyframes tin{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:reduce){.tour *{transition:none!important;animation:none!important}}
 @media(prefers-reduced-motion:reduce){#app.enter>*,.mpanel,.ring .rv.anim{animation:none!important}.sheet,.scrim,.bnav svg{transition:none!important}}
 @media(prefers-reduced-motion:reduce){.dseg,.ln,.ar,.pt{animation:none!important}.sdseg{transition:none}.mbtn,.mbtn svg,.mlist,.mlist>div,.mlist button{transition:none!important}}
 .hd{font-weight:700;font-size:.85em;white-space:nowrap}.hd.up{color:var(--good,#5b9a6a)}.hd.dn{color:var(--bad)}
@@ -340,11 +353,13 @@ details.fold table{border:0;border-radius:0;border-top:1px solid var(--line)}
 <main id="app"><div class="card" style="margin:20px 0"><b>YAK needs a web browser to run.</b><p class="lbl">This preview cannot run the app. Open YAK in Safari, Chrome or Edge instead (or use the YAK link) and your saved data will load there.</p></div></main>
 <div class="bnav" id="bnav" role="navigation" aria-label="Sections"></div>
 <div class="scrim" id="scrim" hidden onclick="sheetClose()"></div><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Details" hidden></div>
+<div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-label="Welcome tour"></div>
 <input id="imp" type="file" accept=".json,application/json" class="hide" onchange="doImport(this)">
 <script>
-const VERSION='5.2.0',REL='Ethereal 1.2.0'; // VERSION is the number YAK uses to check for updates and stamp files. REL is the release name people see: dev builds are Ethereal 0.1.0, main starts at Ethereal 1.0.0, then 1.0.1 for fixes and 1.1.0 for features.
+const VERSION='5.3.0',REL='Ethereal 1.3.0'; // VERSION is the number YAK uses to check for updates and stamp files. REL is the release name people see: dev builds are Ethereal 0.1.0, main starts at Ethereal 1.0.0, then 1.0.1 for fixes and 1.1.0 for features.
 // Versioning: MAJOR = breaking changes to saved data or layout, MINOR = new features, PATCH = fixes and tweaks. Add newest entry first, with at most three short bullet points (n).
 const CHANGELOG=[
+{v:'5.3.0',r:'Ethereal 1.3.0',d:'23 Nov 2026',n:['A short welcome tour the first time YAK opens, highlighting each tab as it goes','Housemates get their own version after joining','Take the tour again any time from More']},
 {v:'5.2.0',r:'Ethereal 1.2.0',d:'23 Nov 2026',n:['Payments shows this month\'s bills: total due, paid so far, left to pay and the next payment','Updates by itself from each bill\'s date taken, with a Leaving today note on the day','Personal bills can now have a date taken too']},
 {v:'5.1.0',r:'Ethereal 1.1.0',d:'17 Nov 2026',n:['Bill reminders: a notification at 7pm the evening before a bill or direct debit is due','Managers hear when a housemate has not paid; housemates hear when the house bills change','Messages are written on your phone; the sharing service only knows the dates']},
 {v:'5.0.1',r:'Ethereal 1.0.1',d:'17 Nov 2026',n:['Version history is now short bullet points, at most three per release']},
@@ -1295,6 +1310,7 @@ function helpPage(){
  <ul><li><b>Yes:</b> you pay the full household bills and the others pay you back. YAK takes the full amount off, then adds back what the others owe, and shows how much each person owes you.</li>
  <li><b>No:</b> the bills are collected separately, so YAK only takes off your own share. The Payments tab is hidden, as nobody owes you anything.</li></ul>
  <p>The <b>How it adds up</b> table walks through the sum line by line, so you can see how the saving figure is reached. You can change your answer at any time.</p>`)}
+ ${sec('The welcome tour',`<p>The first time YAK opens on a new phone, a short tour shows you round: Home, House, Personal, Payments (or Forecast), More and Export, highlighting each one in the tab bar. Housemates see their own version once they have joined. You can skip it, and take it again any time from <b>More</b> → <b>Take the tour</b>.</p>`)}
  ${sec('Payments: this month\'s bills',`<p>The top of the Payments tab shows what leaves your account for bills this month: the house bills (in full if they come out of your account, otherwise your share), the rent and your personal bills.</p>
  <ul><li><b>Left to pay</b> is the total due this month less what has already gone out. The bar fills as bills are paid.</li>
  <li><b>Paid so far</b> and <b>Next payment</b> update by themselves from each bill's date taken. There is nothing to tick.</li>
@@ -1585,9 +1601,58 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')sheetClose()});
  document.addEventListener('touchstart',e=>{const el=s();if(!el||el.hidden||!el.contains(e.target)||el.scrollTop>0||/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName))return;y0=e.touches[0].clientY;dy=0},{passive:true});
  document.addEventListener('touchmove',e=>{if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);const el=s();if(dy>4){el.classList.add('drag');el.style.transform=`translateY(${dy}px)`}},{passive:true});
  document.addEventListener('touchend',()=>{if(y0===null)return;const el=s();y0=null;el.classList.remove('drag');if(dy>90)sheetClose();else el.style.transform='';dy=0})})();
+/* ---------- First-time tour: a short look round the real tabs, highlighting each one in the tab bar ----------
+   Runs once on a new device (and after a housemate joins), never for people already using YAK. Seen state is kept per device in yak.tour, not exported.
+   Replay any time from More. */
+const TKEY='yak.tour';
+const tourSeen=()=>{try{return !!localStorage.getItem(TKEY)}catch(e){return true}};
+const tourMark=()=>{try{localStorage.setItem(TKEY,iso())}catch(e){}};
+if(HAD&&!M.fresh&&!tourSeen())tourMark(); // existing users skip it
+let TR=null;
+function tourSteps(){const hm=HM(),pay=!PAYOFF(),m=esc(mgrN());
+ const st=[{c:'mid',w:1,h:'Welcome to YAK',p:hm?'Your Accounts Keeper. '+m+'\'s household bills are already here. Add your own income and bills and YAK shows what you can save each month.':'Your Accounts Keeper: your household bills, your own bills and what is left to save, all in one place. Here is a quick look round. It takes under a minute.'},
+  {t:'dash',ic:'home',h:'Home',p:hm?'Your month at a glance: your share of the house bills, what you can save and anything that needs doing.':'Your month at a glance: what you can save, how close you are to your savings goal, and anything that needs doing.'},
+  {t:'home',ic:'house',h:'House',p:hm?'The household bills, rent and budget from '+m+', read only. They update by themselves when '+m+' changes them.':'Add the household bills and rent, and how many people live with you. Give each bill the day it is taken. Tap any bill to change it.'},
+  {t:'me',ic:'me',h:'Personal',p:hm?'Add your income and your own bills, like your phone and gym. Only you can see these.':'Add your income and your own bills. YAK also asks whether the house bills come out of your account, so it knows what your housemates owe you.'},
+  pay?{t:'pay',ic:'pay',h:'Payments',p:hm?'Track the direct debit you pay '+m+' each month, and see straight away if anything is owed.':'See what is left to pay this month and the next bill to leave your account. If housemates pay you back, track it under Housemates.'}
+     :{t:'fc',ic:'fc',h:'Forecast',p:'See what your savings could look like over the next 12 months. Add one-off costs, like a credit card payment, to see that month dip.'},
+  {t:'more',ic:'more',h:'More',p:'History, the Simulator and Instructions live here, along with your savings goal, a passcode lock and bill reminders.'},
+  {t:'hx',ic:'exp',h:'Keep a backup',p:'Your figures stay on this phone. Tap Export now and then to save a copy in Files. An orange dot means you have changes that are not exported yet.'},
+  {c:'mid',end:1,ic:'goal',h:'You\'re all set',p:hm?'Start by adding your income on Personal. Everything saves by itself as you go.':'Start by adding your household bills on House. Everything saves by itself as you go.'}];
+ return st}
+function tourStart(){if(LOCKED)return;sheetClose();TR={i:0,s:tourSteps(),back:S.tab};tourDraw();document.addEventListener('keydown',tourKey)}
+function tourKey(e){if(!TR)return;TR.kb=true;if(e.key==='Escape')tourEnd();else if(e.key==='ArrowRight')tourGo(1);else if(e.key==='ArrowLeft')tourGo(-1)}
+function tourGo(d){if(!TR)return;const n=TR.i+d;if(n<0)return;if(n>=TR.s.length)return tourEnd();TR.i=n;tourDraw()}
+function tourEnd(go){if(!TR)return;const el=document.getElementById('tour');TR=null;tourMark();document.removeEventListener('keydown',tourKey);el.hidden=true;el.innerHTML='';
+ if(M.fresh&&go!=='import')freshDone();
+ if(go==='import')return openImport();
+ tab(go||(HM()?'me':'home'))}
+function tourTarget(t){if(!t)return null;
+ if(t==='hx')return document.getElementById('hx');
+ const b=[...document.querySelectorAll('#bnav button')],BN=bnItems(),i=BN.findIndex(x=>x[0]===t);
+ if(i>=0&&b[i]&&b[i].getBoundingClientRect().width)return b[i];
+ if(t==='more')return document.querySelector('header .hacts .hx.ic');
+ return document.getElementById('t-'+t)}
+function tourDraw(){const el=document.getElementById('tour'),k=TR.s[TR.i],n=TR.s.length;
+ if(k.t&&k.t!=='more'&&k.t!=='hx'&&S.tab!==k.t){S.tab=k.t;MO=false;PLAY=true;ENTER=true;FCO=null;render();scrollTo(0,0)}
+ const dots=TR.s.slice(1,-1).map((_,j)=>`<i class="${j+1===TR.i?'on':''}"></i>`).join('');
+ const body=k.w?`<div class="tlogo">YAK<span>.</span></div><h3>${k.h}</h3><p>${k.p}</p><div class="tcol"><button class="btn" onclick="tourGo(1)">Show me around</button>${HM()?'':`<button class="btn out" onclick="tourEnd('import')">I already use YAK: import my data</button>`}<button class="tskip" onclick="tourEnd()">Skip the tour</button></div>`
+  :k.end?`<div class="tico">${ico(k.ic)}</div><h3>${k.h}</h3><p>${k.p}</p><div class="tcol"><button class="btn" onclick="tourEnd()">${HM()?'Add my income':'Add my bills'}</button><button class="tskip" onclick="tourGo(-1)">Back</button></div>`
+  :`<div class="tico">${ico(k.ic)}</div><h3>${k.h}</h3><p>${k.p}</p><div class="tft"><div class="tdots" aria-label="Step ${TR.i} of ${n-2}">${dots}</div><div class="tbtns"><button class="tskip" onclick="tourEnd()">Skip</button><button class="btn" onclick="tourGo(1)">Next</button></div></div>`;
+ const tg=tourTarget(k.t);el.hidden=false;
+ if(!el.firstChild)el.innerHTML='<div class="tdim" onclick=""></div><div class="tring"></div><div class="tcard"></div>';
+ const card=el.querySelector('.tcard'),ring=el.querySelector('.tring');
+ card.innerHTML=`<div class="tin">${body}</div>`;
+ const place=()=>{if(!TR)return;const r=tg&&tg.getBoundingClientRect();
+  if(r&&r.width){const pad=5;el.classList.add('spot');Object.assign(ring.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px'});card.className='tcard '+(r.top>innerHeight/2?'top':'bot')}
+  else{el.classList.remove('spot');card.className='tcard mid'}};
+ requestAnimationFrame(place);TR.place=place;
+ const f=card.querySelector('.btn');if(f&&TR.kb)setTimeout(()=>f.focus({preventScroll:true}),RM?0:200)}
+addEventListener('resize',()=>{if(TR&&TR.place)TR.place()});
+function tourAuto(){if(TR||window.YAKDEMO||tourSeen()||LOCKED||JOINP||PPK||PEND||LEAVE||RST||SH)return;if(M.fresh||HM())setTimeout(()=>{if(!TR&&!tourSeen()&&!LOCKED&&!SH)tourStart()},350)}
 /* More */
 function moreOpen(){SH={k:'more'};MO=false;const L=lockInfo(),it=(t,ic,l,sub,cls)=>`<button class="${cls||''}" onclick="${t}">${ico(ic)}<span>${l}${sub?`<small>${sub}</small>`:''}</span></button>`;
- sheetOpen(`<h3>More</h3><div class="mlinks">${HM()&&!DDON()?'':it("sheetClose();tab('fc')",'fc','Forecast','Your savings over the next 12 months')}${it("sheetClose();tab('hist')",'hist','History','How each month compared')}${it("sheetClose();tab('sim')",'sim','Simulator','Try what-if scenarios')}${it("sheetClose();tab('log')",'log','Changes','Everything you have changed')}${it("sheetClose();tab('help')",'help','Instructions','How YAK works')}</div>
+ sheetOpen(`<h3>More</h3><div class="mlinks">${HM()&&!DDON()?'':it("sheetClose();tab('fc')",'fc','Forecast','Your savings over the next 12 months')}${it("sheetClose();tab('hist')",'hist','History','How each month compared')}${it("sheetClose();tab('sim')",'sim','Simulator','Try what-if scenarios')}${it("sheetClose();tab('log')",'log','Changes','Everything you have changed')}${it("sheetClose();tab('help')",'help','Instructions','How YAK works')}${it("tourStart()",'goal','Take the tour','A quick look round YAK')}</div>
  <div class="shd">Your data</div><div class="mlinks">${it("sheetClose();doExport()",'exp','Export data',M.dirty?'<b style="color:var(--acc)">Unexported changes</b>'+(M.last?'. Last exported '+stamp(M.last):''):M.last?'Last exported '+stamp(M.last):'Not exported yet')}${it("sheetClose();openImport()",'imp','Import latest data',srcText())}${it("syMore()",'share','Household sharing',HH&&HH.sync?'Live'+(packBy(HH.pack)?' from '+esc(packBy(HH.pack)):''):S.sync&&!HM()?'Live sharing is on':HM()?'Join with an invite link':'Invite housemates or join a household')}${it("nameSheet()",'me','Your name',nm()?esc(nm()):'Not set')}${it("goalSheet()",'goal','Savings goal',+S.goal.a?gbp(+S.goal.a):'Not set')}${lockOK()?it(L?"lkMore()":"lkGo('set')",'lock','Passcode lock',L?'On':'Off'):''}</div>
  <div class="shd">Appearance</div><div class="segc s3" id="thseg">${[['light','Light'],['dark','Dark'],['auto','Match phone']].map(x=>`<button type="button" data-t="${x[0]}" class="${themeGet()===x[0]?'on':''}" onclick="themeSet('${x[0]}')">${x[1]}</button>`).join('')}</div>
  <div class="shd">App</div><div class="mlinks">${RMOK()||RMIOS()?it("rmSheet()",'bell','Bill reminders',rmOn()?'On, 7pm the evening before':RMIOS()?'Needs YAK on your Home Screen':'Off'):''}${it("sheetClose();checkUpdate()",'upd','Check for updates',REL)}${it("sheetClose();reset()",'rst','Reset to starting values','Export first if you want a backup','dz')}</div>`)}
@@ -1777,6 +1842,7 @@ function render(){
  if(PLAY)countUp();
  const ap=document.getElementById('app');if(ENTER&&!RM){ap.classList.remove('enter');void ap.offsetWidth;ap.classList.add('enter');clearTimeout(ENT);ENT=setTimeout(()=>ap.classList.remove('enter'),700)}ENTER=false;
  PLAY=false;
+ tourAuto();
  if(JOINP){const h=JOINP;JOINP=null;setTimeout(()=>syJoin(h),0)}
  if(OPENT&&!LOCKED){const t=OPENT;OPENT=null;setTimeout(()=>tab(t),0)}
 }
